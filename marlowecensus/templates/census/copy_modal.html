@@ -1,0 +1,67 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 align="left" class="modal-title">
+		    Copy Details for {{ copy.issue.edition.title }} ({{ copy.issue.year }})
+		    {% if copy.Digital_Facsimile_URL %}
+		    <span class="unicode-icon" title="Link to digital facsimile of this copy">
+			<a href="{{ copy.Digital_Facsimile_URL }}" target="_blank">
+	                <i class="fas fa-camera-retro"></i>
+			</a>
+		    </span>
+		    {% endif %}
+	    </h3>
+        </div>
+        <div class="modal-body">
+
+            <p align="left"><strong>Cen#</strong>: {% if copy.cen and copy.cen != '0' %}{{ copy.cen }}{% endif %}</p>
+
+            <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name }}{% endif %}</p>
+
+            <p align="left"><strong>Shelfmark</strong>: {% if copy.Shelfmark and copy.Shelfmark != "[Shelfmark not available]" %}{{ copy.Shelfmark }}{% endif %}</p>
+
+            {% if copy.issue.notes %}
+            <p align="left"><strong>Notes about issue</strong>: {{ copy.issue.notes }}</p>
+            {% endif %}
+
+            {% if copy.Local_Notes %}
+            <p align="left"><strong>Copy-specific notes</strong>: {{ copy.Local_Notes }}</p>
+            {% endif %}
+
+            {% if copy.provenance_search_names.all %}
+	          <p align="left"><strong>Provenance</strong>:
+		        {% for owner in copy.provenance_search_names.all|dictsort:"name" %}
+		        <a href="https://viaf.org/viaf/{{ owner.viaf }}" target="_blank" title="{{ owner.bio }}">
+			      {{owner.name}}</a>{% if not forloop.last %};{% endif %}
+		        {% endfor %}
+		        </p>
+	          {% endif %}
+
+            {% if copy.prov_info %}
+            <p align="left"><strong>Provenance notes</strong>: {{ copy.prov_info }}</p>
+            {% endif %}
+
+            {% if copy.Height %}
+            <p align="left"><strong>Leaf Height</strong>: {{ copy.Height }} cm</p>
+            {% endif %}
+
+            {% if copy.Width %}
+            <p align="left"><strong>Leaf Width</strong>: {{ copy.Width }} cm</p>
+            {% endif %}
+
+            {% if copy.Marginalia %}
+            <p align="left"><strong>Marginalia</strong>: {{ copy.Marginalia }}</p>
+            {% endif %}
+
+            {% if copy.Binding %}
+            <p align="left"><strong>Binding</strong>: {{ copy.Binding }}</p>
+            {% endif %}
+
+
+            {% if copy.bibliography %}
+            <p align="left"><strong>For scholarship on this copy, see</strong>: {{ copy.bibliography }}</p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>

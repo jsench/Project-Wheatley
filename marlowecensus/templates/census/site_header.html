@@ -1,0 +1,126 @@
+{% load static %}
+
+<div class="tucked">
+    {% if user.is_authenticated %}
+    <a class="button" href="{% url 'logout_user' %}">Sign out</a>
+    <a class="button" href="{% url 'admin:index' %}">Site Administration</a>
+
+    {% else %}
+    <a class="button" href="{% url 'login_user' %}">Sign in</a>
+
+    {% endif %}
+    <!-- A normally-styled non-breaking space always appears here
+        to ensure consistent div height. Someday we will find the
+        correct way to do this. -->
+        &nbsp;
+</div>
+<table class="title">
+    <tr>
+        <th>
+            &nbsp;
+        </th>
+        <th>
+            &nbsp;
+        </th>
+        <th>
+            &nbsp;
+        </th>
+        <th>
+            &nbsp;
+        </th>
+   </tr>
+    <tr>
+        <td colspan="4">
+          {% if request.path == '/homepage' %}
+            <a>Marlowe Census</a>
+          {% else %}
+            <a href="{% url 'homepage' %}">Marlowe Census</a><br/>
+          {% endif %}
+        </td>
+    </tr>
+</table>
+
+<table class="header-title-nav">
+   <tr>
+     <th>
+       <a href="{% url 'about' %}">about</a>
+     </th>
+     <th>
+       <a href="#search" id="site-search-button">search</a>
+     </th>
+   </tr>
+</table>
+
+<div class="search-bar">
+  <form id="search-bar-form" class="hidden" action="/search/" method="get">
+    <select id="search-bar-form-field" name="field">
+      <option disabled selected value>Search by...</option>
+      <option value="keyword">Keyword</option>
+      <option value="location">Location</option>
+      <option value="provenance_name">Provenance Name</option>
+      <option value="collection">Specific Features</option>
+      <option value="year">Year</option>
+      <option value="stc">STC / Wing #</option>
+      <option value="cen">Cen #</option>
+    </select>
+    <input id="search-bar-form-text" type="text" name="value" placeholder="Search..">
+    <input id="search-bar-form-submit" type="submit" value="Submit" >
+  </form>
+</div>
+
+<script>
+    utils.get.id('site-search-button').addEventListener('click', function () {
+        utils.togglehide.id('search-bar-form');
+    });
+    $(function() {
+        var autofillMap = {
+            location: '/autofill/location/',
+            provenance_name: '/autofill/provenance/',
+            collection: '/autofill/collection/'
+        };
+
+        var autofillResponse = function(field, query, response) {
+            fetch(autofillMap[field] + query)
+                .then((matches) => {
+                    return matches.json()
+                })
+                .then((matches_json) => {
+                    return response(matches_json.matches);
+                });
+        };
+
+        $('#search-bar-form-text').autocomplete({
+            minLength: 3,
+            source: function(request, response) {
+                var field_el = utils.get.id('search-bar-form-field');
+                var field = field_el.options[field_el.selectedIndex].value;
+                if (autofillMap.hasOwnProperty(field)) {
+                    autofillResponse(field, request.term, response);
+                }
+            },
+
+            // This is a simple way to automatically submit the form when
+            // a value is selected. But it behaves counterintuitively in
+            // a couple of cases. I haven't been able to work out why.
+            // So for now you have to hit tab and then enter.
+            select: function(evt, ui) {
+                $('#search-bar-form-text').val(ui.item.value);
+                $('#search-bar-form').submit();
+            },
+
+            // focus: function(evt, ui) {
+            // }
+        });
+
+        $('#search-bar-form-field').change(function(evt) {
+            if ($('#search-bar-form-field option:selected').val() === 'collection') {
+                $('#search-bar-form-text').autocomplete('search', '   ');
+            }
+        });
+    });
+
+
+    // if (window.location.hash && window.location.hash === '#search') {
+    //    utils.get.id('search-bar-form').classList.remove('hidden');
+    // }
+</script>
