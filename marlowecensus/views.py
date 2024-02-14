@@ -270,7 +270,7 @@ def homepage(request):
 
 def about(request, viewname='about'):
     template = loader.get_template('census/about.html')
-    copy_count = models.Copy.objects.all().count()
+    copy_count = models.Copy.objects.filter(canonical_query).count()
     facsimile_copy_count = models.Copy.objects.filter(
             ~Q(Digital_Facsimile_URL=None) & ~Q(Digital_Facsimile_URL='')
     ).count()
@@ -440,7 +440,7 @@ def location_copy_count_csv_export(request):
     locations = locations.annotate(total=Count('location')).order_by('location__name')
 
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="shakespeare_census_location_copy_count.csv"'
+    response['Content-Disposition'] = 'attachment; filename="census_location_copy_count.csv"'
 
     writer = csv.writer(response)
     writer.writerow(['Location', 'Number of Copies'])
@@ -454,7 +454,7 @@ def year_issue_copy_count_csv_export(request):
     issues = issues.annotate(total=Count('issue')).order_by('issue__start_date')
 
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="shakespeare_census_year_issue_copy_count.csv"'
+    response['Content-Disposition'] = 'attachment; filename="census_year_issue_copy_count.csv"'
 
     writer = csv.writer(response)
     writer.writerow(['Year', 'STC/Wing', 'Title', 'Number of Copies'])

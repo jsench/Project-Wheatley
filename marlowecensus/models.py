@@ -82,7 +82,7 @@ class Issue(models.Model):
     end_date = models.IntegerField(default=0)
     DEEP = models.CharField(max_length=20, default='', null=True, blank=True)
     notes = models.TextField(null=True, blank=True, default='')
-    Variant_Description = models.CharField(max_length=1000, null=True, blank=True)
+    Variant_Description = models.TextField(null=True, blank=True, default='')
 
     def ESTC_as_list(self):
         estc_list = self.ESTC.split('; ')
@@ -117,6 +117,7 @@ class Copy(models.Model):
     Width = models.FloatField(default=0, null=True, blank=True)
     Binding = models.CharField(max_length=500, default='', null=True, blank=True)
     in_early_sammelband = models.BooleanField(default=False)
+    fragment = models.BooleanField(default=False)
     Marginalia = models.TextField(null=True, blank=True, default='')
     Local_Notes = models.TextField(null=True, blank=True, default='')
     prov_info = models.TextField(null=True, blank=True, default='')
@@ -127,10 +128,12 @@ class Copy(models.Model):
         )
     bibliography = models.TextField(null=True, blank=True, default='')
     from_estc = models.BooleanField(default=False)
-    examined = models.BooleanField(default=False)
-    catalogue_history = models.TextField(null=True, blank=True, default='')
+    backend_notes = models.TextField(null=True, blank=True, default='')
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_submitted_copies",
-                               default=None, null=True, blank=True, on_delete=models.CASCADE)
+                               default=None, null=True, blank=True, on_delete=models.SET_NULL)
+    verified_by = models.CharField(max_length=500, default='', null=True, blank=True)
+    examined_by = models.CharField(max_length=500, default='', null=True, blank=True)
+    collated_by = models.CharField(max_length=500, default='', null=True, blank=True)
 
     def __str__(self):
         return  "{} ({}), Census# {}".format(self.issue, self.issue.year, self.cen)

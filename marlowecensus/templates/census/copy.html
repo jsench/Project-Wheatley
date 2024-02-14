@@ -16,9 +16,10 @@
 
         {% if all_copies %}
         <tr>
-            <th class="terse"> Cen&nbsp;# </th>
+            <th class="terse"> MC&nbsp;# </th>
             <th class="detailed"> Location </th>
             <th class="even"> Shelfmark </th>
+            <th class="icon">&nbsp;</th>
             <th class="icon">&nbsp;</th>
             <th class="icon">&nbsp;</th>
         </tr>
@@ -51,12 +52,19 @@
                 {% endif %}
             </td>
             <td>
-                {% if copy.from_estc and copy.verification == "Unverified" %}
+                {% if copy.from_estc and copy.verification == "U" %}
                       <span title="The existence of this copy has not been verified; location derived from ESTC." class="unverified-symbol">&#x20E0;</span>
-                {% elif copy.verification == "Unverified" %}
+                {% elif copy.verification == "U" %}
                       <span title="The existence of this copy has not been verified; location entered by an administrator." class="unverified-symbol">&#x20E0;</span>
-                {% elif copy.verification == "Verified" or "Examined" %}
+                {% elif copy.verification == "V" %}
                       <span title="This existence of this copy at the location has been verified." class="verified-symbol">&#x2713;</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if copy.fragment %}
+                    <span class="unicode-icon" title="This copy is a fragment">
+                        <i class="fas fa-industry"></i>
+                    </span>
                 {% endif %}
             </td>
             <td>

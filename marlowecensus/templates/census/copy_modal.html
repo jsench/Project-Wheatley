@@ -14,7 +14,7 @@
         </div>
         <div class="modal-body">
 
-            <p align="left"><strong>Cen#</strong>: {% if copy.cen and copy.cen != '0' %}{{ copy.cen }}{% endif %}</p>
+            <p align="left"><strong>MC#</strong>: {% if copy.cen and copy.cen != '0' %}{{ copy.cen }}{% endif %}</p>
 
             <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name }}{% endif %}</p>
 
@@ -22,6 +22,10 @@
 
             {% if copy.issue.notes %}
             <p align="left"><strong>Notes about issue</strong>: {{ copy.issue.notes }}</p>
+            {% endif %}
+
+            {% if copy.issue.Variant_Description %}
+            <p align="left"><strong>Variant description</strong>: {{ copy.issue.Variant_Description }}</p>
             {% endif %}
 
             {% if copy.Local_Notes %}
