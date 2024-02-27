@@ -80,7 +80,7 @@
         };
 
         var autofillResponse = function(field, query, response) {
-            fetch(autofillMap[field] + query)
+            fetch(autofillMap[field] + query + '/')
                 .then((matches) => {
                     return matches.json()
                 })

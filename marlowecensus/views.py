@@ -301,8 +301,9 @@ def detail(request, id):
     selected_title = get_object_or_404(models.Title, pk=id)
     editions = list(selected_title.edition_set.all())
     issues = [issue for ed in editions for issue in ed.issue_set.all()]
-    issues.sort(key=issue_date_sort_key)
-    issues.sort(key=issue_stc_sort_key)
+    issues.sort(key=issue_sort_key)
+    '''issues.sort(key=issue_date_sort_key)
+    issues.sort(key=issue_stc_sort_key)'''
     copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).count()
     template = loader.get_template('census/detail.html')
     context = {
