@@ -26,9 +26,9 @@
         {% for copy in all_copies %}
         <tr>
             <td>
-                {% if copy.cen and copy.cen != '0' %}
+                {% if copy.MC and copy.MC != '0' %}
                     <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                        {{ copy.cen }}
+                        {{ copy.MC }}
                     </a>
                 {% else %}
                     &nbsp;
@@ -38,7 +38,7 @@
                 {% endif %}
             </td>
             <td>
-                <a class="copy_data copy_data_{{copy.cen}}" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                <a class="copy_data copy_data_{{copy.MC}}" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
                     {{copy.location.name}}
                 </a>
             </td>

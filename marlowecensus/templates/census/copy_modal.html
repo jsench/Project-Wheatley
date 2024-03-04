@@ -14,11 +14,15 @@
         </div>
         <div class="modal-body">
 
-            <p align="left"><strong>MC#</strong>: {% if copy.cen and copy.cen != '0' %}{{ copy.cen }}{% endif %}</p>
+            <p align="left"><strong>MC#</strong>: {% if copy.MC and copy.MC != '0' %}{{ copy.MC }}{% endif %}</p>
 
             <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name }}{% endif %}</p>
 
             <p align="left"><strong>Shelfmark</strong>: {% if copy.Shelfmark and copy.Shelfmark != "[Shelfmark not available]" %}{{ copy.Shelfmark }}{% endif %}</p>
+
+            {% if copy.title.notes %}
+            <p align="left"><strong>Notes about title</strong>: {{ copy.title.notes }}</p>
+            {% endif %}
 
             {% if copy.issue.notes %}
             <p align="left"><strong>Notes about issue</strong>: {{ copy.issue.notes }}</p>

@@ -62,21 +62,26 @@ def copy_date_sort_key(c):
 def issue_date_sort_key(issue):
     return int(issue.start_date)
 
-def copy_cen_sort_key(c):
-    cen = c.cen if c.cen is not None else ''
-    cen_a = 0
-    cen_b = 0
+def detail_sort_key(issue):
+    ed_number = issue.edition.Edition_number
+    ed_idx = int(ed_number) if ed_number.isdigit() else float('inf')
+    return (ed_idx, issue.start_date, issue.end_date, issue.STC_Wing)
+
+def copy_MC_sort_key(c):
+    MC = c.MC if c.MC is not None else ''
+    MC_a = 0
+    MC_b = 0
 
     try:
-        if '.' in cen:
-            cen_a, cen_b = cen.split('.')
-            cen_a, cen_b = int(cen_a), int(cen_b)
+        if '.' in MC:
+            MC_a, MC_b = MC.split('.')
+            MC_a, MC_b = int(MC_a), int(MC_b)
         else:
-            cen_a = int(cen)
+            MC_a = int(MC)
     except ValueError:
         pass
 
-    return (cen_a, cen_b)
+    return (MC_a, MC_b)
 
 def copy_location_sort_key(c):
     if c.location is not None:
@@ -90,11 +95,11 @@ def copy_shelfmark_sort_key(c):
     return sm if sm else ''
 
 def copy_sort_key(c):
-    cen_a, cen_b = copy_cen_sort_key(c)
+    MC_a, MC_b = copy_MC_sort_key(c)
     return (copy_location_sort_key(c),
             copy_shelfmark_sort_key(c),
-            cen_a,
-            cen_b)
+            MC_a,
+            MC_b)
 
 def title_sort_key(title_object):
     title = title_object.title
@@ -143,9 +148,9 @@ def search(request, field=None, value=None, order=None):
     elif field == 'stc' and value:
         display_field = 'STC / Wing'
         result_list = copy_list.filter(issue__STC_Wing__icontains=value)
-    elif field == 'cen' and value:
-        display_field = 'cen'
-        result_list = copy_list.filter(cen=value)
+    elif field == 'MC' and value:
+        display_field = 'MC'
+        result_list = copy_list.filter(MC=value)
     elif field == 'year' and value:
         display_field = 'Year'
         year_range = convert_year_range(value)
@@ -191,7 +196,7 @@ def search(request, field=None, value=None, order=None):
         result_list = sorted(result_list, key=search_sort_location)
     elif order == 'stc':
         result_list = sorted(result_list, key=search_sort_stc)
-    elif order == 'cen':
+    elif order == 'MC':
         result_list = sorted(result_list, key=copy_cen_sort_key)
 
     context = {
@@ -270,7 +275,8 @@ def homepage(request):
 
 def about(request, viewname='about'):
     template = loader.get_template('census/about.html')
-    copy_count = models.Copy.objects.filter(canonical_query).count()
+    copy_count = models.Copy.objects.filter(canonical_query & Q(fragment=False)).count()
+    fragment_copy_count = models.Copy.objects.filter(fragment=True).count()
     facsimile_copy_count = models.Copy.objects.filter(
             ~Q(Digital_Facsimile_URL=None) & ~Q(Digital_Facsimile_URL='')
     ).count()
@@ -284,6 +290,7 @@ def about(request, viewname='about'):
         'verified_copy_count': str(models.Copy.objects.filter(verified_query).count()),
         'unverified_copy_count': str(models.Copy.objects.filter(unverified_query).count()),
         'current_date': '{d:%d %B %Y}'.format(d=datetime.now()),
+        'fragment_copy_count': str(fragment_copy_count),
         'facsimile_copy_count': str(facsimile_copy_count),
         'facsimile_copy_percent': '{}%'.format(facsimile_copy_percent),
         'estc_copy_count': str(models.Copy.objects.filter(from_estc=True).count()),
@@ -301,9 +308,7 @@ def detail(request, id):
     selected_title = get_object_or_404(models.Title, pk=id)
     editions = list(selected_title.edition_set.all())
     issues = [issue for ed in editions for issue in ed.issue_set.all()]
-    issues.sort(key=issue_sort_key)
-    '''issues.sort(key=issue_date_sort_key)
-    issues.sort(key=issue_stc_sort_key)'''
+    issues.sort(key=detail_sort_key)
     copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).count()
     template = loader.get_template('census/detail.html')
     context = {
@@ -314,6 +319,7 @@ def detail(request, id):
         'copy_count': copy_count,
     }
     return HttpResponse(template.render(context, request))
+
 
 # showing all copies for an issue
 def copy(request, id):
@@ -380,14 +386,14 @@ def copy_data(request, copy_id):
 
     return HttpResponse(template.render(context, request))
 
-def cen_copy_modal(request, cen):
-    # This is almost identical to copy, above, but it accepts a CEN number
-    # instead of an issue number, and if the CEN number is found, it
+def cen_copy_modal(request, MC):
+    # This is almost identical to copy, above, but it accepts a MC number
+    # instead of an issue number, and if the MC number is found, it
     # finds the issue, and displays the page for that issue. The
     # modal-display javascript then detects what has happened and
     # automatically displays the modal for the given copy.
 
-    selected_copy = get_object_or_404(models.Copy, cen=cen)
+    selected_copy = get_object_or_404(models.Copy, MC=MC)
     selected_issue = selected_copy.issue
     # all_copies = models.Copy.objects.filter(issue=selected_issue).order_by('location__name', 'Shelfmark')
     # all_copies = sorted(all_copies, key=copy_sort_key)

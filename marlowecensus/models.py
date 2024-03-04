@@ -60,6 +60,7 @@ class ProvenanceName(models.Model):
 class Title(models.Model):
     title = models.CharField(max_length=128, unique=True)
     apocryphal = models.BooleanField(default=False)
+    notes = models.TextField(null=True, blank=True, default='')
     image = models.ImageField(upload_to='titleicon', null=True, blank=True)
 
     def __str__(self):
@@ -99,7 +100,7 @@ class Issue(models.Model):
 
 # Essential fields for all copies.
 class Copy(models.Model):
-    cen = models.CharField(max_length=40, default='', null=True, blank=True)
+    MC = models.CharField(max_length=40, default='', null=True, blank=True)
     UNVERIFIED = 'U'
     VERIFIED = 'V'
     FALSE = 'F'
@@ -136,7 +137,7 @@ class Copy(models.Model):
     collated_by = models.CharField(max_length=500, default='', null=True, blank=True)
 
     def __str__(self):
-        return  "{} ({}), Census# {}".format(self.issue, self.issue.year, self.cen)
+        return  "{} ({}), MC# {}".format(self.issue, self.issue.year, self.MC)
     class Meta:
         verbose_name_plural = "Copies"
 

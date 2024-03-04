@@ -61,4 +61,4 @@ class EditionAdmin(ImportExportModelAdmin):
 class CopyAdmin(ImportExportModelAdmin):
     list_filter=['verification']
     #inlines = (ProvenanceOwnershipInline,)
-    #search_fields = ('cen', 'issue__edition__title__title')
+    #search_fields = ('MC', 'issue__edition__title__title')
