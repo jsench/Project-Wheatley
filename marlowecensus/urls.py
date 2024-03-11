@@ -17,7 +17,7 @@ urlpatterns = [
     path('about/<str:viewname>/', views.about, name='about'),
     path('copy/<int:id>/', views.copy, name='copy'),
     path('copydata/<int:copy_id>/', views.copy_data, name='copy_data'),
-    path('MC/<int:MC>/', views.cen_copy_modal, name='cen_copy_modal'),
+    path('mc/<int:census_id>/', views.cen_copy_modal, name='cen_copy_modal'),
 
     # Search autocomplete
     path('autofill/location/', views.autofill_location, name='autofill_location'),

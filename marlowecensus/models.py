@@ -100,7 +100,7 @@ class Issue(models.Model):
 
 # Essential fields for all copies.
 class Copy(models.Model):
-    MC = models.CharField(max_length=40, default='', null=True, blank=True)
+    census_id = models.CharField('MC#', max_length=40, default='', null=True, blank=True)
     UNVERIFIED = 'U'
     VERIFIED = 'V'
     FALSE = 'F'
@@ -137,7 +137,7 @@ class Copy(models.Model):
     collated_by = models.CharField(max_length=500, default='', null=True, blank=True)
 
     def __str__(self):
-        return  "{} ({}), MC# {}".format(self.issue, self.issue.year, self.MC)
+        return  "{} ({}), MC# {}".format(self.issue, self.issue.year, self.census_id)
     class Meta:
         verbose_name_plural = "Copies"
 

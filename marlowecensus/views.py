@@ -67,21 +67,21 @@ def detail_sort_key(issue):
     ed_idx = int(ed_number) if ed_number.isdigit() else float('inf')
     return (ed_idx, issue.start_date, issue.end_date, issue.STC_Wing)
 
-def copy_MC_sort_key(c):
-    MC = c.MC if c.MC is not None else ''
-    MC_a = 0
-    MC_b = 0
+def copy_census_id_sort_key(c):
+    census_id = c.census_id if c.census_id is not None else ''
+    census_id_a = 0
+    census_id_b = 0
 
     try:
-        if '.' in MC:
-            MC_a, MC_b = MC.split('.')
-            MC_a, MC_b = int(MC_a), int(MC_b)
+        if '.' in census_id:
+            census_id_a, census_id_b = census_id.split('.')
+            census_id_a, census_id_b = int(census_id_a), int(census_id_b)
         else:
-            MC_a = int(MC)
+            census_id_a = int(census_id)
     except ValueError:
         pass
 
-    return (MC_a, MC_b)
+    return (census_id_a, census_id_b)
 
 def copy_location_sort_key(c):
     if c.location is not None:
@@ -95,11 +95,11 @@ def copy_shelfmark_sort_key(c):
     return sm if sm else ''
 
 def copy_sort_key(c):
-    MC_a, MC_b = copy_MC_sort_key(c)
+    census_id_a, census_id_b = copy_census_id_sort_key(c)
     return (copy_location_sort_key(c),
             copy_shelfmark_sort_key(c),
-            MC_a,
-            MC_b)
+            census_id_a,
+            census_id_b)
 
 def title_sort_key(title_object):
     title = title_object.title
@@ -148,9 +148,9 @@ def search(request, field=None, value=None, order=None):
     elif field == 'stc' and value:
         display_field = 'STC / Wing'
         result_list = copy_list.filter(issue__STC_Wing__icontains=value)
-    elif field == 'MC' and value:
+    elif field == 'census_id' and value:
         display_field = 'MC'
-        result_list = copy_list.filter(MC=value)
+        result_list = copy_list.filter(census_id=value)
     elif field == 'year' and value:
         display_field = 'Year'
         year_range = convert_year_range(value)
@@ -175,7 +175,7 @@ def search(request, field=None, value=None, order=None):
     elif field == 'ghosts':
         display_field = 'Ghosts'
         display_value = 'All'
-        result_list = copy_list.filter(false_query)
+        result_list = models.Copy.objects.filter(false_query)
     elif field == 'collection':
         result_list, display_field = get_collection(copy_list, value)
         display_value = 'All'
@@ -386,14 +386,14 @@ def copy_data(request, copy_id):
 
     return HttpResponse(template.render(context, request))
 
-def cen_copy_modal(request, MC):
-    # This is almost identical to copy, above, but it accepts a MC number
-    # instead of an issue number, and if the MC number is found, it
+def cen_copy_modal(request, census_id):
+    # This is almost identical to copy, above, but it accepts a census_id number
+    # instead of an issue number, and if the census_id number is found, it
     # finds the issue, and displays the page for that issue. The
     # modal-display javascript then detects what has happened and
     # automatically displays the modal for the given copy.
 
-    selected_copy = get_object_or_404(models.Copy, MC=MC)
+    selected_copy = get_object_or_404(models.Copy, census_id=census_id)
     selected_issue = selected_copy.issue
     # all_copies = models.Copy.objects.filter(issue=selected_issue).order_by('location__name', 'Shelfmark')
     # all_copies = sorted(all_copies, key=copy_sort_key)

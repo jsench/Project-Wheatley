@@ -155,3 +155,5 @@ EMAIL_USE_TLS = True
 ADMIN_URL = 'admin/'
 
 NOTIFICATIONS = [('Rob Carson', 'carson@hws.edu')]
+
+APPEND_SLASH = True

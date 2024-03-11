@@ -21,7 +21,7 @@ jQuery(function($) {
             .replace(/\/*$/, '')
             .split('/');
         if (pathlist.length == 2 &&
-                pathlist[0] === 'sc' &&
+                pathlist[0] === 'census_id' &&
                 pathlist[1].match(/^[0-9]+$/)) {
             copy_cen = pathlist[1];
         } else if (window.location.hash) {
