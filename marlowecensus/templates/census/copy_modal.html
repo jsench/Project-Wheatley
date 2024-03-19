@@ -20,8 +20,8 @@
 
             <p align="left"><strong>Shelfmark</strong>: {% if copy.Shelfmark and copy.Shelfmark != "[Shelfmark not available]" %}{{ copy.Shelfmark }}{% endif %}</p>
 
-            {% if copy.title.notes %}
-            <p align="left"><strong>Notes about title</strong>: {{ copy.title.notes }}</p>
+            {% if copy.issue.edition.title.notes %}
+            <p align="left"><strong>Notes about title</strong>: {{ copy.issue.edition.title.notes }}</p>
             {% endif %}
 
             {% if copy.issue.notes %}

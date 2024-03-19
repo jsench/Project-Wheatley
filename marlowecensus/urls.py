@@ -12,12 +12,12 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('search/<str:field>/<str:value>/', views.search, name='search'),
     path('search/<str:field>/<str:value>/<str:order>/', views.search, name='search'),
-    path('editions/<int:id>/', views.detail, name='detail'),
+    path('title/<int:id>/', views.detail, name='detail'),
     path('about/', views.about, name='about'),
     path('about/<str:viewname>/', views.about, name='about'),
-    path('copy/<int:id>/', views.copy, name='copy'),
+    path('issue/<int:id>/', views.copy, name='copy'),
     path('copydata/<int:copy_id>/', views.copy_data, name='copy_data'),
-    path('mc/<int:census_id>/', views.cen_copy_modal, name='cen_copy_modal'),
+    path('copy/<int:census_id>/', views.cen_copy_modal, name='cen_copy_modal'),
 
     # Search autocomplete
     path('autofill/location/', views.autofill_location, name='autofill_location'),

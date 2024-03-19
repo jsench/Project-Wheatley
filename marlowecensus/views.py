@@ -309,7 +309,7 @@ def detail(request, id):
     editions = list(selected_title.edition_set.all())
     issues = [issue for ed in editions for issue in ed.issue_set.all()]
     issues.sort(key=detail_sort_key)
-    copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).count()
+    copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).filter(canonical_query).count()
     template = loader.get_template('census/detail.html')
     context = {
         'icon_path': 'census/images/title_icons/generic-title-icon.png',
