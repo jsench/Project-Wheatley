@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+# change by louis
+
 ### Main Site Operations ###
 
 class Location(models.Model):
