@@ -72,7 +72,7 @@ class Edition(models.Model):
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
     Edition_number = models.CharField(max_length=20, unique=False, null=True, blank=True)
     Edition_format = models.CharField(max_length=10, null=True, blank=True)
-
+    notes = models.TextField(null=True, blank=True, default='')
     def __str__(self):
         return "%s Edition %s" % (self.title, self.Edition_number)
 
@@ -85,7 +85,6 @@ class Issue(models.Model):
     end_date = models.IntegerField(default=0)
     DEEP = models.CharField(max_length=20, default='', null=True, blank=True)
     notes = models.TextField(null=True, blank=True, default='')
-    Variant_Description = models.TextField(null=True, blank=True, default='')
 
     def ESTC_as_list(self):
         estc_list = self.ESTC.split('; ')

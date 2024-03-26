@@ -59,6 +59,6 @@ class EditionAdmin(ImportExportModelAdmin):
 
 @admin.register(models.Copy)
 class CopyAdmin(ImportExportModelAdmin):
-    list_filter=['verification']
+    list_filter=['verification','examined_by','collated_by']
     #inlines = (ProvenanceOwnershipInline,)
     #search_fields = ('MC', 'issue__edition__title__title')

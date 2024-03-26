@@ -124,6 +124,7 @@ def convert_year_range(year):
         return int(year), int(year)
     return False
 
+
 ## VIEW FUNCTIONS ##
 
 def search(request, field=None, value=None, order=None):
@@ -182,7 +183,6 @@ def search(request, field=None, value=None, order=None):
     else:
         result_list = models.Copy.objects.none()
 
-    result_list = result_list.exclude(issue__edition__title__title='Comedies, Histories, and Tragedies')
     result_list = result_list.distinct()
 
     if order is None:
