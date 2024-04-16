@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p*(cf*(ju=2+i48)#i%-h+3fxa9zcnk5e^scqt1$_@3ytdom7s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost','carson.pythonanywhere.com','www.marlowecensus.org']
 
@@ -138,6 +138,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = os.path.join(BASE_DIR,'static/')
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
+
+MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "marlowecensus" / "static",
