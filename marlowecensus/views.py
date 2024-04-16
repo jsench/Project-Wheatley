@@ -200,7 +200,7 @@ def search(request, field=None, value=None, order=None):
         result_list = sorted(result_list, key=copy_cen_sort_key)
 
     context = {
-        'icon_path': 'census/images/title_icons/generic-title-icon.png',
+        'icon_path': 'census/images/generic-title-icon.png',
         'value': value,
         'field': field,
         'display_value': display_value,
@@ -269,7 +269,7 @@ def homepage(request):
         'frontpage': True,
         'titlelist': titlelist,
         'titlerows': titlerows,
-        'icon_path': 'census/images/title_icons/generic-title-icon.png'
+        'icon_path': 'census/images/generic-title-icon.png'
     }
     return HttpResponse(template.render(context, request))
 
@@ -312,7 +312,7 @@ def detail(request, id):
     copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).filter(canonical_query).count()
     template = loader.get_template('census/detail.html')
     context = {
-        'icon_path': 'census/images/title_icons/generic-title-icon.png',
+        'icon_path': 'census/images/generic-title-icon.png',
         'editions': editions,
         'issues': issues,
         'title': selected_title,
@@ -332,7 +332,7 @@ def copy(request, id):
         'all_copies': all_copies,
         'copy_count': len(all_copies),
         'selected_issue': selected_issue,
-        'icon_path': 'census/images/title_icons/generic-title-icon.png',
+        'icon_path': 'census/images/generic-title-icon.png',
         'title': selected_issue.edition.title
     }
     return HttpResponse(template.render(context, request))
@@ -403,7 +403,7 @@ def cen_copy_modal(request, census_id):
         'all_copies': all_copies,
         'copy_count': 0,
         'selected_issue': selected_issue,
-        'icon_path': 'census/images/title_icons/generic-title-icon.png',
+        'icon_path': 'census/images/generic-title-icon.png',
         'title': selected_issue.edition.title
     }
     return HttpResponse(template.render(context, request))
