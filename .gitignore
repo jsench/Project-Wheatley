@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io
 
 db.sqlite3
+security.py
 
 ### OSX ###
 .DS_Store
