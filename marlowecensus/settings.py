@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-from security.py import *
+
 import os
 from pathlib import Path
+
+SECRET_KEY = '#!*gru%g^htw!%ld+dvrfec1&a%wot%-b(2xhujvryfw6v3ggu'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

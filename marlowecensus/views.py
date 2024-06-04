@@ -2,14 +2,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http40
 from django.shortcuts import get_object_or_404
 from django.template import loader
 from . import models
-from . import forms
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
-from django.urls import reverse
-from django.contrib import messages
-from django.core.mail import EmailMessage
-from django.conf import settings
 from datetime import datetime
 
 import csv
