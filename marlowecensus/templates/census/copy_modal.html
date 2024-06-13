@@ -21,19 +21,31 @@
             <p align="left"><strong>Shelfmark</strong>: {% if copy.Shelfmark and copy.Shelfmark != "[Shelfmark not available]" %}{{ copy.Shelfmark }}{% endif %}</p>
 
             {% if copy.issue.edition.title.notes %}
-            <p align="left"><strong>Notes about title</strong>: {{ copy.issue.edition.title.notes }}</p>
+            <p align="left"><strong>Notes about this title</strong>: {{ copy.issue.edition.title.notes }}</p>
             {% endif %}
 
             {% if copy.issue.edition.notes %}
-            <p align="left"><strong>Notes about edition</strong>: {{ copy.issue.edition.notes }}</p>
+            <p align="left"><strong>Notes about this edition</strong>: {{ copy.issue.edition.notes }}</p>
             {% endif %}
 
             {% if copy.issue.notes %}
-            <p align="left"><strong>Notes about issue</strong>: {{ copy.issue.notes }}</p>
+            <p align="left"><strong>Notes about this issue</strong>: {{ copy.issue.notes }}</p>
+            {% endif %}
+
+            {% if copy.Binding %}
+            <p align="left"><strong>Binding</strong>: {{ copy.Binding }}</p>
+            {% endif %}
+
+            {% if copy.Sammelband %}
+            <p align="left"><strong>Sammelband contents</strong>: {{ copy.Sammelband }}</p>
             {% endif %}
 
             {% if copy.Local_Notes %}
             <p align="left"><strong>Copy-specific notes</strong>: {{ copy.Local_Notes }}</p>
+            {% endif %}
+
+            {% if copy.Marginalia %}
+            <p align="left"><strong>Marginalia</strong>: {{ copy.Marginalia }}</p>
             {% endif %}
 
             {% if copy.provenance_search_names.all %}
@@ -49,6 +61,8 @@
             <p align="left"><strong>Provenance notes</strong>: {{ copy.prov_info }}</p>
             {% endif %}
 
+
+
             {% if copy.Height %}
             <p align="left"><strong>Leaf Height</strong>: {{ copy.Height }} cm</p>
             {% endif %}
@@ -56,15 +70,6 @@
             {% if copy.Width %}
             <p align="left"><strong>Leaf Width</strong>: {{ copy.Width }} cm</p>
             {% endif %}
-
-            {% if copy.Marginalia %}
-            <p align="left"><strong>Marginalia</strong>: {{ copy.Marginalia }}</p>
-            {% endif %}
-
-            {% if copy.Binding %}
-            <p align="left"><strong>Binding</strong>: {{ copy.Binding }}</p>
-            {% endif %}
-
 
             {% if copy.bibliography %}
             <p align="left"><strong>For scholarship on this copy, see</strong>: {{ copy.bibliography }}</p>
