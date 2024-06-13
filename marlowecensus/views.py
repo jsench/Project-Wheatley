@@ -318,7 +318,6 @@ def detail(request, id):
 # showing all copies for an issue
 def copy(request, id):
     selected_issue = get_object_or_404(models.Issue, pk=id)
-    print(models.Copy.objects.all())
     all_copies = models.Copy.objects.filter(canonical_query & Q(issue = id)).order_by('location__name', 'Shelfmark')
     all_copies = sorted(all_copies, key=copy_sort_key)
     template = loader.get_template('census/copy.html')
