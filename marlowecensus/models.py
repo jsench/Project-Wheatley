@@ -1,15 +1,8 @@
 from django.db import models
 from django.conf import settings
 
-# change by louis
 
 ### Main Site Operations ###
-
-class Location(models.Model):
-    name = models.CharField(max_length=500)
-
-    def __str__(self):
-        return self.name
 
 class StaticPageText(models.Model):
     content = models.TextField(null=True, blank=True, default=None)
@@ -22,6 +15,12 @@ class StaticPageText(models.Model):
 
 
 ### Core Data Tables ###
+
+class Location(models.Model):
+    name = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.name
 
 class ProvenanceName(models.Model):
     SEVENTEENTH = '17'
@@ -70,34 +69,34 @@ class Title(models.Model):
 
 class Edition(models.Model):
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
-    Edition_number = models.CharField(max_length=20, unique=False, null=True, blank=True)
-    Edition_format = models.CharField(max_length=10, null=True, blank=True)
+    edition_number = models.CharField(max_length=20, unique=False, null=True, blank=True)
+    edition_format = models.CharField(max_length=10, null=True, blank=True)
     notes = models.TextField(null=True, blank=True, default='')
     def __str__(self):
-        return "%s Edition %s" % (self.title, self.Edition_number)
+        return "%s Edition %s" % (self.title, self.edition_number)
 
 class Issue(models.Model):
     edition = models.ForeignKey(Edition, unique=False, on_delete=models.CASCADE)
-    STC_Wing = models.CharField(max_length=20)
-    ESTC = models.CharField(max_length=20)
+    stc_wing = models.CharField(max_length=20)
+    estc = models.CharField(max_length=20)
     year = models.CharField(max_length=20, default='')
     start_date = models.IntegerField(default=0)
     end_date = models.IntegerField(default=0)
-    DEEP = models.CharField(max_length=20, default='', null=True, blank=True)
+    deep = models.CharField(max_length=20, default='', null=True, blank=True)
     notes = models.TextField(null=True, blank=True, default='')
 
-    def ESTC_as_list(self):
-        estc_list = self.ESTC.split('; ')
+    def estc_as_list(self):
+        estc_list = self.estc.split('; ')
         return [(estc, (i + 1) == len(estc_list))
                 for i, estc in enumerate(estc_list)]
 
-    def DEEP_as_list(self):
-        deep_list = self.DEEP.split('; ')
+    def deep_as_list(self):
+        deep_list = self.deep.split('; ')
         return [(deep, (i + 1) == len(deep_list))
                 for i, deep in enumerate(deep_list)]
 
     def __str__(self):
-        return "%s ESTC %s" % (self.edition, self.ESTC)
+        return "%s estc %s" % (self.edition, self.estc)
 
 # Essential fields for all copies.
 class Copy(models.Model):

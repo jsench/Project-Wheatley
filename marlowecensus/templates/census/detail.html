@@ -8,11 +8,11 @@
         <tr>
             <td rowspan="3" class="play-title-header-icon">
                 <div class="play-title-icon-border">
-                    {% if title.image %}             
+                    {% if title.image %}
                         <img class="play-title-icon" src="{{ title.image.url }}">
-                    {% else %}                                              
+                    {% else %}
                         <img class="play-title-icon-generic" src="{% static icon_path %}">
-                    {% endif %}   
+                    {% endif %}
                 </div>
             </td>
             <td class="play-title-header">
@@ -44,10 +44,10 @@
         <tr>
             <td>
                 <a href="{% url 'copy' issue.id %}">
-                    {% if issue.edition.Edition_number.isdigit %}
-                    {{ issue.edition.Edition_number }}
+                    {% if issue.edition.edition_number.isdigit %}
+                    {{ issue.edition.edition_number }}
                     {% else %}
-                    {{ issue.edition.Edition_number.capitalize }}
+                    {{ issue.edition.edition_number.capitalize }}
                     {% endif %}
                 </a>
                 {% if user.is_staff %}
@@ -55,9 +55,9 @@
                 {% endif %}
             </td>
             <td><a href="{% url 'copy' issue.id %}">{{ issue.year }}</a></td>
-            <td><a href="{% url 'copy' issue.id %}">{{ issue.STC_Wing }}</a></td>
+            <td><a href="{% url 'copy' issue.id %}">{{ issue.stc_wing }}</a></td>
             <td>
-                <a href="{% url 'copy' issue.id %}">{{ issue.ESTC }}</a>
+                <a href="{% url 'copy' issue.id %}">{{ issue.estc }}</a>
                 {% if user.is_staff %}
                 <span class="note">[<a href="{% url 'admin:marlowecensus_issue_change' issue.id %}">Edit&nbsp;issue</a>]</span>
                 {% endif %}
