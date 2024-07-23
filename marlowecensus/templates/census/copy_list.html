@@ -8,10 +8,11 @@
         <script type="text/javascript" src="{% static 'census/js/bootstrap-modal.js' %}"></script>
         <script type="text/javascript" src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
         <link rel="stylesheet" type="text/css" href="{% static 'census/css/modal.css' %}" />
-
         <div id="copyModal" class="modal fade" role="dialog"></div>
     </div>
+
     {% include "census/play-title-header.html" with selected_issue=selected_issue icon_path=icon_path title=title copy_count=copy_count %}
+
     <table class="play-detail-set">
 
         {% if all_copies %}
@@ -43,11 +44,11 @@
                 </a>
             </td>
             <td>
-                {% if not copy.Shelfmark or copy.Shelfmark == "[Shelfmark not available]" or copy.Shelfmark is None %}
+                {% if not copy.shelfmark or copy.shelfmark == "[Shelfmark not available]" or copy.shelfmark is None %}
                     &nbsp;
                 {% else %}
                     <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                        {{ copy.Shelfmark }}
+                        {{ copy.shelfmark }}
                     </a>
                 {% endif %}
             </td>
@@ -68,9 +69,9 @@
                 {% endif %}
             </td>
             <td>
-                {% if copy.Digital_Facsimile_URL %}
+                {% if copy.digital_facsimile_url %}
                     <span class="unicode-icon" title="Link to digital facsimile of this copy">
-                        <a href="{{ copy.Digital_Facsimile_URL }}" target="_blank">
+                        <a href="{{ copy.digital_facsimile_url }}" target="_blank">
                         <i class="fas fa-camera-retro"></i>
                         </a>
                     </span>
@@ -82,6 +83,7 @@
         <p class="sansserif" align="center">No copies are available.</p>
         {% endif %}
     </table>
+
 </div>
 
 {% endblock content %}

@@ -407,11 +407,11 @@ img.play-title-icon-generic {
 
 .hidden-icon {
     display: none;
+    /* visibility: hidden; */
     /* Using visibility: hidden instead of display: none keeps the
      * words from subtly changing position when the icon appears.
      * But it skews the headers slightly to one side, so it's not
      * a perfect solution; still working on this problem. */
-    /* visibility: hidden; */
 }
 
 /* Detail Table Styles */
@@ -453,50 +453,4 @@ td.play-issue-header {
 
 .modal-title {
     font-weight: lighter;
-}
-
-/* Styles for Admin and Librarian views */
-
-table.admin-ui {
-    border-collapse: separate;
-    border-spacing: 0px 40px;
-}
-
-table.admin-ui td {
-    min-width: 400px;
-}
-
-table.admin-submit {
-    border-collapse: separate;
-    border-spacing: 10px;
-}
-
-th.librarian-select-ui {
-    height: 50px;
-}
-
-th.librarian-select-ui,
-td.librarian-select-ui {
-    min-width: 120px;
-}
-
-td.librarian-select-ui-wide,
-th.librarian-select-ui-wide {
-    min-width: 450px;
-}
-
-span.toggle-up,
-span.toggle-down {
-    display: inline-block;
-    font-size: 80%;
-    transition-property: all;
-    transition-duration: 0.1s;
-    /* -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none; */
-    user-select: none;
-}
-
-span.toggle-down {
-    transform: rotate(90deg);
 }

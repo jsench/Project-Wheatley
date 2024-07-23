@@ -2,10 +2,11 @@
     {% load humanize %}
 
     <table class="play-title-header">
+
         <tr>
             <td rowspan="3" class="play-title-header-icon">
                 <div class="play-title-icon-border">
-                    <a href = "{% url 'detail' title.id %}">
+                    <a href = "{% url 'issue_list' title.id %}">
                         {% if title.image %}
                             <img class="play-title-icon" src="{{ title.image.url }}">
                         {% else %}
@@ -15,11 +16,12 @@
                 </div>
             </td>
             <td class="play-title-header">
-                <a href = "{% url 'detail' title.id %}">
+                <a href = "{% url 'issue_list' title.id %}">
                     {{ title.title }}
                 </a>
             </td>
         </tr>
+
         <tr>
             <td class="play-issue-header">
                 <span>
@@ -80,6 +82,7 @@
                 {% endif %}
             </td>
         </tr>
+
         <tr>
             <td class="play-issue-header">
                 {% if copy_count > 0 %}
@@ -87,4 +90,5 @@
                 {% endif %}
             </td>
         </tr>
+
     </table>

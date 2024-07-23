@@ -1,6 +1,7 @@
 {% extends 'census/base.html' %}
 {% load static %}
 {% block content %}
+
             <form id="login_form" method="post" action="/login{% if next %}/?next={{next}}{% endif %}">
                 {% csrf_token %}
                 <table>
@@ -29,4 +30,5 @@
                 </table>
                 <input type="hidden" name="next" value={{next}}>
             </form>
+
 {% endblock content %}

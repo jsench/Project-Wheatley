@@ -43,7 +43,7 @@
         {% for issue in issues %}
         <tr>
             <td>
-                <a href="{% url 'copy' issue.id %}">
+                <a href="{% url 'copy_list' issue.id %}">
                     {% if issue.edition.edition_number.isdigit %}
                     {{ issue.edition.edition_number }}
                     {% else %}
@@ -54,10 +54,10 @@
                 <span class="note">[<a href="{% url 'admin:marlowecensus_edition_change' issue.edition.id %}">Edit&nbsp;edition</a>]</span>
                 {% endif %}
             </td>
-            <td><a href="{% url 'copy' issue.id %}">{{ issue.year }}</a></td>
-            <td><a href="{% url 'copy' issue.id %}">{{ issue.stc_wing }}</a></td>
+            <td><a href="{% url 'copy_list' issue.id %}">{{ issue.year }}</a></td>
+            <td><a href="{% url 'copy_list' issue.id %}">{{ issue.stc_wing }}</a></td>
             <td>
-                <a href="{% url 'copy' issue.id %}">{{ issue.estc }}</a>
+                <a href="{% url 'copy_list' issue.id %}">{{ issue.estc }}</a>
                 {% if user.is_staff %}
                 <span class="note">[<a href="{% url 'admin:marlowecensus_issue_change' issue.id %}">Edit&nbsp;issue</a>]</span>
                 {% endif %}

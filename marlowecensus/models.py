@@ -73,7 +73,7 @@ class Edition(models.Model):
     edition_format = models.CharField(max_length=10, null=True, blank=True)
     notes = models.TextField(null=True, blank=True, default='')
     def __str__(self):
-        return "%s Edition %s" % (self.title, self.edition_number)
+        return "%s %s" % (self.title, self.edition_number)
 
 class Issue(models.Model):
     edition = models.ForeignKey(Edition, unique=False, on_delete=models.CASCADE)
@@ -96,10 +96,13 @@ class Issue(models.Model):
                 for i, deep in enumerate(deep_list)]
 
     def __str__(self):
-        return "%s estc %s" % (self.edition, self.estc)
+        return "%s %s" % (self.edition, self.estc)
 
 # Essential fields for all copies.
 class Copy(models.Model):
+    issue = models.ForeignKey(Issue, unique=False, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, unique=False, null=True, blank=True, on_delete=models.CASCADE)
+    shelfmark = models.CharField(max_length=500, default='', null=True, blank=True)
     census_id = models.CharField('MC#', max_length=40, default='', null=True, blank=True)
     UNVERIFIED = 'U'
     VERIFIED = 'V'
@@ -109,27 +112,24 @@ class Copy(models.Model):
         (VERIFIED, 'Verified'),
         (FALSE, 'False'),
         ]
-    verification = models.CharField(max_length=1, choices=VERIFICATION_CHOICES, default='Unverified')
-    issue = models.ForeignKey(Issue, unique=False, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, unique=False, null=True, blank=True, on_delete=models.CASCADE)
-    Shelfmark = models.CharField(max_length=500, default='', null=True, blank=True)
+    verification = models.CharField(max_length=1, choices=VERIFICATION_CHOICES, null=True, blank=True)
     fragment = models.BooleanField(default=False)
-    from_estc = models.BooleanField(default=False)
-    Digital_Facsimile_URL = models.URLField(max_length=500, null=True, blank=True)
-    Binding = models.CharField(max_length=500, default='', null=True, blank=True)
+    from_estc = models.BooleanField('From ESTC', default=False)
+    digital_facsimile_url = models.URLField('Digital Facsimile URL', max_length=500, null=True, blank=True)
+    binding = models.CharField(max_length=500, default='', null=True, blank=True)
     in_early_sammelband = models.BooleanField(default=False)
-    Sammelband = models.TextField(null=True, blank=True, default='')
-    Marginalia = models.TextField(null=True, blank=True, default='')
-    Local_Notes = models.TextField(null=True, blank=True, default='')
-    prov_info = models.TextField(null=True, blank=True, default='')
+    sammelband = models.TextField(null=True, blank=True, default='')
+    marginalia = models.TextField(null=True, blank=True, default='')
+    local_notes = models.TextField(null=True, blank=True, default='')
+    prov_info = models.TextField('Provenance notes', null=True, blank=True, default='')
     provenance_search_names = models.ManyToManyField(
         ProvenanceName,
         through='ProvenanceOwnership',
         through_fields=('copy', 'owner')
         )
     bibliography = models.TextField(null=True, blank=True, default='')
-    Height = models.FloatField(default=0, null=True, blank=True)
-    Width = models.FloatField(default=0, null=True, blank=True)
+    height = models.FloatField(default=0, null=True, blank=True)
+    width = models.FloatField(default=0, null=True, blank=True)
     backend_notes = models.TextField(null=True, blank=True, default='')
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_submitted_copies",
                                default=None, null=True, blank=True, on_delete=models.SET_NULL)

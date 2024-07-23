@@ -9,9 +9,7 @@
     <a class="button" href="{% url 'login_user' %}">Sign in</a>
 
     {% endif %}
-    <!-- A normally-styled non-breaking space always appears here
-        to ensure consistent div height. Someday we will find the
-        correct way to do this. -->
+    <!-- A normally-styled non-breaking space is used to ensure consistent div height. -->
         &nbsp;
 </div>
 <table class="title">
@@ -98,18 +96,10 @@
                     autofillResponse(field, request.term, response);
                 }
             },
-
-            // This is a simple way to automatically submit the form when
-            // a value is selected. But it behaves counterintuitively in
-            // a couple of cases. I haven't been able to work out why.
-            // So for now you have to hit tab and then enter.
             select: function(evt, ui) {
                 $('#search-bar-form-text').val(ui.item.value);
                 $('#search-bar-form').submit();
             },
-
-            // focus: function(evt, ui) {
-            // }
         });
 
         $('#search-bar-form-field').change(function(evt) {
@@ -119,8 +109,4 @@
         });
     });
 
-
-    // if (window.location.hash && window.location.hash === '#search') {
-    //    utils.get.id('search-bar-form').classList.remove('hidden');
-    // }
 </script>

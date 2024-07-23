@@ -78,7 +78,7 @@ def copy_location_sort_key(c):
     return strip_article(name if name else '')
 
 def copy_shelfmark_sort_key(c):
-    sm = c.Shelfmark
+    sm = c.shelfmark
     return sm if sm else ''
 
 def detail_sort_key(issue):
@@ -156,7 +156,7 @@ def about(request, viewname='about'):
     copy_count = models.Copy.objects.filter(canonical_query & Q(fragment=False)).count()
     fragment_copy_count = models.Copy.objects.filter(fragment=True).count()
     facsimile_copy_count = models.Copy.objects.filter(
-            ~Q(Digital_Facsimile_URL=None) & ~Q(Digital_Facsimile_URL='')
+            ~Q(digital_facsimile_url=None) & ~Q(digital_facsimile_url='')
     ).count()
     if copy_count > 0:
         facsimile_copy_percent = round(100 * facsimile_copy_count / copy_count)
@@ -241,9 +241,9 @@ def search(request, field=None, value=None, order=None):
     if field == 'keyword' or field is None and value:
         field = 'keyword'
         display_field = 'Keyword Search'
-        query = (Q(Marginalia__icontains=value) |
-                 Q(Binding__icontains=value) |
-                 Q(Local_Notes__icontains=value) |
+        query = (Q(marginalia__icontains=value) |
+                 Q(binding__icontains=value) |
+                 Q(local_notes__icontains=value) |
                  Q(prov_info__icontains=value) |
                  Q(bibliography__icontains=value) |
                  Q(provenance_search_names__name__icontains=value))
@@ -348,18 +348,18 @@ def get_collection(copy_list, coll_name):
                                     Q(provenance_search_names__start_century='18')))
         display = 'Copies with a known woman owner before 1800'
     elif coll_name == 'marginalia':
-        results = copy_list.exclude(Q(Marginalia='') | Q(Marginalia=None))
+        results = copy_list.exclude(Q(marginalia='') | Q(marginalia=None))
         display = 'Copies that include marginalia'
     elif coll_name == 'earlysammelband':
         results = copy_list.filter(in_early_sammelband=True)
         display = 'Copies in an early sammelband'
     return results, display
 
-def copy(request, id):
+def copy_list(request, id):
     selected_issue = get_object_or_404(models.Issue, pk=id)
-    all_copies = models.Copy.objects.filter(canonical_query & Q(issue = id)).order_by('location__name', 'Shelfmark')
+    all_copies = models.Copy.objects.filter(canonical_query & Q(issue = id)).order_by('location__name', 'shelfmark')
     all_copies = sorted(all_copies, key=copy_sort_key)
-    template = loader.get_template('census/copy.html')
+    template = loader.get_template('census/copy_list.html')
     context = {
         'all_copies': all_copies,
         'copy_count': len(all_copies),
@@ -382,13 +382,13 @@ def copy_data(request, copy_id):
     context={"copy": selected_copy}
     return HttpResponse(template.render(context, request))
 
-def detail(request, id):
+def issue_list(request, id):
     selected_title = get_object_or_404(models.Title, pk=id)
     editions = list(selected_title.edition_set.all())
     issues = [issue for ed in editions for issue in ed.issue_set.all()]
     issues.sort(key=detail_sort_key)
     copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).filter(canonical_query).count()
-    template = loader.get_template('census/detail.html')
+    template = loader.get_template('census/issue_list.html')
     context = {
         'icon_path': 'census/images/generic-title-icon.png',
         'editions': editions,

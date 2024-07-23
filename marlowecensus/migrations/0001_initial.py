@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('cen', models.CharField(blank=True, default='', max_length=40, null=True)),
                 ('verification', models.CharField(choices=[('U', 'Unverified'), ('V', 'Verified'), ('E', 'Examined'), ('F', 'False')], default='Unverified', max_length=1)),
                 ('Shelfmark', models.CharField(blank=True, default='', max_length=500, null=True)),
-                ('Digital_Facsimile_URL', models.URLField(blank=True, max_length=500, null=True)),
+                ('digital_facsimile_url', models.URLField(blank=True, max_length=500, null=True)),
                 ('Height', models.FloatField(blank=True, default=0, null=True)),
                 ('Width', models.FloatField(blank=True, default=0, null=True)),
                 ('Binding', models.CharField(blank=True, default='', max_length=500, null=True)),
