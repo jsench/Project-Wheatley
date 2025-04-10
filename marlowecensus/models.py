@@ -17,18 +17,43 @@ class StaticPageText(models.Model):
 ### Core Data Tables ###
 
 class Location(models.Model):
-    name = models.CharField(max_length=500)
-
+    LOCATION_CHOICES = [
+        # US States
+        ('AL', 'Alabama'), ('AK', 'Alaska'), ('AZ', 'Arizona'), ('AR', 'Arkansas'), ('CA', 'California'),
+        ('CO', 'Colorado'), ('CT', 'Connecticut'), ('DE', 'Delaware'), ('FL', 'Florida'), ('GA', 'Georgia'),
+        ('HI', 'Hawaii'), ('ID', 'Idaho'), ('IL', 'Illinois'), ('IN', 'Indiana'), ('IA', 'Iowa'),
+        ('KS', 'Kansas'), ('KY', 'Kentucky'), ('LA', 'Louisiana'), ('ME', 'Maine'), ('MD', 'Maryland'),
+        ('MA', 'Massachusetts'), ('MI', 'Michigan'), ('MN', 'Minnesota'), ('MS', 'Mississippi'), ('MO', 'Missouri'),
+        ('MT', 'Montana'), ('NE', 'Nebraska'), ('NV', 'Nevada'), ('NH', 'New Hampshire'), ('NJ', 'New Jersey'),
+        ('NM', 'New Mexico'), ('NY', 'New York'), ('NC', 'North Carolina'), ('ND', 'North Dakota'), ('OH', 'Ohio'),
+        ('OK', 'Oklahoma'), ('OR', 'Oregon'), ('PA', 'Pennsylvania'), ('RI', 'Rhode Island'), ('SC', 'South Carolina'),
+        ('SD', 'South Dakota'), ('TN', 'Tennessee'), ('TX', 'Texas'), ('UT', 'Utah'), ('VT', 'Vermont'),
+        ('VA', 'Virginia'), ('WA', 'Washington'), ('WV', 'West Virginia'), ('WIS', 'Wisconsin'), ('WY', 'Wyoming'),
+        ('DC', 'District of Columbia'),
+        # Non-US Nations
+        ('DE', 'Germany'),
+        ('UK', 'United Kingdom'),
+        ('WI', 'West Indies'),
+    ]
+    name_of_library_collection = models.CharField(max_length=500, null=True, blank=True)
+    us_state_or_non_us_nation = models.CharField(max_length=10, choices=LOCATION_CHOICES, null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
     def __str__(self):
-        return self.name
+        return self.name_of_library_collection or "Unknown Location" 
+    
+
+class ProvenanceRecord(models.Model):
+    copy = models.ForeignKey('Copy', on_delete=models.CASCADE, related_name='provenance_records')
+    provenance_name = models.ForeignKey('ProvenanceName', on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.provenance_name} for {self.copy}"
 
 class ProvenanceName(models.Model):
-    SEVENTEENTH = '17'
     EIGHTEENTH = '18'
     NINETEENTH = '19'
     TWENTIETH = '20'
     CENTURY_CHOICES = [
-        (SEVENTEENTH, 'Pre-1700'),
         (EIGHTEENTH, '18th-Cenutry'),
         (NINETEENTH, '19th-Century'),
         (TWENTIETH, 'Post-1900')
@@ -60,7 +85,6 @@ class ProvenanceName(models.Model):
 
 class Title(models.Model):
     title = models.CharField(max_length=128, unique=True)
-    apocryphal = models.BooleanField(default=False)
     notes = models.TextField(null=True, blank=True, default='')
     image = models.ImageField(upload_to='titleicon', null=True, blank=True)
 
@@ -76,81 +100,38 @@ class Edition(models.Model):
         return "%s %s" % (self.title, self.edition_number)
 
 class Issue(models.Model):
-    edition = models.ForeignKey(Edition, unique=False, on_delete=models.CASCADE)
-    stc_wing = models.CharField(max_length=20)
-    estc = models.CharField(max_length=20)
+    edition = models.ForeignKey(Edition, on_delete=models.CASCADE)
     year = models.CharField(max_length=20, default='')
     start_date = models.IntegerField(default=0)
     end_date = models.IntegerField(default=0)
-    deep = models.CharField(max_length=20, default='', null=True, blank=True)
-    notes = models.TextField(null=True, blank=True, default='')
-
-    def estc_as_list(self):
-        estc_list = self.estc.split('; ')
-        return [(estc, (i + 1) == len(estc_list))
-                for i, estc in enumerate(estc_list)]
-
-    def deep_as_list(self):
-        deep_list = self.deep.split('; ')
-        return [(deep, (i + 1) == len(deep_list))
-                for i, deep in enumerate(deep_list)]
-
+    notes = models.TextField(null=True, blank=True)
     def __str__(self):
-        return "%s %s" % (self.edition, self.estc)
+        return f"{self.edition} ({self.year})"
 
 # Essential fields for all copies.
 class Copy(models.Model):
-    issue = models.ForeignKey(Issue, unique=False, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, unique=False, null=True, blank=True, on_delete=models.CASCADE)
-    shelfmark = models.CharField(max_length=500, default='', null=True, blank=True)
-    census_id = models.CharField('MC#', max_length=40, default='', null=True, blank=True)
-    UNVERIFIED = 'U'
-    VERIFIED = 'V'
-    FALSE = 'F'
-    VERIFICATION_CHOICES = [
-        (UNVERIFIED, 'Unverified'),
-        (VERIFIED, 'Verified'),
-        (FALSE, 'False'),
-        ]
-    verification = models.CharField(max_length=1, choices=VERIFICATION_CHOICES, null=True, blank=True)
+    wc_number = models.CharField(max_length=50, unique=True)
+    verification = models.CharField(max_length=1, choices=[('U', 'Unverified'), ('V', 'Verified'), ('F', 'False')], null=True, blank=True)
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
+    shelfmark = models.CharField(max_length=500, null=True, blank=True)
+    catalogue_url = models.URLField(max_length=500, null=True, blank=True)
     fragment = models.BooleanField(default=False)
-    from_estc = models.BooleanField('From ESTC', default=False)
-    digital_facsimile_url = models.URLField('Digital Facsimile URL', max_length=500, null=True, blank=True)
-    binding = models.CharField(max_length=500, default='', null=True, blank=True)
-    in_early_sammelband = models.BooleanField(default=False)
-    sammelband = models.TextField(null=True, blank=True, default='')
-    marginalia = models.TextField(null=True, blank=True, default='')
-    local_notes = models.TextField(null=True, blank=True, default='')
-    prov_info = models.TextField('Provenance notes', null=True, blank=True, default='')
-    provenance_search_names = models.ManyToManyField(
-        ProvenanceName,
-        through='ProvenanceOwnership',
-        through_fields=('copy', 'owner')
-        )
-    bibliography = models.TextField(null=True, blank=True, default='')
-    height = models.FloatField(default=0, null=True, blank=True)
-    width = models.FloatField(default=0, null=True, blank=True)
-    backend_notes = models.TextField(null=True, blank=True, default='')
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_submitted_copies",
-                               default=None, null=True, blank=True, on_delete=models.SET_NULL)
-    verified_by = models.CharField(max_length=500, default='', null=True, blank=True)
-    examined_by = models.CharField(max_length=500, default='', null=True, blank=True)
-    collated_by = models.CharField(max_length=500, default='', null=True, blank=True)
-
+    from_estc = models.BooleanField(default=False)
+    digital_facsimile_url = models.URLField(max_length=500, null=True, blank=True)
+    binding = models.CharField(max_length=500, null=True, blank=True)
+    marginalia = models.TextField(null=True, blank=True)
+    prov_info = models.TextField(null=True, blank=True)
+    bibliography = models.TextField(null=True, blank=True)
+    height = models.FloatField(null=True, blank=True)
+    width = models.FloatField(null=True, blank=True)
+    backend_notes = models.TextField(null=True, blank=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    verified_by = models.CharField(max_length=500, null=True, blank=True)
+    examined_by = models.CharField(max_length=500, null=True, blank=True)
+    collated_by = models.CharField(max_length=500, null=True, blank=True)
+    provenance = models.ForeignKey(ProvenanceRecord, on_delete=models.SET_NULL, null=True, blank=True, related_name='copy_records')
     def __str__(self):
-        return  "{} ({}), MC# {}".format(self.issue, self.issue.year, self.census_id)
-    class Meta:
-        verbose_name_plural = "Copies"
+        return f"{self.wc_number} ({self.issue.year if self.issue else 'No Issue'})"
 
-class ProvenanceOwnership(models.Model):
-    copy = models.ForeignKey(Copy, on_delete=models.CASCADE)
-    owner = models.ForeignKey(ProvenanceName, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return '{} owned {}'.format(
-            self.owner.name,
-            self.copy
-        )
-    class Meta:
-        verbose_name_plural = "Provenance Records"
-        verbose_name = "Provenance Record"

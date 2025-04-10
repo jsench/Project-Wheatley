@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Define allowed hosts
-ALLOWED_HOSTS = ['localhost','carson.pythonanywhere.com','www.marlowecensus.org']
+ALLOWED_HOSTS = ['127.0.0.1', 'wheatleycensus.org' , 'your-app-name.herokuapp.com']
 
 
 # Application definition
