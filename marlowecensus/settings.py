@@ -25,9 +25,15 @@ USE_TZ = True
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'sBNuHEEDpd9VZXWQI1AqOzWbet6kMCTjeV_G13UQiGySCJb5s4i8TYOGbKEuf2xFi_o'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
 
 # Define allowed hosts
-ALLOWED_HOSTS = ['127.0.0.1', 'wheatleycensus.org' , 'your-app-name.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'wheatleycensus.org' , 'wheatley-census-0r7u.onrender.com']
 
 
 # Application definition
