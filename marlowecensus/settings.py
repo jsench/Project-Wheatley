@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-from .security import *
+# from .security import *
 from pathlib import Path
 
 
