@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
@@ -28,7 +29,6 @@ def convert_year_range(year):
 
 def title_sort_key(title_object):
     title = title_object.title
-
     if title and title[0].isdigit():
         title = title.split()
         return strip_article(' '.join(title[1:] + [title[0]]))
@@ -54,10 +54,10 @@ def copy_sort_key(c):
             census_id_b)
 
 def copy_date_sort_key(c):
-    return int(c.issue.start_date)
+    return int(c.issue.start_date) if c.issue else 0  # Handle null issue
 
 def copy_census_id_sort_key(c):
-    census_id = c.census_id if c.census_id is not None else ''
+    census_id = c.wc_number if c.wc_number is not None else ''  # Use wc_number from models
     census_id_a = 0
     census_id_b = 0
     try:
@@ -72,7 +72,7 @@ def copy_census_id_sort_key(c):
 
 def copy_location_sort_key(c):
     if c.location is not None:
-        name = c.location.name
+        name = c.location.name_of_library_collection  # Updated to match models
     else:
         name = ''
     return strip_article(name if name else '')
@@ -88,27 +88,26 @@ def detail_sort_key(issue):
 
 def search_sort_date(copy):
     return (copy_date_sort_key(copy),
-            title_sort_key(copy.issue.edition.title),
+            title_sort_key(copy.issue.edition.title) if copy.issue else '',
             copy_location_sort_key(copy))
 
 def search_sort_title(copy):
-    return (title_sort_key(copy.issue.edition.title),
+    return (title_sort_key(copy.issue.edition.title) if copy.issue else '',
             copy_date_sort_key(copy),
             copy_location_sort_key(copy))
 
 def search_sort_location(copy):
     return (copy_location_sort_key(copy),
             copy_date_sort_key(copy),
-            title_sort_key(copy.issue.edition.title))
+            title_sort_key(copy.issue.edition.title) if copy.issue else '')
 
 def search_sort_stc(copy):
-    return (copy.issue.stc_wing,
+    return (copy.issue.stc_wing if copy.issue and hasattr(copy.issue, 'stc_wing') else '',
             copy_location_sort_key(copy))
 
 
 ## Defining queries for verification status of copies ##
-canonical_query = (Q(verification='U') |
-                   Q(verification='V'))
+canonical_query = (Q(verification='U') | Q(verification='V'))
 unverified_query = Q(verification='U')
 verified_query = Q(verification='V')
 false_query = Q(verification='F')
@@ -120,19 +119,18 @@ def homepage(request):
     gridwidth = 5
     titlelist = models.Title.objects.all()
     titlelist = sorted(titlelist, key=title_sort_key)
-    titlerows = [titlelist[i: i + gridwidth]
-                 for i in range(0, len(titlelist), gridwidth)]
+    titlerows = [titlelist[i: i + gridwidth] for i in range(0, len(titlelist), gridwidth)]
     context = {
         'frontpage': True,
         'titlelist': titlelist,
         'titlerows': titlerows,
-        'icon_path': 'census/images/generic-title-icon.png'
+        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png'
     }
     return HttpResponse(template.render(context, request))
 
 def login_user(request):
     template = loader.get_template('census/login.html')
-    if request.method=='POST':
+    if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user_account = authenticate(username=username, password=password)
@@ -149,14 +147,14 @@ def logout_user(request):
     template = loader.get_template('census/logout.html')
     logout(request)
     context = {}
-    return HttpResponse(template.render(context,request))
+    return HttpResponse(template.render(context, request))
 
 def about(request, viewname='about'):
     template = loader.get_template('census/about.html')
     copy_count = models.Copy.objects.filter(canonical_query & Q(fragment=False)).count()
     fragment_copy_count = models.Copy.objects.filter(fragment=True).count()
     facsimile_copy_count = models.Copy.objects.filter(
-            ~Q(digital_facsimile_url=None) & ~Q(digital_facsimile_url='')
+        ~Q(digital_facsimile_url=None) & ~Q(digital_facsimile_url='')
     ).count()
     if copy_count > 0:
         facsimile_copy_percent = round(100 * facsimile_copy_count / copy_count)
@@ -175,20 +173,21 @@ def about(request, viewname='about'):
     }
     content = [s.content.format(**pre_render_context)
                for s in models.StaticPageText.objects.filter(viewname=viewname)]
-    context =  {
+    context = {
         'content': content,
     }
     return HttpResponse(template.render(context, request))
 
 def location_copy_count_csv_export(request):
     locations = models.Copy.objects.all().values('location')
-    locations = locations.annotate(total=Count('location')).order_by('location__name')
+    locations = locations.annotate(total=Count('location')).order_by('location__name_of_library_collection')
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="census_location_copy_count.csv"'
     writer = csv.writer(response)
     writer.writerow(['Location', 'Number of Copies'])
     for loc in locations:
-        writer.writerow([models.Location.objects.get(pk=loc['location']).name, loc['total']])
+        loc_obj = models.Location.objects.get(pk=loc['location']) if loc['location'] else None
+        writer.writerow([loc_obj.name_of_library_collection if loc_obj else 'Unknown', loc['total']])
     return response
 
 def year_issue_copy_count_csv_export(request):
@@ -199,19 +198,18 @@ def year_issue_copy_count_csv_export(request):
     writer = csv.writer(response)
     writer.writerow(['Year', 'STC/Wing', 'Title', 'Number of Copies'])
     for iss in issues:
-        iss_obj = models.Issue.objects.get(pk=iss['issue'])
-        writer.writerow([
-            iss_obj.start_date,
-            iss_obj.stc_wing,
-            iss_obj.edition.title.title,
-            iss['total']
-        ])
+        iss_obj = models.Issue.objects.get(pk=iss['issue']) if iss['issue'] else None
+        if iss_obj:
+            writer.writerow([
+                iss_obj.start_date,
+                iss_obj.stc_wing if hasattr(iss_obj, 'stc_wing') else '',
+                iss_obj.edition.title.title,
+                iss['total']
+            ])
     return response
 
 def export(request, groupby, column, aggregate):
-    agg_model = (# Concat if aggregate == 'concatenation' else
-                 Sum if aggregate == 'sum' else
-                 Count)
+    agg_model = (Sum if aggregate == 'sum' else Count)
     try:
         groups = models.Copy.objects.all().values(groupby)
     except:
@@ -220,8 +218,7 @@ def export(request, groupby, column, aggregate):
         rows = groups.annotate(agg=agg_model(column)).order_by(groupby)
     except:
         raise Http404('Invalid aggregation column.')
-    filename = 'census_{}_of_{}_for_each_{}.csv'
-    filename = filename.format(aggregate, column, groupby)
+    filename = 'census_{}_of_{}_for_each_{}.csv'.format(aggregate, column, groupby)
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     writer = csv.writer(response)
@@ -238,22 +235,22 @@ def search(request, field=None, value=None, order=None):
     copy_list = models.Copy.objects.filter(canonical_query)
     display_field = field
     display_value = value
-    if field == 'keyword' or field is None and value:
+    if field == 'keyword' or (field is None and value):
         field = 'keyword'
         display_field = 'Keyword Search'
         query = (Q(marginalia__icontains=value) |
                  Q(binding__icontains=value) |
-                 Q(local_notes__icontains=value) |
+                 Q(backend_notes__icontains=value) |  # Updated from local_notes
                  Q(prov_info__icontains=value) |
                  Q(bibliography__icontains=value) |
-                 Q(provenance_search_names__name__icontains=value))
+                 Q(provenance_records__provenance_name__name__icontains=value))  # Updated to match models
         result_list = copy_list.filter(query)
     elif field == 'stc' and value:
         display_field = 'STC / Wing'
-        result_list = copy_list.filter(issue__stc_wing__icontains=value)
+        result_list = copy_list.filter(issue__stc_wing__icontains=value) if hasattr(models.Issue, 'stc_wing') else copy_list.none()
     elif field == 'census_id' and value:
-        display_field = 'MC'
-        result_list = copy_list.filter(census_id=value)
+        display_field = 'WC'
+        result_list = copy_list.filter(wc_number=value)  # Updated to wc_number
     elif field == 'year' and value:
         display_field = 'Year'
         year_range = convert_year_range(value)
@@ -264,16 +261,15 @@ def search(request, field=None, value=None, order=None):
             result_list = copy_list.filter(issue__year__icontains=value)
     elif field == 'location' and value:
         display_field = 'Location'
-        result_list = copy_list.filter(location__name__icontains=value)
+        result_list = copy_list.filter(location__name_of_library_collection__icontains=value)
     elif field == 'provenance_name' and value:
         display_field = 'Provenance Name'
-        result_list = copy_list.filter(provenance_search_names__name__icontains=value)
+        result_list = copy_list.filter(provenance_records__provenance_name__name__icontains=value)
     elif field == 'unverified':
         display_field = 'Unverified'
         display_value = 'All'
         result_list = copy_list.filter(unverified_query)
         if order is None:
-            request.GET.order = 'location'
             order = 'location'
     elif field == 'ghosts':
         display_field = 'Ghosts'
@@ -287,9 +283,8 @@ def search(request, field=None, value=None, order=None):
 
     result_list = result_list.distinct()
     if order is None:
-        request.GET.order = 'date'
-        result_list = sorted(result_list, key=search_sort_date)
-    elif order == 'date':
+        order = 'date'
+    if order == 'date':
         result_list = sorted(result_list, key=search_sort_date)
     elif order == 'title':
         result_list = sorted(result_list, key=search_sort_title)
@@ -297,10 +292,10 @@ def search(request, field=None, value=None, order=None):
         result_list = sorted(result_list, key=search_sort_location)
     elif order == 'stc':
         result_list = sorted(result_list, key=search_sort_stc)
-    elif order == 'MC':
-        result_list = sorted(result_list, key=copy_cen_sort_key)
+    elif order == 'WC':  # Updated from MC
+        result_list = sorted(result_list, key=copy_census_id_sort_key)  # Fixed typo
     context = {
-        'icon_path': 'census/images/generic-title-icon.png',
+        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png',
         'value': value,
         'field': field,
         'display_value': display_value,
@@ -308,13 +303,12 @@ def search(request, field=None, value=None, order=None):
         'result_list': result_list,
         'copy_count': len(result_list)
     }
-
     return HttpResponse(template.render(context, request))
 
 def autofill_location(request, query=None):
     if query is not None:
-        location_matches = models.Location.objects.filter(name__icontains=query)
-        match_object = {'matches': [m.name for m in location_matches]}
+        location_matches = models.Location.objects.filter(name_of_library_collection__icontains=query)
+        match_object = {'matches': [m.name_of_library_collection for m in location_matches]}
     else:
         match_object = {'matches': []}
     return JsonResponse(match_object)
@@ -328,24 +322,26 @@ def autofill_provenance(request, query=None):
     return JsonResponse(match_object)
 
 def autofill_collection(request, query=None):
-    collection = [{'label': 'With known early provenance (before 1700)', 'value': 'earlyprovenance'},
-                  {'label': 'With a known woman owner', 'value': 'womanowner'},
-                  {'label': 'With a known woman owner before 1800', 'value': 'earlywomanowner'},
-                  {'label': 'Includes marginalia', 'value': 'marginalia'},
-                  {'label': 'In an early sammelband', 'value': 'earlysammelband'}]
+    collection = [
+        {'label': 'With known early provenance (before 1700)', 'value': 'earlyprovenance'},
+        {'label': 'With a known woman owner', 'value': 'womanowner'},
+        {'label': 'With a known woman owner before 1800', 'value': 'earlywomanowner'},
+        {'label': 'Includes marginalia', 'value': 'marginalia'},
+        {'label': 'In an early sammelband', 'value': 'earlysammelband'}
+    ]
     return JsonResponse({'matches': collection})
 
 def get_collection(copy_list, coll_name):
     if coll_name == 'earlyprovenance':
-        results = copy_list.filter(provenance_search_names__start_century='17')
+        results = copy_list.filter(provenance_records__provenance_name__start_century='17')
         display = 'Copies with known early provenance (before 1700)'
     elif coll_name == 'womanowner':
-        results = copy_list.filter(provenance_search_names__gender='F')
+        results = copy_list.filter(provenance_records__provenance_name__gender='F')
         display = 'Copies with a known woman owner'
     elif coll_name == 'earlywomanowner':
-        results = copy_list.filter(Q(provenance_search_names__gender='F') &
-                                   (Q(provenance_search_names__start_century='17') |
-                                    Q(provenance_search_names__start_century='18')))
+        results = copy_list.filter(Q(provenance_records__provenance_name__gender='F') &
+                                  (Q(provenance_records__provenance_name__start_century='17') |
+                                   Q(provenance_records__provenance_name__start_century='18')))
         display = 'Copies with a known woman owner before 1800'
     elif coll_name == 'marginalia':
         results = copy_list.exclude(Q(marginalia='') | Q(marginalia=None))
@@ -353,33 +349,33 @@ def get_collection(copy_list, coll_name):
     elif coll_name == 'earlysammelband':
         results = copy_list.filter(in_early_sammelband=True)
         display = 'Copies in an early sammelband'
+    else:
+        results = copy_list.none()
+        display = 'Unknown collection'
     return results, display
 
 def copy_list(request, id):
     selected_issue = get_object_or_404(models.Issue, pk=id)
-    all_copies = models.Copy.objects.filter(canonical_query & Q(issue = id)).order_by('location__name', 'shelfmark')
+    all_copies = models.Copy.objects.filter(canonical_query & Q(issue=id)).order_by('location__name_of_library_collection', 'shelfmark')
     all_copies = sorted(all_copies, key=copy_sort_key)
     template = loader.get_template('census/copy_list.html')
     context = {
         'all_copies': all_copies,
         'copy_count': len(all_copies),
         'selected_issue': selected_issue,
-        'icon_path': 'census/images/generic-title-icon.png',
+        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png',
         'title': selected_issue.edition.title
     }
     return HttpResponse(template.render(context, request))
 
 def copy_data(request, copy_id):
     template = loader.get_template('census/copy_modal.html')
-    selected_copy = models.Copy.objects.filter(pk=copy_id)
+    selected_copy = models.Copy.objects.filter(pk=copy_id).first()
     if not selected_copy:
-        selected_copy = models.Copy.objects.filter(false_query).filter(pk=copy_id)
-
-    if selected_copy:
-        selected_copy = selected_copy[0]
-    else:
+        selected_copy = models.Copy.objects.filter(false_query).filter(pk=copy_id).first()
+    if not selected_copy:
         raise Http404('Selected copy does not exist')
-    context={"copy": selected_copy}
+    context = {"copy": selected_copy}
     return HttpResponse(template.render(context, request))
 
 def issue_list(request, id):
@@ -390,7 +386,7 @@ def issue_list(request, id):
     copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).filter(canonical_query).count()
     template = loader.get_template('census/issue_list.html')
     context = {
-        'icon_path': 'census/images/generic-title-icon.png',
+        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png',
         'editions': editions,
         'issues': issues,
         'title': selected_title,
@@ -399,7 +395,7 @@ def issue_list(request, id):
     return HttpResponse(template.render(context, request))
 
 def cen_copy_modal(request, census_id):
-    selected_copy = get_object_or_404(models.Copy, census_id=census_id)
+    selected_copy = get_object_or_404(models.Copy, wc_number=census_id)  # Updated to wc_number
     selected_issue = selected_copy.issue
     all_copies = [selected_copy]
     template = loader.get_template('census/copy.html')
@@ -407,7 +403,7 @@ def cen_copy_modal(request, census_id):
         'all_copies': all_copies,
         'copy_count': 0,
         'selected_issue': selected_issue,
-        'icon_path': 'census/images/generic-title-icon.png',
+        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png',
         'title': selected_issue.edition.title
     }
     return HttpResponse(template.render(context, request))
