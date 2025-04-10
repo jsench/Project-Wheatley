@@ -47,3 +47,6 @@ urlpatterns = [
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )
+# Serve static files via Django (for free tier workaround)
+if settings.DEBUG or not settings.DEBUG:  # Force serving for Render
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
