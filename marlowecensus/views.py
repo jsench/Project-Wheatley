@@ -38,13 +38,10 @@ def title_sort_key(title_object):
 def issue_sort_key(i):
     ed_number = i.edition.edition_number
     ed_idx = int(ed_number) if ed_number.isdigit() else float('inf')
-    return (ed_idx, i.stc_wing)
+    return (ed_idx,)  # Sort by edition number only
 
 def issue_date_sort_key(issue):
     return int(issue.start_date)
-
-def issue_stc_sort_key(issue):
-    return issue.stc_wing
 
 def copy_sort_key(c):
     census_id_a, census_id_b = copy_census_id_sort_key(c)
@@ -54,10 +51,10 @@ def copy_sort_key(c):
             census_id_b)
 
 def copy_date_sort_key(c):
-    return int(c.issue.start_date) if c.issue else 0  # Handle null issue
+    return int(c.issue.start_date) if c.issue else 0
 
 def copy_census_id_sort_key(c):
-    census_id = c.wc_number if c.wc_number is not None else ''  # Use wc_number from models
+    census_id = c.wc_number if c.wc_number is not None else ''
     census_id_a = 0
     census_id_b = 0
     try:
@@ -72,7 +69,7 @@ def copy_census_id_sort_key(c):
 
 def copy_location_sort_key(c):
     if c.location is not None:
-        name = c.location.name_of_library_collection  # Updated to match models
+        name = c.location.name_of_library_collection
     else:
         name = ''
     return strip_article(name if name else '')
@@ -84,7 +81,7 @@ def copy_shelfmark_sort_key(c):
 def detail_sort_key(issue):
     ed_number = issue.edition.edition_number
     ed_idx = int(ed_number) if ed_number.isdigit() else float('inf')
-    return (ed_idx, issue.start_date, issue.end_date, issue.stc_wing)
+    return (ed_idx, issue.start_date, issue.end_date)  # Sort by edition, start, end
 
 def search_sort_date(copy):
     return (copy_date_sort_key(copy),
@@ -102,8 +99,8 @@ def search_sort_location(copy):
             title_sort_key(copy.issue.edition.title) if copy.issue else '')
 
 def search_sort_stc(copy):
-    return (copy.issue.stc_wing if copy.issue and hasattr(copy.issue, 'stc_wing') else '',
-            copy_location_sort_key(copy))
+    return (copy.issue.year if copy.issue else '',
+            copy_location_sort_key(copy))  # Use year instead of stc_wing
 
 
 ## Defining queries for verification status of copies ##
@@ -196,13 +193,12 @@ def year_issue_copy_count_csv_export(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="census_year_issue_copy_count.csv"'
     writer = csv.writer(response)
-    writer.writerow(['Year', 'STC/Wing', 'Title', 'Number of Copies'])
+    writer.writerow(['Year', 'Title', 'Number of Copies'])
     for iss in issues:
         iss_obj = models.Issue.objects.get(pk=iss['issue']) if iss['issue'] else None
         if iss_obj:
             writer.writerow([
                 iss_obj.start_date,
-                iss_obj.stc_wing if hasattr(iss_obj, 'stc_wing') else '',
                 iss_obj.edition.title.title,
                 iss['total']
             ])
@@ -240,17 +236,17 @@ def search(request, field=None, value=None, order=None):
         display_field = 'Keyword Search'
         query = (Q(marginalia__icontains=value) |
                  Q(binding__icontains=value) |
-                 Q(backend_notes__icontains=value) |  # Updated from local_notes
+                 Q(backend_notes__icontains=value) |
                  Q(prov_info__icontains=value) |
                  Q(bibliography__icontains=value) |
-                 Q(provenance_records__provenance_name__name__icontains=value))  # Updated to match models
+                 Q(provenance_records__provenance_name__name__icontains=value))
         result_list = copy_list.filter(query)
     elif field == 'stc' and value:
-        display_field = 'STC / Wing'
-        result_list = copy_list.filter(issue__stc_wing__icontains=value) if hasattr(models.Issue, 'stc_wing') else copy_list.none()
+        display_field = 'Year'
+        result_list = copy_list.filter(issue__year__icontains=value)
     elif field == 'census_id' and value:
         display_field = 'WC'
-        result_list = copy_list.filter(wc_number=value)  # Updated to wc_number
+        result_list = copy_list.filter(wc_number=value)
     elif field == 'year' and value:
         display_field = 'Year'
         year_range = convert_year_range(value)
@@ -292,8 +288,8 @@ def search(request, field=None, value=None, order=None):
         result_list = sorted(result_list, key=search_sort_location)
     elif order == 'stc':
         result_list = sorted(result_list, key=search_sort_stc)
-    elif order == 'WC':  # Updated from MC
-        result_list = sorted(result_list, key=copy_census_id_sort_key)  # Fixed typo
+    elif order == 'WC':
+        result_list = sorted(result_list, key=copy_census_id_sort_key)
     context = {
         'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png',
         'value': value,
@@ -382,7 +378,7 @@ def issue_list(request, id):
     selected_title = get_object_or_404(models.Title, pk=id)
     editions = list(selected_title.edition_set.all())
     issues = [issue for ed in editions for issue in ed.issue_set.all()]
-    issues.sort(key=detail_sort_key)
+    issues.sort(key=detail_sort_key)  # Uses edition number, start_date, end_date
     copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).filter(canonical_query).count()
     template = loader.get_template('census/issue_list.html')
     context = {
@@ -395,7 +391,7 @@ def issue_list(request, id):
     return HttpResponse(template.render(context, request))
 
 def cen_copy_modal(request, census_id):
-    selected_copy = get_object_or_404(models.Copy, wc_number=census_id)  # Updated to wc_number
+    selected_copy = get_object_or_404(models.Copy, wc_number=census_id)
     selected_issue = selected_copy.issue
     all_copies = [selected_copy]
     template = loader.get_template('census/copy.html')
