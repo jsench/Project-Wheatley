@@ -1,77 +1,77 @@
 <div class="modal-dialog">
-    <div class="modal-content">
-
-        <div class="modal-header">
-            <h3 align="left" class="modal-title">
-              Copy Details for {{ copy.issue.edition.title }} ({{ copy.issue.year }})
+  <div class="modal-content">
+      <div class="modal-header">
+          <h3 align="left" class="modal-title">
+              Copy Details for {{ copy.issue.edition.title.title }} ({{ copy.issue.year }})
               {% if copy.digital_facsimile_url %}
               <span class="unicode-icon" title="Link to digital facsimile of this copy">
-                <a href="{{ copy.digital_facsimile_url }}" target="_blank">
-	                <i class="fas fa-camera-retro"></i>
-                </a>
+                  <a href="{{ copy.digital_facsimile_url }}" target="_blank">
+                      <i class="fas fa-camera-retro"></i>
+                  </a>
               </span>
               {% endif %}
-            </h3>
-        </div>
+          </h3>
+      </div>
 
-        <div class="modal-body">
-            <p align="left"><strong>MC#</strong>: {% if copy.census_id and copy.census_id != '0' %}{{ copy.census_id }}{% endif %}</p>
-            <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name }}{% endif %}</p>
-            <p align="left"><strong>Shelfmark</strong>: {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}{{ copy.shelfmark }}{% endif %}</p>
 
-            {% if copy.issue.edition.title.notes %}
-            <p align="left"><strong>Notes about this title</strong>: {{ copy.issue.edition.title.notes }}</p>
-            {% endif %}
+      <div class="modal-body">
+          <p align="left"><strong>WC#</strong>: {% if copy.wc_number and copy.wc_number != '0' %}{{ copy.wc_number }}{% endif %}</p>
+          <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name_of_library_collection }}{% endif %}</p>
+          <p align="left"><strong>Shelfmark</strong>: {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}{{ copy.shelfmark }}{% endif %}</p>
 
-            {% if copy.issue.edition.notes %}
-            <p align="left"><strong>Notes about this edition</strong>: {{ copy.issue.edition.notes }}</p>
-            {% endif %}
+          {% if copy.issue.edition.title.notes %}
+          <p align="left"><strong>Notes about this title</strong>: {{ copy.issue.edition.title.notes }}</p>
+          {% endif %}
 
-            {% if copy.issue.notes %}
-            <p align="left"><strong>Notes about this issue</strong>: {{ copy.issue.notes }}</p>
-            {% endif %}
+          {% if copy.issue.edition.notes %}
+          <p align="left"><strong>Notes about this edition</strong>: {{ copy.issue.edition.notes }}</p>
+          {% endif %}
 
-            {% if copy.binding %}
-            <p align="left"><strong>Binding</strong>: {{ copy.binding }}</p>
-            {% endif %}
+          {% if copy.issue.notes %}
+          <p align="left"><strong>Notes about this issue</strong>: {{ copy.issue.notes }}</p>
+          {% endif %}
 
-            {% if copy.sammelband %}
-            <p align="left"><strong>Sammelband contents</strong>: {{ copy.sammelband }}</p>
-            {% endif %}
+          {% if copy.binding %}
+          <p align="left"><strong>Binding</strong>: {{ copy.binding }}</p>
+          {% endif %}
 
-            {% if copy.local_notes %}
-            <p align="left"><strong>Copy-specific notes</strong>: {{ copy.local_notes }}</p>
-            {% endif %}
+          {% if copy.sammelband %}
+          <p align="left"><strong>Sammelband contents</strong>: {{ copy.sammelband }}</p>
+          {% endif %}
 
-            {% if copy.marginalia %}
-            <p align="left"><strong>Marginalia</strong>: {{ copy.marginalia }}</p>
-            {% endif %}
+          {% if copy.backend_notes %}
+          <p align="left"><strong>Copy-specific notes</strong>: {{ copy.backend_notes }}</p>
+          {% endif %}
 
-            {% if copy.provenance_search_names.all %}
-	          <p align="left"><strong>Provenance</strong>:
-		        {% for owner in copy.provenance_search_names.all|dictsort:"name" %}
-		        <a href="https://viaf.org/viaf/{{ owner.viaf }}" target="_blank" title="{{ owner.bio }}">
-			      {{owner.name}}</a>{% if not forloop.last %};{% endif %}
-		        {% endfor %}
-		        </p>
-	          {% endif %}
+          {% if copy.marginalia %}
+          <p align="left"><strong>Marginalia</strong>: {{ copy.marginalia }}</p>
+          {% endif %}
 
-            {% if copy.prov_info %}
-            <p align="left"><strong>Provenance notes</strong>: {{ copy.prov_info }}</p>
-            {% endif %}
+          {% if copy.provenance_records.all %}
+          <p align="left"><strong>Provenance</strong>:
+              {% for record in copy.provenance_records.all|dictsort:"provenance_name.name" %}
+                  <a href="https://viaf.org/viaf/{{ record.provenance_name.viaf }}" target="_blank" title="{{ record.provenance_name.bio }}">
+                      {{ record.provenance_name.name }}
+                  </a>{% if not forloop.last %};{% endif %}
+              {% endfor %}
+          </p>
+          {% endif %}
 
-            {% if copy.height %}
-            <p align="left"><strong>Leaf Height</strong>: {{ copy.height }} cm</p>
-            {% endif %}
+          {% if copy.prov_info %}
+          <p align="left"><strong>Provenance notes</strong>: {{ copy.prov_info }}</p>
+          {% endif %}
 
-            {% if copy.width %}
-            <p align="left"><strong>Leaf Width</strong>: {{ copy.width }} cm</p>
-            {% endif %}
+          {% if copy.height %}
+          <p align="left"><strong>Leaf Height</strong>: {{ copy.height }} cm</p>
+          {% endif %}
 
-            {% if copy.bibliography %}
-            <p align="left"><strong>For scholarship on this copy, see</strong>: {{ copy.bibliography }}</p>
-            {% endif %}
+          {% if copy.width %}
+          <p align="left"><strong>Leaf Width</strong>: {{ copy.width }} cm</p>
+          {% endif %}
 
-        </div>
-    </div>
+          {% if copy.bibliography %}
+          <p align="left"><strong>For scholarship on this copy, see</strong>: {{ copy.bibliography }}</p>
+          {% endif %}
+      </div>
+  </div>
 </div>

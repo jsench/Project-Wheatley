@@ -104,7 +104,7 @@ def search_sort_stc(copy):
 
 
 ## Defining queries for verification status of copies ##
-canonical_query = (Q(verification='U') | Q(verification='V'))
+canonical_query = (Q(verification='U') | Q(verification='V') | Q(verification__isnull=True))
 unverified_query = Q(verification='U')
 verified_query = Q(verification='V')
 false_query = Q(verification='F')
