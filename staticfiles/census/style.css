@@ -366,25 +366,35 @@ div.play-title-icon {
     margin: 12px 0px 0px 0px;
 }
 
+/* Increased the circle size to 200x200. 
+   Also added overflow: hidden so images won't spill out. */
 div.play-title-icon-border {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     margin: 0px auto;
-    border-radius:100px;
+    border-radius: 200px;
     border: 1px solid;
+    overflow: hidden;
 }
 
+/* Updated to fill the circle:
+   - 200x200, 
+   - round corners, 
+   - object-fit: cover. */
 img.play-title-icon {
-    height:80px;
-    width:80px;
-    margin: 10px;
-    border-radius: 20px;
+    width: 200px;
+    height: 200px;
+    border-radius: 200px;
+    object-fit: cover;
+    margin: 0;
 }
 
 img.play-title-icon-generic {
-    height:100px;
-    width:100px;
-    border-radius: 100px;
+    width: 200px;
+    height: 200px;
+    border-radius: 200px;
+    object-fit: cover;
+    margin: 0;
 }
 
 .play-title,

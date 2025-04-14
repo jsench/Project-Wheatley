@@ -11,9 +11,14 @@
                 <div class="play-title-icon-border">
                     <a href="{% url 'issue_list' title.id %}">
                         {% if title.image %}
-                            <img class="play-title-icon" src="{{ title.image.url }}">
+                            <!-- Rely on .play-title-icon in your CSS for size/shape -->
+                            <img class="play-title-icon"
+                                 src="{{ title.image.url }}"
+                                 alt="{{ title.title }}">
                         {% else %}
-                            <img class="play-title-icon-generic" src="{% static icon_path %}">
+                            <img class="play-title-icon-generic"
+                                 src="{% static icon_path %}"
+                                 alt="Generic icon">
                         {% endif %}
                     </a>
                 </div>

@@ -14,60 +14,84 @@
         </div>
 
         <div class="modal-body">
-            <p align="left"><strong>WC#</strong>:
+            <p align="left">
+                <strong>WC#</strong>:
                 {% if copy.wc_number and copy.wc_number != '0' %}
                     {{ copy.wc_number }}
                 {% endif %}
             </p>
 
-            <p align="left"><strong>Location</strong>:
+            <p align="left">
+                <strong>Location</strong>:
                 {% if copy.location %}
                     {{ copy.location.name_of_library_collection }}
                 {% endif %}
             </p>
 
-            <p align="left"><strong>Shelfmark</strong>:
+            <p align="left">
+                <strong>Shelfmark</strong>:
                 {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}
                     {{ copy.shelfmark }}
                 {% endif %}
             </p>
 
+            {% if copy.catalogue_url %}
+            <p align="left">
+                <strong>Catalogue URL</strong>:
+                <a href="{{ copy.catalogue_url }}" target="_blank">
+                    {{ copy.catalogue_url }}
+                </a>
+            </p>
+            {% endif %}
+
             {% if copy.issue.edition.title.notes %}
-            <p align="left"><strong>Notes about this title</strong>:
+            <p align="left">
+                <strong>Notes about this title</strong>:
                 {{ copy.issue.edition.title.notes }}
             </p>
             {% endif %}
 
             {% if copy.issue.edition.notes %}
-            <p align="left"><strong>Notes about this edition</strong>:
+            <p align="left">
+                <strong>Notes about this edition</strong>:
                 {{ copy.issue.edition.notes }}
             </p>
             {% endif %}
 
             {% if copy.issue.notes %}
-            <p align="left"><strong>Notes about this issue</strong>:
+            <p align="left">
+                <strong>Notes about this issue</strong>:
                 {{ copy.issue.notes }}
             </p>
             {% endif %}
 
             {% if copy.binding %}
-            <p align="left"><strong>Binding</strong>: {{ copy.binding }}</p>
+            <p align="left">
+                <strong>Binding</strong>: {{ copy.binding }}
+            </p>
             {% endif %}
 
             {% if copy.sammelband %}
-            <p align="left"><strong>Sammelband contents</strong>: {{ copy.sammelband }}</p>
+            <p align="left">
+                <strong>Sammelband contents</strong>: {{ copy.sammelband }}
+            </p>
             {% endif %}
 
             {% if copy.backend_notes %}
-            <p align="left"><strong>Copy-specific notes</strong>: {{ copy.backend_notes }}</p>
+            <p align="left">
+                <strong>Copy-specific notes</strong>: {{ copy.backend_notes }}
+            </p>
             {% endif %}
 
             {% if copy.marginalia %}
-            <p align="left"><strong>Marginalia</strong>: {{ copy.marginalia }}</p>
+            <p align="left">
+                <strong>Marginalia</strong>: {{ copy.marginalia }}
+            </p>
             {% endif %}
 
             {% if copy.provenance_records.all %}
-            <p align="left"><strong>Provenance</strong>:
+            <p align="left">
+                <strong>Provenance</strong>:
                 {% for record in copy.provenance_records.all|dictsort:"provenance_name.name" %}
                     <a href="https://viaf.org/viaf/{{ record.provenance_name.viaf }}"
                        target="_blank"
@@ -79,19 +103,26 @@
             {% endif %}
 
             {% if copy.prov_info %}
-            <p align="left"><strong>Provenance notes</strong>: {{ copy.prov_info }}</p>
+            <p align="left">
+                <strong>Provenance notes</strong>: {{ copy.prov_info }}
+            </p>
             {% endif %}
 
             {% if copy.height %}
-            <p align="left"><strong>Leaf Height</strong>: {{ copy.height }} cm</p>
+            <p align="left">
+                <strong>Leaf Height</strong>: {{ copy.height }} cm
+            </p>
             {% endif %}
 
             {% if copy.width %}
-            <p align="left"><strong>Leaf Width</strong>: {{ copy.width }} cm</p>
+            <p align="left">
+                <strong>Leaf Width</strong>: {{ copy.width }} cm
+            </p>
             {% endif %}
 
             {% if copy.bibliography %}
-            <p align="left"><strong>For scholarship on this copy, see</strong>:
+            <p align="left">
+                <strong>For scholarship on this copy, see</strong>:
                 {{ copy.bibliography }}
             </p>
             {% endif %}
