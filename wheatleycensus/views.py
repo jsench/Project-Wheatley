@@ -6,7 +6,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
 from datetime import datetime
 import csv
-import re  # <-- Added for parsing years from title text
+import re  # For parsing years from title text
 from . import models
 
 
@@ -29,7 +29,7 @@ def convert_year_range(year):
     return False
 
 
-# --- We’ll keep title_sort_key, but we won't use it for the homepage. ---
+# --- Keep title_sort_key for other uses if necessary ---
 def title_sort_key(title_object):
     title = title_object.title
     if title and title[0].isdigit():
@@ -156,15 +156,14 @@ def homepage(request):
     # Grab all Title objects
     titlelist = models.Title.objects.all()
 
-    # Sort by the parsed year first, then by title (with articles stripped + lowercased)
+    # Sort by the parsed year first, then by title (with articles stripped and lowercased)
     def year_alpha_sort_key(t):
         parsed_year = extract_year_from_title(t.title)
-        # for alphabetical, also use strip_article + lower
         return (parsed_year, strip_article(t.title).lower())
 
     titlelist = sorted(titlelist, key=year_alpha_sort_key)
 
-    # Now we break them into rows of 5 for display
+    # Break them into rows of 5 for display
     titlerows = [titlelist[i: i + gridwidth] for i in range(0, len(titlelist), gridwidth)]
 
     context = {
@@ -421,11 +420,9 @@ def get_collection(copy_list, coll_name):
 
 def copy_list(request, id):
     selected_issue = get_object_or_404(models.Issue, pk=id)
-    all_copies = models.Copy.objects.filter(canonical_query & Q(issue=id)).order_by(
-        'location__name_of_library_collection',
-        'shelfmark'
-    )
-    all_copies = sorted(all_copies, key=copy_sort_key)
+    # Order copies strictly by WC number (ascending)
+    all_copies = models.Copy.objects.filter(canonical_query & Q(issue=id))
+    all_copies = sorted(all_copies, key=lambda c: copy_census_id_sort_key(c))
     template = loader.get_template('census/copy_list.html')
     context = {
         'all_copies': all_copies,
@@ -441,7 +438,6 @@ def copy_data(request, copy_id):
     template = loader.get_template('census/copy_modal.html')
     selected_copy = models.Copy.objects.filter(pk=copy_id).first()
     if not selected_copy:
-        # fallback if copy is unverified or "false"
         selected_copy = models.Copy.objects.filter(false_query).filter(pk=copy_id).first()
     if not selected_copy:
         raise Http404('Selected copy does not exist')
@@ -453,7 +449,6 @@ def issue_list(request, id):
     selected_title = get_object_or_404(models.Title, pk=id)
     editions = list(selected_title.edition_set.all())
     issues = [issue for ed in editions for issue in ed.issue_set.all()]
-    # Sort the issues by edition_number, start_date, end_date
     issues.sort(key=detail_sort_key)
     copy_count = models.Copy.objects.filter(issue__id__in=[i.id for i in issues]).filter(canonical_query).count()
     template = loader.get_template('census/issue_list.html')
