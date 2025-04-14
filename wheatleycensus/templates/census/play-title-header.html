@@ -24,10 +24,10 @@
         <td class="play-issue-header">
             <span>
                 {% if selected_issue.edition.edition_number.isdigit %}
-                {{ selected_issue.edition.edition_number|add:\"0\"|ordinal }}&nbsp;Edition
-                {% else %}
+                {{ selected_issue.edition.edition_number|add:0|ordinal }}&nbsp;Edition
+              {% else %}
                 {{ selected_issue.edition.edition_number.capitalize }}
-                {% endif %}
+              {% endif %}
                 {% if selected_issue.edition.edition_format %}
                 ({{ selected_issue.edition.edition_format }})
                 {% endif %}
