@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'import_export',
-    # Changed from 'marlowecensus' to 'wheatleycensus'
     'wheatleycensus',
 ]
 
@@ -41,7 +40,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Changed from 'marlowecensus.urls' to 'wheatleycensus.urls'
+
 ROOT_URLCONF = 'wheatleycensus.urls'
 
 TEMPLATES = [
@@ -60,13 +59,17 @@ TEMPLATES = [
     },
 ]
 
-# Changed from 'marlowecensus.wsgi.application' to 'wheatleycensus.wsgi.application'
+
 WSGI_APPLICATION = 'wheatleycensus.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres', 
+        'USER': 'postgres', 
+        'PASSWORD': 'projectwheatley@25',
+        'HOST': 'db.zbsgawoqmuhjbwqqlozx.supabase.co',
+        'PORT': '5432',
     }
 }
 
@@ -86,7 +89,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Changed from BASE_DIR / 'marlowecensus' / 'static' to BASE_DIR / 'wheatleycensus' / 'static'
+
 STATICFILES_DIRS = [BASE_DIR / "wheatleycensus" / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
