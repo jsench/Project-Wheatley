@@ -1,0 +1,76 @@
+{% extends "census/base.html" %}
+{% load static %}
+{% block content %}
+
+{% if editions %}
+<div class="wrapper">
+    <table class="play-title-header">
+        <tr>
+            <td rowspan="3" class="play-title-header-icon">
+                <div class="play-title-icon-border">
+                    {% if title.image %}
+                        <img class="play-title-icon" src="{{ title.image.url }}">
+                    {% else %}
+                        <img class="play-title-icon-generic" src="{% static icon_path %}">
+                    {% endif %}
+                </div>
+            </td>
+            <td class="play-title-header">
+                {{ title.title }}
+                {% if user.is_staff %}
+                    <!-- Changed from 'admin:marlowecensus_title_change' -->
+                    <span class="note">[<a href="{% url 'admin:wheatleycensus_title_change' title.id %}">Edit&nbsp;title</a>]</span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="play-issue-header">
+                <span>All editions</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="play-issue-header">
+                <span>Extant copies: {{ copy_count }} </span>
+            </td>
+        </tr>
+    </table>
+    <table class="play-detail-set">
+        <tr>
+            <th class="even"> Edition </th>
+            <th class="even"> Year </th>
+            <th class="even"> STC / Wing</th>
+            <th class="even"> ESTC </th>
+        </tr>
+        {% for issue in issues %}
+        <tr>
+            <td>
+                <a href="{% url 'copy_list' issue.id %}">
+                    {% if issue.edition.edition_number.isdigit %}
+                    {{ issue.edition.edition_number }}
+                    {% else %}
+                    {{ issue.edition.edition_number.capitalize }}
+                    {% endif %}
+                </a>
+                {% if user.is_staff %}
+                <!-- Changed from 'admin:marlowecensus_edition_change' -->
+                <span class="note">[<a href="{% url 'admin:wheatleycensus_edition_change' issue.edition.id %}">Edit&nbsp;edition</a>]</span>
+                {% endif %}
+            </td>
+            <td><a href="{% url 'copy_list' issue.id %}">{{ issue.year }}</a></td>
+            <td><a href="{% url 'copy_list' issue.id %}">{{ issue.stc_wing }}</a></td>
+            <td>
+                <a href="{% url 'copy_list' issue.id %}">{{ issue.estc }}</a>
+                {% if user.is_staff %}
+                <!-- Changed from 'admin:marlowecensus_issue_change' -->
+                <span class="note">[<a href="{% url 'admin:wheatleycensus_issue_change' issue.id %}">Edit&nbsp;issue</a>]</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% else %}
+<p class="sansserif" align="center">Oh no! No editions are available.</p>
+{% endif %}
+{% endblock content %}
