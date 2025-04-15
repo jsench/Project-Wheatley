@@ -14,10 +14,10 @@ project_home = '/home/senchyne/Wheatley_Census'  # folder with manage.py
 if project_home not in sys.path:
     sys.path.append(project_home)
 
-# Activate virtualenv
-activate_this = '/home/senchyne/venv-wheatley-new/bin/activate_this.py'
-with open(activate_this) as f:
-    exec(f.read(), {'__file__': activate_this})
+# # Activate virtualenv
+# activate_this = '/home/senchyne/venv-wheatley-new/bin/activate_this.py'
+# with open(activate_this) as f:
+#     exec(f.read(), {'__file__': activate_this})
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wheatleycensus.settings')
 
