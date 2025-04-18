@@ -19,14 +19,66 @@ class StaticPageText(models.Model):
 
 class Location(models.Model):
     LOCATION_CHOICES = [
-        # US States
-        ('AL', 'Alabama'), ('AK', 'Alaska'), # …etc…
-        ('DC', 'District of Columbia'),
-        # Non‑US Nations
-        ('DE', 'Germany'),
-        ('UK', 'United Kingdom'),
-        ('WI', 'West Indies'),
-    ]
+    # US States
+    ('AL', 'Alabama'),
+    ('AK', 'Alaska'),
+    ('AZ', 'Arizona'),
+    ('AR', 'Arkansas'),
+    ('CA', 'California'),
+    ('CO', 'Colorado'),
+    ('CT', 'Connecticut'),
+    ('DE', 'Delaware'),
+    ('FL', 'Florida'),
+    ('GA', 'Georgia'),
+    ('HI', 'Hawaii'),
+    ('ID', 'Idaho'),
+    ('IL', 'Illinois'),
+    ('IN', 'Indiana'),
+    ('IA', 'Iowa'),
+    ('KS', 'Kansas'),
+    ('KY', 'Kentucky'),
+    ('LA', 'Louisiana'),
+    ('ME', 'Maine'),
+    ('MD', 'Maryland'),
+    ('MA', 'Massachusetts'),
+    ('MI', 'Michigan'),
+    ('MN', 'Minnesota'),
+    ('MS', 'Mississippi'),
+    ('MO', 'Missouri'),
+    ('MT', 'Montana'),
+    ('NE', 'Nebraska'),
+    ('NV', 'Nevada'),
+    ('NH', 'New Hampshire'),
+    ('NJ', 'New Jersey'),
+    ('NM', 'New Mexico'),
+    ('NY', 'New York'),
+    ('NC', 'North Carolina'),
+    ('ND', 'North Dakota'),
+    ('OH', 'Ohio'),
+    ('OK', 'Oklahoma'),
+    ('OR', 'Oregon'),
+    ('PA', 'Pennsylvania'),
+    ('RI', 'Rhode Island'),
+    ('SC', 'South Carolina'),
+    ('SD', 'South Dakota'),
+    ('TN', 'Tennessee'),
+    ('TX', 'Texas'),
+    ('UT', 'Utah'),
+    ('VT', 'Vermont'),
+    ('VA', 'Virginia'),
+    ('WA', 'Washington'),
+    ('WV', 'West Virginia'),
+    ('WI', 'Wisconsin'),
+    ('WY', 'Wyoming'),
+
+    # District of Columbia
+    ('DC', 'District of Columbia'),
+
+    # Non‑US “nation” overrides (if you really need them here; consider using a separate field)
+    ('DEU', 'Germany'),
+    ('GBR', 'United Kingdom'),
+    ('WIS', 'West Indies'),
+]
     name_of_library_collection = models.CharField(max_length=500, null=True, blank=True)
     us_state_or_non_us_nation = models.CharField(max_length=10, choices=LOCATION_CHOICES, null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
