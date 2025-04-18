@@ -11,7 +11,7 @@
                 <div class="play-title-icon-border">
                     <a href="{% url 'issue_list' title.id %}">
                         {% if title.image %}
-                            <!-- Rely on .play-title-icon in your CSS for size/shape -->
+                            <!-- Rely on CSS (.play-title-icon) for sizing/zoom -->
                             <img class="play-title-icon"
                                  src="{{ title.image.url }}"
                                  alt="{{ title.title }}">

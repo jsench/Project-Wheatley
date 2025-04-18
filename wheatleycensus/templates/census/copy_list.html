@@ -5,48 +5,43 @@
 
 <div class="wrapper">
     <div>
-        <script type="text/javascript" src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-        <script type="text/javascript" src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
-        <link rel="stylesheet" type="text/css" href="{% static 'census/css/modal.css' %}" />
+        <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
+        <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
         <div id="copyModal" class="modal fade" role="dialog"></div>
     </div>
 
     {% include "census/play-title-header.html" with selected_issue=selected_issue icon_path=icon_path title=title copy_count=copy_count %}
 
-    <!-- Debug section: Verify data is passed -->
     <table class="play-detail-set">
         {% if all_copies %}
         <tr>
-            <th class="terse">WC #</th> <!-- Changed from MC # to WC # -->
+            <th class="terse">WC #</th>
             <th class="detailed">Location</th>
             <th class="even">Shelfmark</th>
-            <th class="icon"> </th>
-            <th class="icon"> </th>
-            <th class="icon"> </th>
+            <th class="icon"></th>
+            <th class="icon"></th>
+            <th class="icon"></th>
         </tr>
         {% for copy in all_copies %}
         <tr>
             <td>
-                {% if copy.wc_number and copy.wc_number != '0' %} <!-- Changed census_id to wc_number -->
+                {% if copy.wc_number and copy.wc_number != '0' %}
                     <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
                         {{ copy.wc_number }}
                     </a>
-                {% else %}
-
                 {% endif %}
                 {% if user.is_staff %}
-                    <span class="note">[<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit copy</a>]</span>
+                    <span class="note">[<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit copy</a>]</span>
                 {% endif %}
             </td>
             <td>
-                <a class="copy_data copy_data_{{ copy.wc_number }}" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                    {{ copy.location.name_of_library_collection }} <!-- Updated to match model -->
+                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                    {{ copy.location.name_of_library_collection }}
                 </a>
             </td>
             <td>
-                {% if not copy.shelfmark or copy.shelfmark == "[Shelfmark not available]" or copy.shelfmark is None %}
-
-                {% else %}
+                {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}
                     <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
                         {{ copy.shelfmark }}
                     </a>
@@ -54,23 +49,21 @@
             </td>
             <td>
                 {% if copy.from_estc and copy.verification == "U" %}
-                    <span title="The existence of this copy has not been verified; location derived from ESTC." class="unverified-symbol">⃠</span>
+                    <span title="Unverified (from ESTC)" class="unverified-symbol">⃠</span>
                 {% elif copy.verification == "U" %}
-                    <span title="The existence of this copy has not been verified; location entered by an administrator." class="unverified-symbol">⃠</span>
+                    <span title="Unverified" class="unverified-symbol">⃠</span>
                 {% elif copy.verification == "V" %}
-                    <span title="This existence of this copy at the location has been verified." class="verified-symbol">✓</span>
+                    <span title="Verified" class="verified-symbol">✓</span>
                 {% endif %}
             </td>
             <td>
                 {% if copy.fragment %}
-                    <span class="unicode-icon" title="This copy is a fragment">
-                        <i class="fas fa-industry"></i>
-                    </span>
+                    <span title="Fragment" class="unicode-icon"><i class="fas fa-industry"></i></span>
                 {% endif %}
             </td>
             <td>
                 {% if copy.digital_facsimile_url %}
-                    <span class="unicode-icon" title="Link to digital facsimile of this copy">
+                    <span title="Digital facsimile" class="unicode-icon">
                         <a href="{{ copy.digital_facsimile_url }}" target="_blank">
                             <i class="fas fa-camera-retro"></i>
                         </a>

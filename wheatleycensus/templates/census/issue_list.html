@@ -18,8 +18,7 @@
             <td class="play-title-header">
                 {{ title.title }}
                 {% if user.is_staff %}
-                    <!-- Changed from 'admin:marlowecensus_title_change' -->
-                    <span class="note">[<a href="{% url 'admin:wheatleycensus_title_change' title.id %}">Edit&nbsp;title</a>]</span>
+                    <span class="note">[<a href="{% url 'admin:wheatleycensus_title_change' title.id %}">Edit title</a>]</span>
                 {% endif %}
             </td>
         </tr>
@@ -36,24 +35,23 @@
     </table>
     <table class="play-detail-set">
         <tr>
-            <th class="even"> Edition </th>
-            <th class="even"> Year </th>
-            <th class="even"> STC / Wing</th>
-            <th class="even"> ESTC </th>
+            <th class="even">Edition</th>
+            <th class="even">Year</th>
+            <th class="even">STC / Wing</th>
+            <th class="even">ESTC</th>
         </tr>
         {% for issue in issues %}
         <tr>
             <td>
                 <a href="{% url 'copy_list' issue.id %}">
                     {% if issue.edition.edition_number.isdigit %}
-                    {{ issue.edition.edition_number }}
+                        {{ issue.edition.edition_number }}
                     {% else %}
-                    {{ issue.edition.edition_number.capitalize }}
+                        {{ issue.edition.edition_number.capitalize }}
                     {% endif %}
                 </a>
                 {% if user.is_staff %}
-                <!-- Changed from 'admin:marlowecensus_edition_change' -->
-                <span class="note">[<a href="{% url 'admin:wheatleycensus_edition_change' issue.edition.id %}">Edit&nbsp;edition</a>]</span>
+                    <span class="note">[<a href="{% url 'admin:wheatleycensus_edition_change' issue.edition.id %}">Edit edition</a>]</span>
                 {% endif %}
             </td>
             <td><a href="{% url 'copy_list' issue.id %}">{{ issue.year }}</a></td>
@@ -61,16 +59,15 @@
             <td>
                 <a href="{% url 'copy_list' issue.id %}">{{ issue.estc }}</a>
                 {% if user.is_staff %}
-                <!-- Changed from 'admin:marlowecensus_issue_change' -->
-                <span class="note">[<a href="{% url 'admin:wheatleycensus_issue_change' issue.id %}">Edit&nbsp;issue</a>]</span>
+                    <span class="note">[<a href="{% url 'admin:wheatleycensus_issue_change' issue.id %}">Edit issue</a>]</span>
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </table>
 </div>
-
 {% else %}
 <p class="sansserif" align="center">Oh no! No editions are available.</p>
 {% endif %}
+
 {% endblock content %}

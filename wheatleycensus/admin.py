@@ -30,9 +30,10 @@ class EditionInline(admin.TabularInline):
 # Admin Registrations
 @admin.register(models.Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('name_of_library_collection', 'us_state_or_non_us_nation', 'latitude', 'longitude')
+    list_display = ('name_of_library_collection', 'us_state_or_non_us_nation', 'marc_code', 'latitude', 'longitude')
     search_fields = ('name_of_library_collection',)
     list_filter = ('us_state_or_non_us_nation',)
+    fields = ('name_of_library_collection', 'us_state_or_non_us_nation', 'marc_code', 'latitude', 'longitude')
 
 @admin.register(models.ProvenanceName)
 class ProvenanceNameAdmin(admin.ModelAdmin):

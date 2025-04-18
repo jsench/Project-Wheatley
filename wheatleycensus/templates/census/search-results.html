@@ -4,104 +4,101 @@
 {% block content %}
 
 <div class="wrapper">
-    <div>
-        <script type="text/javascript" src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-        <script type="text/javascript" src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
-        <link rel="stylesheet" type="text/css" href="{% static 'census/css/modal.css' %}" />
+  <div>
+    <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
+    <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
+    <div id="copyModal" class="modal fade" role="dialog"></div>
+  </div>
 
-        <div id="copyModal" class="modal fade" role="dialog"></div>
-    </div>
-    <table class="play-title-header">
-        <tr>
-            <td rowspan="3" class="play-title-header-icon">
-                <div class="play-title-icon-border">
-                <img class="play-title-icon-generic" src="{% static icon_path %}">
-                </div>
-            </td>
-            <td class="play-title-header">
-                Search Results
-            </td>
-        </tr>
-        <tr>
-            <td class="play-issue-header">
-                {% if field == \"ghosts\" %}
-                    ESTC Ghosts
-                {% elif display_value == \"All\" %}
-                    {{ display_field }}
-                {% else %}
-                    {{ display_field }}: {{ display_value }}
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td class="play-issue-header">
-                {% if field == \"ghosts\" %}
-                    <span>{{ copy_count }} Records</span>
-                {% else %}
-                    <span>Extant copies: {{ copy_count }} </span>
-                {% endif %}
-            </td>
-        </tr>
-    </table>
-
-    <table class="play-detail-set">
-        {% if result_list %}
-        <tr>
-            <th class="terse">
-                <a href=\"{% url 'search' %}?field={{field}}&value={{value}}&order=census_id\">MC&nbsp;#</a>&nbsp;<i class=\"fas fa-caret-down {% if request.GET.order != 'census_id' %}hidden-icon{% endif %}\"></i>
-            </th>
-            <th>
-                <a href=\"{% url 'search' %}?field={{field}}&value={{value}}&order=date\">Year</a>&nbsp;<i class=\"fas fa-caret-down {% if request.GET.order != 'date' %}hidden-icon{% endif %}\"></i>
-            </th>
-            <th class=\"detailed\">
-                <a href=\"{% url 'search' %}?field={{field}}&value={{value}}&order=title\">Title</a>&nbsp;<i class=\"fas fa-caret-down {% if request.GET.order != 'title' %}hidden-icon{% endif %}\"></i>
-            </th>
-            <th class=\"detailed\">
-                <a href=\"{% url 'search' %}?field={{field}}&value={{value}}&order=location\">Location</a>&nbsp;<i class=\"fas fa-caret-down {% if request.GET.order != 'location' %}hidden-icon{% endif %}\"></i>
-            </th>
-            <th class=\"terse\">
-                <a href=\"{% url 'search' %}?field={{field}}&value={{value}}&order=stc\">STC&nbsp;/&nbsp;Wing</a>&nbsp;<i class=\"fas fa-caret-down {% if request.GET.order != 'stc' %}hidden-icon{% endif %}\"></i>
-            </th>
-        </tr>
-        {% for copy in result_list %}
-        <tr>
-            <td>
-                {% if copy.census_id and copy.census_id != '0' %}
-                    <a class=\"copy_data\" href=\"#\" data-form=\"{% url 'copy_data' copy.id %}\" title=\"Details\">
-                        {{ copy.census_id }}
-                    </a>
-                {% else %}
-                    &nbsp;
-                {% endif %}
-                {% if user.is_staff %}
-                    <!-- updated from 'admin:marlowecensus_copy_change' to 'admin:wheatleycensus_copy_change' -->
-                    <span class=\"note\">[<a href=\"{% url 'admin:wheatleycensus_copy_change' copy.id %}\">Edit&nbsp;copy</a>]</span>
-                {% endif %}
-            </td>
-            <td>
-                <a class=\"copy_data\" href=\"#\" data-form=\"{% url 'copy_data' copy.id %}\" title=\"Details\">
-                    {{ copy.issue.year }}
-                </a>
-            </td>
-            <td>
-                <a class=\"copy_data\" href=\"#\" data-form=\"{% url 'copy_data' copy.id %}\" title=\"Details\">
-                    {{ copy.issue.edition.title }}
-                </a>
-            </td>
-            <td>
-                <a class=\"copy_data\" href=\"#\" data-form=\"{% url 'copy_data' copy.id %}\" title=\"Details\">
-                    {{ copy.location.name }}
-                </a>
-            </td>
-            <td>
-                <a href=\"{% url 'copy_list' copy.issue.id %}\" target=\"_blank\" title=\"Go to Edition\">{{ copy.issue.stc_wing }}&nbsp;&nbsp;&nbsp;<i class=\"fas fa-external-link-alt\"></i></a>
-            </td>
-        </tr>
-        {% endfor %}
+  <table class="play-title-header">
+    <tr>
+      <td rowspan="3" class="play-title-header-icon">
+        <div class="play-title-icon-border">
+          <img class="play-title-icon-generic" src="{% static icon_path %}">
+        </div>
+      </td>
+      <td class="play-title-header">Search Results</td>
+    </tr>
+    <tr>
+      <td class="play-issue-header">
+        {% if field == "ghosts" %}
+          ESTC Ghosts
+        {% elif display_value == "All" %}
+          {{ display_field }}
         {% else %}
-        <p class=\"sansserif\" align=\"center\">No copies found.</p>
+          {{ display_field }}: {{ display_value }}
         {% endif %}
-    </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="play-issue-header">
+        <span>
+          {% if field == "ghosts" %}
+            {{ copy_count }} Records
+          {% else %}
+            Extant copies: {{ copy_count }}
+          {% endif %}
+        </span>
+      </td>
+    </tr>
+  </table>
+
+  <table class="play-detail-set">
+    {% if result_list %}
+    <tr>
+      <th class="terse">
+        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=census_id">WC #</a>
+      </th>
+      <th>
+        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=date">Year</a>
+      </th>
+      <th class="detailed">
+        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=title">Title</a>
+      </th>
+      <th class="detailed">
+        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=location">Location</a>
+      </th>
+      <th class="terse">
+        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=stc">STC / Wing</a>
+      </th>
+    </tr>
+    {% for copy in result_list %}
+    <tr>
+      <td>
+        <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
+          {{ copy.wc_number }}
+        </a>
+        {% if user.is_staff %}
+          <span class="note">[<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit copy</a>]</span>
+        {% endif %}
+      </td>
+      <td>
+        <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
+          {{ copy.issue.year }}
+        </a>
+      </td>
+      <td>
+        <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
+          {{ copy.issue.edition.title }}
+        </a>
+      </td>
+      <td>
+        <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
+          {{ copy.location.name_of_library_collection }}
+        </a>
+      </td>
+      <td>
+        <a href="{% url 'copy_list' copy.issue.id %}" target="_blank">
+          {{ copy.issue.stc_wing }} <i class="fas fa-external-link-alt"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+      <p class="sansserif" align="center">No copies found.</p>
+    {% endif %}
+  </table>
 </div>
 
 {% endblock content %}

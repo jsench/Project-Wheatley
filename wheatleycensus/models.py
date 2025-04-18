@@ -39,6 +39,10 @@ class Location(models.Model):
     us_state_or_non_us_nation = models.CharField(max_length=10, choices=LOCATION_CHOICES, null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+    marc_code = models.IntegerField(
+    null=True, blank=True,
+    help_text="(optional) MARC code for this location"
+   )
     def __str__(self):
         return self.name_of_library_collection or "Unknown Location" 
     
