@@ -9,14 +9,17 @@
         <td class="play-title-icon">
           <div class="play-title-icon">
             <div class="play-title-icon-border">
-              {# now points directly to issue_list (not /title/) #}
-              <a href="{% url 'issue_list' title.id %}">
-                {% if title.image %}
-                  <img class="play-title-icon" src="{{ title.image.url }}" alt="{{ title.title }}">
-                {% else %}
-                  <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Generic icon">
-                {% endif %}
-              </a>
+              {% if title.first_issue %}
+                <a href="{% url 'copy_list' title.first_issue.id %}">
+              {% else %}
+                <a href="{% url 'issue_list' title.id %}">
+              {% endif %}
+                  {% if title.image %}
+                    <img class="play-title-icon" src="{{ title.image.url }}" alt="{{ title.title }}">
+                  {% else %}
+                    <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Generic icon">
+                  {% endif %}
+                </a>
             </div>
           </div>
         </td>
@@ -25,11 +28,13 @@
     <tr class="play-title">
       {% for title in row %}
         <td class="play-title">
-          <div class="play-title">
+          {% if title.first_issue %}
+            <a class="linkbutton" href="{% url 'copy_list' title.first_issue.id %}">
+          {% else %}
             <a class="linkbutton" href="{% url 'issue_list' title.id %}">
+          {% endif %}
               {{ title.title }}
             </a>
-          </div>
         </td>
       {% endfor %}
     </tr>
