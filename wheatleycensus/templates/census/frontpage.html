@@ -3,41 +3,37 @@
 {% block content %}
 
 <table class="play-title-icon">
-    {% for row in titlerows %}
+  {% for row in titlerows %}
     <tr class="play-title-icon">
-        {% for title in row %}
+      {% for title in row %}
         <td class="play-title-icon">
-            <div class="play-title-icon">
-                <div class="play-title-icon-border">
-                    <a href="{% url 'issue_list' title.id %}">
-                        {% if title.image %}
-                            <!-- Rely on CSS (.play-title-icon) for sizing/zoom -->
-                            <img class="play-title-icon"
-                                 src="{{ title.image.url }}"
-                                 alt="{{ title.title }}">
-                        {% else %}
-                            <img class="play-title-icon-generic"
-                                 src="{% static icon_path %}"
-                                 alt="Generic icon">
-                        {% endif %}
-                    </a>
-                </div>
+          <div class="play-title-icon">
+            <div class="play-title-icon-border">
+              {# now points directly to issue_list (not /title/) #}
+              <a href="{% url 'issue_list' title.id %}">
+                {% if title.image %}
+                  <img class="play-title-icon" src="{{ title.image.url }}" alt="{{ title.title }}">
+                {% else %}
+                  <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Generic icon">
+                {% endif %}
+              </a>
             </div>
+          </div>
         </td>
-        {% endfor %}
+      {% endfor %}
     </tr>
     <tr class="play-title">
-        {% for title in row %}
+      {% for title in row %}
         <td class="play-title">
-            <div class="play-title">
-                <a class="linkbutton" href="{% url 'issue_list' title.id %}">
-                    {{ title.title }}
-                </a>
-            </div>
+          <div class="play-title">
+            <a class="linkbutton" href="{% url 'issue_list' title.id %}">
+              {{ title.title }}
+            </a>
+          </div>
         </td>
-        {% endfor %}
+      {% endfor %}
     </tr>
-    {% endfor %}
+  {% endfor %}
 </table>
 
 {% endblock content %}

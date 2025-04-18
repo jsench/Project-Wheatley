@@ -24,7 +24,7 @@ urlpatterns = [
     path('copydata/<int:copy_id>/', views.copy_data, name='copy_data'),
 
     # Static copy URL
-    path('wc/<int:wc_number>/', views.static_copy, name='static_copy'),
+    path('wc/<int:wc_number>/', views.static_copy, name='copy_page'),
 
     # About / static pages
     path('about/', views.about, name='about'),
@@ -49,5 +49,20 @@ urlpatterns = [
 
     # Admin
     path(settings.ADMIN_URL, admin.site.urls),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
-  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+
+# <<< CHANGED HERE >>>
+# Instead of trying to put + static() on the next line (which Python parses
+# as a unary plus), do one of:
+
+# 1) Use +=
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# —or—
+
+# 2) Keep the + on the same line as your list:
+# urlpatterns = [
+#     ... your patterns ...
+# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
+#   + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

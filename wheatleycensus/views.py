@@ -164,7 +164,7 @@ def copy_data(request, copy_id):
     copy = get_object_or_404(models.Copy, pk=copy_id)
     return HttpResponse(tpl.render({'copy': copy}, request))
 
-def static_copy(request, wc_number):
+def static_copy(request, wc_number):             # ← NEW
     tpl = loader.get_template('census/copy_modal.html')
     copy = get_object_or_404(models.Copy, wc_number=wc_number)
     return HttpResponse(tpl.render({'copy': copy}, request))
@@ -182,8 +182,8 @@ def issue_list(request, id):
         i.start_date, i.end_date
     ))
     copy_count = models.Copy.objects.filter(
-    Q(verification='U') | Q(verification='V') | Q(verification__isnull=True),
-    issue__in=issues
+        Q(verification='U') | Q(verification='V') | Q(verification__isnull=True),
+        issue__in=issues
     ).count()
 
     return HttpResponse(tpl.render({

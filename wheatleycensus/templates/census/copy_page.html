@@ -1,0 +1,59 @@
+{% extends 'census/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="wrapper">
+  <table class="play-title-header">
+    <tr>
+      <td class="play-title-header-icon">
+        <div class="play-title-icon-border">
+          {% if copy.issue.edition.title.image %}
+            <img class="play-title-icon" src="{{ copy.issue.edition.title.image.url }}">
+          {% else %}
+            <img class="play-title-icon-generic" src="{% static icon_path %}">
+          {% endif %}
+        </div>
+      </td>
+      <td class="play-title-header">
+        {{ copy.issue.edition.title.title }}
+        <span>({{ copy.issue.year }})</span>
+      </td>
+    </tr>
+  </table>
+
+  <table class="play-detail-set">
+    <tr><th>Field</th><th>Value</th></tr>
+    <tr><td>WC #</td><td>{{ copy.wc_number }}</td></tr>
+    <tr><td>Location</td><td>{{ copy.location.name_of_library_collection }}</td></tr>
+    <tr><td>Shelfmark</td><td>{{ copy.shelfmark }}</td></tr>
+    {% if copy.catalogue_url %}
+      <tr>
+        <td>Catalogue URL</td>
+        <td><a href="{{ copy.catalogue_url }}" target="_blank">{{ copy.catalogue_url }}</a></td>
+      </tr>
+    {% endif %}
+    {% if copy.binding %}
+      <tr><td>Binding</td><td>{{ copy.binding }}</td></tr>
+    {% endif %}
+    {% if copy.marginalia %}
+      <tr><td>Marginalia</td><td>{{ copy.marginalia }}</td></tr>
+    {% endif %}
+    {% if copy.prov_info %}
+      <tr><td>Provenance notes</td><td>{{ copy.prov_info }}</td></tr>
+    {% endif %}
+    {% if copy.height or copy.width %}
+      <tr>
+        <td>Dimensions</td>
+        <td>
+          {% if copy.height %}Height: {{ copy.height }} cm{% endif %}
+          {% if copy.width %}&nbsp;Width: {{ copy.width }} cm{% endif %}
+        </td>
+      </tr>
+    {% endif %}
+    {% if copy.bibliography %}
+      <tr><td>Bibliography</td><td>{{ copy.bibliography }}</td></tr>
+    {% endif %}
+  </table>
+</div>
+
+{% endblock content %}
