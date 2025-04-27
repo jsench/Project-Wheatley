@@ -1,83 +1,75 @@
 <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" align="left">
-          Copy Details for {{ copy.issue.edition.title.title }} ({{ copy.issue.year }})
-          {% if copy.digital_facsimile_url %}
-            <span title="Digital facsimile" class="unicode-icon">
-              <a href="{{ copy.digital_facsimile_url }}" target="_blank">
-                <i class="fas fa-camera-retro"></i>
-              </a>
-            </span>
-          {% endif %}
-        </h3>
-      </div>
-      <div class="modal-body">
-        <p><strong>WC#</strong>: {{ copy.wc_number }}</p>
-        <p><strong>Location</strong>: {{ copy.location.name_of_library_collection }}</p>
-        <p><strong>Shelfmark</strong>: {{ copy.shelfmark }}</p>
-  
-        {% if copy.catalogue_url %}
-        <p>
-          <strong>Catalogue URL</strong>:
-          <a href="{{ copy.catalogue_url }}" target="_blank">{{ copy.catalogue_url }}</a>
-        </p>
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3 class="modal-title" align="left">
+        Copy Details for {{ copy.issue.edition.title.title }} ({{ copy.issue.year }})
+        {% if copy.digital_facsimile_url %}
+          <span class="unicode-icon" title="Digital facsimile">
+            <a href="{{ copy.digital_facsimile_url }}" target="_blank"><i class="fas fa-camera-retro"></i></a>
+          </span>
         {% endif %}
-  
-        {% if copy.issue.edition.title.notes %}
-        <p><strong>Notes about this title</strong>: {{ copy.issue.edition.title.notes }}</p>
-        {% endif %}
-  
-        {% if copy.issue.edition.notes %}
-        <p><strong>Notes about this edition</strong>: {{ copy.issue.edition.notes }}</p>
-        {% endif %}
-  
-        {% if copy.issue.notes %}
-        <p><strong>Notes about this issue</strong>: {{ copy.issue.notes }}</p>
-        {% endif %}
-  
-        {% if copy.binding %}
-        <p><strong>Binding</strong>: {{ copy.binding }}</p>
-        {% endif %}
-  
-        {% if copy.sammelband %}
-        <p><strong>Sammelband contents</strong>: {{ copy.sammelband }}</p>
-        {% endif %}
-  
-        {% if copy.backend_notes %}
-        <p><strong>Copy-specific notes</strong>: {{ copy.backend_notes }}</p>
-        {% endif %}
-  
-        {% if copy.marginalia %}
-        <p><strong>Marginalia</strong>: {{ copy.marginalia }}</p>
-        {% endif %}
-  
-        {% if copy.provenance_records.all %}
-        <p>
-          <strong>Provenance</strong>:
-          {% for record in copy.provenance_records.all|dictsort:"provenance_name.name" %}
-            <a href="https://viaf.org/viaf/{{ record.provenance_name.viaf }}"
-               target="_blank" title="{{ record.provenance_name.bio }}">
-              {{ record.provenance_name.name }}
-            </a>{% if not forloop.last %}; {% endif %}
-          {% endfor %}
-        </p>
-        {% endif %}
-  
-        {% if copy.prov_info %}
-        <p><strong>Provenance notes</strong>: {{ copy.prov_info }}</p>
-        {% endif %}
-  
-        {% if copy.height %}
-        <p><strong>Leaf Height</strong>: {{ copy.height }} cm</p>
-        {% endif %}
-        {% if copy.width %}
-        <p><strong>Leaf Width</strong>: {{ copy.width }} cm</p>
-        {% endif %}
-        {% if copy.bibliography %}
-        <p><strong>For scholarship on this copy, see</strong>: {{ copy.bibliography }}</p>
-        {% endif %}
-      </div>
+      </h3>
     </div>
+
+    <div class="modal-body">
+      <p><strong>WC#</strong>: {{ copy.wc_number }}</p>
+      <p><strong>Location</strong>: {{ copy.location.name_of_library_collection }}</p>
+      <p><strong>Shelfmark</strong>: {{ copy.shelfmark }}</p>
+      {% if copy.catalogue_url %}
+        <p><strong>Catalogue URL</strong>: <a href="{{ copy.catalogue_url }}" target="_blank">{{ copy.catalogue_url }}</a></p>
+      {% endif %}
+
+      {% if copy.issue.edition.title.notes %}
+        <p><strong>Notes about this title</strong>: {{ copy.issue.edition.title.notes }}</p>
+      {% endif %}
+      {% if copy.issue.edition.notes %}
+        <p><strong>Notes about this edition</strong>: {{ copy.issue.edition.notes }}</p>
+      {% endif %}
+      {% if copy.issue.notes %}
+        <p><strong>Notes about this issue</strong>: {{ copy.issue.notes }}</p>
+      {% endif %}
+
+      {% if copy.binding %}
+        <p><strong>Binding</strong>: {{ copy.binding }}</p>
+      {% endif %}
+      {% if copy.backend_notes %}
+        <p><strong>Copy-specific notes</strong>: {{ copy.backend_notes }}</p>
+      {% endif %}
+      {% if copy.marginalia %}
+        <p><strong>Marginalia</strong>: {{ copy.marginalia }}</p>
+      {% endif %}
+
+      {# **Dual provenance links** #}
+      {% if copy.provenance_records.all %}
+        <p><strong>Provenance</strong>:
+        {% for record in copy.provenance_records.all|dictsort:"provenance_name.name" %}
+          {{ record.provenance_name.name }}
+          <a href="https://viaf.org/viaf/{{ record.provenance_name.viaf }}"
+             title="VIAF record" target="_blank"><i class="fas fa-book"></i></a>
+          {% if record.provenance_name.bio %}
+            <a href="{{ record.provenance_name.bio }}"
+               title="Biography" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+          {% endif %}
+          {% if not forloop.last %}; {% endif %}
+        {% endfor %}
+        </p>
+      {% endif %}
+
+      {% if copy.prov_info %}
+        <p><strong>Provenance notes</strong>: {{ copy.prov_info }}</p>
+      {% endif %}
+
+      {% if copy.signed_by_author %}
+        <p><strong>Signed by author</strong></p>
+      {% endif %}
+
+      {% if copy.height %}<p><strong>Leaf Height</strong>: {{ copy.height }} cm</p>{% endif %}
+      {% if copy.width  %}<p><strong>Leaf Width</strong>: {{ copy.width }} cm</p>{% endif %}
+      {% if copy.bibliography %}
+        <p><strong>For scholarship on this copy, see</strong>: {{ copy.bibliography }}</p>
+      {% endif %}
+    </div>
+
   </div>
-  
+</div>

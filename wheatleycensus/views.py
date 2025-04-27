@@ -1,5 +1,3 @@
-# marlowecensus/views.py
-
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
@@ -7,9 +5,9 @@ from django.template import loader
 from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
 from datetime import datetime
-import csv
-import re
+import csv, re
 from . import models
+
 
 # ------------------------------------------------------------------------------
 # Helpers
@@ -253,28 +251,36 @@ def issue_list(request, id):
 # ------------------------------------------------------------------------------
 def about(request, viewname='about'):
     tpl = loader.get_template('census/about.html')
+
+    # this is your existing “base_q” and counts logic:
     base_q = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
     copy_count = models.Copy.objects.filter(base_q, fragment=False).count()
     fragment_count = models.Copy.objects.filter(fragment=True).count()
     facsimile_count = models.Copy.objects.filter(
-        ~Q(digital_facsimile_url=''),
-        ~Q(digital_facsimile_url=None)
+        ~Q(digital_facsimile_url=None),
+        ~Q(digital_facsimile_url='')
     ).count()
+    # compute the percentage
     percent = round(100 * facsimile_count / copy_count) if copy_count else 0
+
+    # <<< Replace your old context = { … } here with this block: >>>
     ctx = {
         'copy_count': str(copy_count),
-        'verified_copy_count': str(models.Copy.objects.filter(verification='V').count()),
-        'unverified_copy_count': str(models.Copy.objects.filter(verification='U').count()),
-        'fragment_copy_count': str(fragment_count),
         'facsimile_copy_count': str(facsimile_count),
         'facsimile_copy_percent': f"{percent}%",
+        'unverified_copy_count': str(models.Copy.objects.filter(verification='U').count()),
         'current_date': datetime.now().strftime("%d %B %Y"),
-        'estc_copy_count': str(models.Copy.objects.filter(from_estc=True).count()),
-        'non_estc_copy_count': str(models.Copy.objects.filter(from_estc=False).count()),
     }
+    # <<< end replacement >>>
+
+    # Now pull in your page‐text records and render them
     raw = models.StaticPageText.objects.filter(viewname=viewname)
     content = [r.content.format(**ctx) for r in raw]
-    return HttpResponse(tpl.render({'content': content}, request))
+
+    # Merge in the rendered “content” list:
+    ctx['content'] = content
+
+    return HttpResponse(tpl.render(ctx, request))
 
 # ------------------------------------------------------------------------------
 # CSV exports
