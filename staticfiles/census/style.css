@@ -103,4 +103,5 @@ span.unverified-symbol {
 .download-here {
   font-weight: bold;
   text-decoration: underline;
+  color: #985;
 }
