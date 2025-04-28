@@ -206,9 +206,7 @@ def static_copy(request, wc_number):
 
 def copy_page(request, wc_number):
     copy = get_object_or_404(models.Copy, wc_number=wc_number)
-    return render(request, 'census/copy_page.html', {
-        'copy': copy,
-    })
+    return render(request, 'census/copy_page.html', {'copy': copy})
 # ------------------------------------------------------------------------------
 # Issue list (per title)
 # ------------------------------------------------------------------------------
