@@ -16,7 +16,11 @@
 
   <p>Currently, <strong>{{ unverified_copy_count }}</strong> copies are attested only by the holdings details in library catalogues, but as these details are often erroneous or nonspecific, such copies are listed as unverified (<span class="unverified-symbol">⃠</span>) until they have been confirmed. The other copies, including both those initially deriving from ESTC and those not, have been confirmed on site (<span class="verified-symbol">✓</span>). A list of all <a href="{% url 'search' %}?field=unverified" class="static-link">unverified copies</a> can be found <a href="{% url 'search' %}?field=unverified" class="static-link">here</a>.</p>
 
-  <p><strong>A list of all libraries currently in the database, along with the number of copies they hold, can be downloaded <a href="{% url 'location_copy_count_csv_export' %}" class="static-link">here</a>. Note that some universities have multiple collection-locations associated with them, which will each appear separately in the list.</strong></p>
+  <p class="static-text"><strong>
+    A list of all libraries currently in the database, along with the number of copies they hold, can be downloaded 
+    <a href="{% url 'location_copy_count_csv_export' %}">here</a>.
+  </strong></p>
+  
 
   <p>Copies of <em>Poems on Various Subjects Religious and Moral</em> that are sold at auction are assumed to have a location of “Private Collection” unless an institutional location is verified through matching identifiers. Copies that are documented and sold through major auction houses are considered verified even if they have not been personally verified by a WC member or volunteer.</p>
 

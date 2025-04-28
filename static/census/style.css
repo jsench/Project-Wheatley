@@ -467,6 +467,6 @@ span.unverified-symbol {
 /* ─────────────────────────────────────────────────────────────────────────────
    New: underline any “here” links in About (class="static-link")
    ───────────────────────────────────────────────────────────────────────────── */
-.static-link {
+.static-link a {
     text-decoration: underline;
 }
