@@ -18,15 +18,19 @@ a:hover {
     color: #233237;
 }
 
-/* Highlighted “here” links throughout the site */
+/* Special “here” download links */
 .download-here {
     font-weight: bold;
     text-decoration: underline;
     color: rgba(152, 75, 67, 1.0);
 }
 
+a.linkbutton {
+    padding: 5px;
+}
+
 body {
-    font-family:"Open Sans", AppleGothic, sans-serif;
+    font-family: "Open Sans", AppleGothic, sans-serif;
     font-weight: lighter;
 }
 
@@ -87,14 +91,6 @@ div.middle-frame {
 
 table.play-detail-set {
     margin: 0% 12% 10% 12%;
-}
-
-/* Unverified / verified icons */
-span.unverified-symbol-small,
-span.unverified-symbol,
-span.verified-symbol-small,
-span.verified-symbol {
-    vertical-align: middle;
 }
 
 span.unverified-symbol-small,
@@ -163,22 +159,24 @@ span.verified-symbol {
     background-color: rgba(152, 75, 67, 0.3);
 }
 
+/* Static‐text paragraphs on About */
 p.static-text {
-    margin-left: auto;
-    margin-right: auto;
-    width: 70%;
+    margin: 1em auto;
+    width: 75%;
     text-align: left;
+    line-height: 1.5;
 }
 
-p.error-text,
-p.guide-text,
-td p.static-text {
-    text-align: center;
+/* Highlighted lines */
+.highlight-text {
+    background-color: rgba(152, 75, 67, 0.05);
+    padding: 0.75em;
+    border-radius: 4px;
 }
 
-p.error-text {
-    margin-top: 0px;
-    margin-bottom: 40px;
+.highlight-number {
+    font-weight: bold;
+    color: rgba(67, 75, 182, 1.0);
 }
 
 span.citation {
@@ -194,14 +192,14 @@ span.citation {
     text-align: right;
 }
 
-/* FontAwesome‐based “camera” icon, etc. */
 .unicode-icon {
     font-family: FontAwesome;
     padding-left: 4px;
     padding-right: 4px;
 }
 
-.fa, .fas {
+.fa,
+.fas {
     display: inline;
 }
 
@@ -372,26 +370,26 @@ div.play-title-icon-border {
     width: 100px;
     height: 100px;
     margin: 0px auto;
-    border-radius:100px;
+    border-radius: 100px;
     border: 1px solid;
 }
 
 img.play-title-icon {
-    height:80px;
-    width:80px;
+    height: 80px;
+    width: 80px;
     margin: 10px;
     border-radius: 20px;
 }
 
 img.play-title-icon-generic {
-    height:100px;
-    width:100px;
+    height: 100px;
+    width: 100px;
     border-radius: 100px;
 }
 
 .play-title,
 .body-text {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
+    font-family: "Open Sans", AppleGothic, sans-serif;
     text-align: center;
 }
 
@@ -407,19 +405,10 @@ img.play-title-icon-generic {
     display: none;
 }
 
-.hidden-icon {
-    display: none;
-    /* visibility: hidden; */
-    /* Using visibility: hidden instead of display: none keeps the
-     * words from subtly changing position when the icon appears.
-     * But it skews the headers slightly to one side, so it's not
-     * a perfect solution; still working on this problem. */
-}
-
 /* Detail Table Styles */
 
 .play-title-header {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
+    font-family: "Open Sans", AppleGothic, sans-serif;
     font-size: 20px;
 }
 
