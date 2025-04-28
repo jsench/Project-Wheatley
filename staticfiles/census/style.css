@@ -2,6 +2,27 @@
  * Global Styles
  */
 
+
+ /* 1. “here” download links */
+.download-here {
+    color: rgba(152, 75, 67, 1.0);
+    font-weight: bold;
+    text-decoration: underline;
+  }
+  
+  /* 2. Highlighted block for “Census currently includes…” */
+  .highlight-text {
+    background-color: rgba(152, 75, 67, 0.05);
+    padding: 0.75em;
+    margin: 1em auto;
+    border-radius: 4px;
+    width: 75%;
+  }
+  
+  /* 3. Emphasize numbers inside highlights */
+  .highlight-number {
+    color: rgba(67, 75, 182, 1.0);
+  }
 /* Tag-level styles */
 
 html {
@@ -16,14 +37,6 @@ a:link,
 a:visited,
 a:hover {
     color: #233237;
-}
-
-
-/* Special “here” download links */
-.download-here {
-    font-weight: bold;
-    text-decoration: underline;
-    color: rgba(152, 75, 67, 1.0);
 }
 
 a.linkbutton {
