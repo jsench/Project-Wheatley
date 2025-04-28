@@ -14,6 +14,7 @@ urlpatterns = [
     path('issue/<int:id>/', views.copy_list,      name='copy_list'),
     path('copydata/<int:copy_id>/', views.copy_data, name='copy_data'),
     path('wc/<int:wc_number>/',     views.static_copy, name='copy_page'),
+    path('wc/<int:wc_number>/', views.copy_page, name='copy_page'),
     path('about/',            views.about,         name='about'),
     path('about/<str:viewname>/', views.about,     name='about'),
     path('autofill/location/',           views.autofill_location,   name='autofill_location'),
