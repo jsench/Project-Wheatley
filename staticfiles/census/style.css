@@ -459,9 +459,8 @@ td.play-issue-header {
    ───────────────────────────────────────────────────────────────────────────── */
 span.verified-symbol,
 span.unverified-symbol {
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: bold;
-    line-height: 1;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
