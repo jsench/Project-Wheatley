@@ -1,19 +1,17 @@
-{# templates/census/copy_page.html #}
 {% extends "census/base.html" %}
 {% load static %}
 
 {% block content %}
-  {# include bootstrap‐modal styling & script #}
+  {# include modal styles & scripts #}
   <link rel="stylesheet" href="{% static 'census/css/modal.css' %}">
   <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
 
-  {# build the actual modal container #}
+  {# The modal container #}
   <div id="copyModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    {# copy_modal.html already starts with <div class="modal-dialog">… #}
-    {% include 'census/copy_modal.html' %}
+    {% include "census/copy_modal.html" %}
   </div>
 
-  {# on load, show it #}
+  {# Fire it onload #}
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       $('#copyModal').modal('show');
