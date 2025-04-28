@@ -196,17 +196,26 @@ def copy_data(request, copy_id):
     return HttpResponse(tpl.render({'copy': copy}, request))
 
 
-def static_copy(request, wc_number):
-    """
-    Allows /wc/<n>/ to render the same modal view but as a standalone page.
-    """
-    tpl = loader.get_template('census/copy_modal.html')
-    copy = get_object_or_404(models.Copy, wc_number=wc_number)
-    return HttpResponse(tpl.render({'copy': copy}, request))
+# def static_copy(request, wc_number):
+#     """
+#     Allows /wc/<n>/ to render the same modal view but as a standalone page.
+#     """
+#     tpl = loader.get_template('census/copy_modal.html')
+#     copy = get_object_or_404(models.Copy, wc_number=wc_number)
+#     return HttpResponse(tpl.render({'copy': copy}, request))
 
 def copy_page(request, wc_number):
+    """
+    Stand‐alone page for /wc/<n>/ that auto‐opens the same modal
+    used in the copy_list view.
+    """
     copy = get_object_or_404(models.Copy, wc_number=wc_number)
-    return render(request, 'census/copy_page.html', {'copy': copy})
+    return render(request, 'census/copy_page.html', {
+        'copy': copy,
+    })
+
+
+
 # ------------------------------------------------------------------------------
 # Issue list (per title)
 # ------------------------------------------------------------------------------

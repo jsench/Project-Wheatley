@@ -2,17 +2,17 @@
 {% load static %}
 
 {% block content %}
-  {# include modal styles & scripts #}
+  {# include the modal CSS & JS #}
   <link rel="stylesheet" href="{% static 'census/css/modal.css' %}">
   <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
 
-  {# The modal container #}
-  <div id="copyModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  {# render the same modal markup #}
+  <div id="copyModal" class="modal fade" tabindex="-1" role="dialog">
     {% include "census/copy_modal.html" %}
   </div>
 
-  {# Fire it onload #}
   <script>
+    // When the page loads, immediately show the modal
     document.addEventListener('DOMContentLoaded', function() {
       $('#copyModal').modal('show');
     });
