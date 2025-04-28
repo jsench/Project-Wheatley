@@ -1,24 +1,22 @@
+{# templates/census/copy_page.html #}
 {% extends "census/base.html" %}
 {% load static %}
 
 {% block content %}
-  {# pull in the modal CSS & JS #}
+  {# include bootstrap‐modal styling & script #}
   <link rel="stylesheet" href="{% static 'census/css/modal.css' %}">
   <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-  <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
 
-  {# the backdrop #}
-  <div class="modal-backdrop fade in"></div>
-
-  {# the visible modal #}
-  <div id="copyModal" class="modal fade in" role="dialog" style="display: block;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-
-        {# reuse your existing fragment #}
-        {% include "census/copy_modal.html" %}
-
-      </div>
-    </div>
+  {# build the actual modal container #}
+  <div id="copyModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    {# copy_modal.html already starts with <div class="modal-dialog">… #}
+    {% include 'census/copy_modal.html' %}
   </div>
+
+  {# on load, show it #}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      $('#copyModal').modal('show');
+    });
+  </script>
 {% endblock %}
