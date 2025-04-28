@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
@@ -234,32 +234,21 @@ def issue_list(request, id):
 # ------------------------------------------------------------------------------
 # About / static pages
 # ------------------------------------------------------------------------------
-def about(request, viewname='about'):
-    tpl = loader.get_template('census/about.html')
-
-    base_q = Q(verification='U')|Q(verification='V')|Q(verification__isnull=True)
-    # Only count non-fragment copies in the main total
+def about(request):
+    base_q = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
     copy_count = models.Copy.objects.filter(base_q, fragment=False).count()
-
-    # Facsimile = those with a non-empty digital_facsimile_url
-    facsimile_count = models.Copy.objects.filter(
-        ~Q(digital_facsimile_url=''),
-        ~Q(digital_facsimile_url=None)
+    facsimile_count = models.Copy.objects.exclude(
+        Q(digital_facsimile_url='') | Q(digital_facsimile_url=None)
     ).count()
+    facsimile_percent = f"{round(100 * facsimile_count / copy_count)}%" if copy_count else "0%"
 
-    percent = round(100 * facsimile_count / copy_count) if copy_count else 0
-
-    ctx = {
+    return render(request, 'census/about.html', {
         'copy_count': copy_count,
-        'facsimile_copy_count': facsimile_count,
-        'facsimile_copy_percent': f"{percent}%",
-        'unverified_copy_count': models.Copy.objects.filter(verification='U').count(),
-        'current_date': datetime.now().strftime("%d %B %Y"),
-    }
-
-    raw = models.StaticPageText.objects.filter(viewname=viewname)
-    content = [r.content.format(**ctx) for r in raw]
-    return HttpResponse(tpl.render({'content': content}, request))
+        'facsimile_count': facsimile_count,
+        'facsimile_percent': facsimile_percent,
+        'unverified_count': models.Copy.objects.filter(verification='U').count(),
+        'today': datetime.now().strftime("%d %B %Y"),
+    })
 
 
 # ------------------------------------------------------------------------------
