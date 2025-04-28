@@ -407,7 +407,6 @@ img.play-title-icon-generic {
 
 .hidden-icon {
     display: none;
-    /* visibility: hidden; */
     /* Using visibility: hidden instead of display: none keeps the
      * words from subtly changing position when the icon appears.
      * But it skews the headers slightly to one side, so it's not
@@ -453,4 +452,21 @@ td.play-issue-header {
 
 .modal-title {
     font-weight: lighter;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   New: make ✓ and ⃠ symbols larger & bolder everywhere
+   ───────────────────────────────────────────────────────────────────────────── */
+span.verified-symbol,
+span.unverified-symbol {
+    font-size: 1.3em;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   New: underline any “here” links in About (class="static-link")
+   ───────────────────────────────────────────────────────────────────────────── */
+.static-link {
+    text-decoration: underline;
 }
