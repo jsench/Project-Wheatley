@@ -349,123 +349,28 @@ table.footer-nav {
     margin-bottom: 0px;
 }
 
-/* Frontpage Styles */
-
-td.play-title,
-td.play-title-icon {
-    width: 150px;
+/* -------------------------------------------------------------------------- */
+/* 1) Center-align the “icon” column in every .play-detail-set table          */
+/* -------------------------------------------------------------------------- */
+.play-detail-set th.icon,
+.play-detail-set td.icon {
+  text-align: center;
+  vertical-align: middle;
 }
 
-div.play-title {
-    padding: 4px 0px 20px 0px;
-    margin: 2px;
-}
-
-div.play-title-icon {
-    text-align: center;
-    margin: 12px 0px 0px 0px;
-}
-
-div.play-title-icon-border {
-    width: 100px;
-    height: 100px;
-    margin: 0px auto;
-    border-radius:100px;
-    border: 1px solid;
-}
-
-img.play-title-icon {
-    height:80px;
-    width:80px;
-    margin: 10px;
-    border-radius: 20px;
-}
-
-img.play-title-icon-generic {
-    height:100px;
-    width:100px;
-    border-radius: 100px;
-}
-
-.play-title,
-.body-text {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
-    text-align: center;
-}
-
-.play-title {
-    font-size: 14px;
-}
-
-.about {
-    font-size: 10px;
-}
-
-.hidden {
-    display: none;
-}
-
-.hidden-icon {
-    display: none;
-    /* Using visibility: hidden instead of display: none keeps the
-     * words from subtly changing position when the icon appears.
-     * But it skews the headers slightly to one side, so it's not
-     * a perfect solution; still working on this problem. */
-}
-
-/* Detail Table Styles */
-
-.play-title-header {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
-    font-size: 20px;
-}
-
-table.play-title-header {
-    margin: 0px 10% 25px 10%;
-}
-
-td.play-title-header-icon {
-    vertical-align: top;
-    padding-right: 10px;
-}
-
-td.play-title-header {
-    height: 50px;
-}
-
-.play-issue-header {
-    font-size: 75%;
-}
-
-td.play-issue-header {
-    vertical-align: top;
-}
-
-.play-issue-header span {
-    display: inline-block;
-    padding: 0px 10px 0px 0px;
-}
-
-.modal-header {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-
-.modal-title {
-    font-weight: lighter;
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   New: make ✓ and ⃠ symbols larger & bolder everywhere
-   ───────────────────────────────────────────────────────────────────────────── */
+/* -------------------------------------------------------------------------- */
+/* 2) Enlarge and bold the ✔ and ⃠ symbols                                   */
+/* -------------------------------------------------------------------------- */
 span.verified-symbol,
 span.unverified-symbol {
-    font-size: 1.2em;
-    font-weight: bold;
+  font-size: 1.5em;    /* adjust as desired */
+  font-weight: bolder;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   New: underline any “here” links in About (class="static-link")
-   ───────────────────────────────────────────────────────────────────────────── */
-.static-link a {
-    text-decoration: underline;
+/* -------------------------------------------------------------------------- */
+/* 3) Style the “downloaded here” links on the About page                    */
+/* -------------------------------------------------------------------------- */
+.download-here {
+  font-weight: bold;
+  text-decoration: underline;
 }
