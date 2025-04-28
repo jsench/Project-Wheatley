@@ -1,68 +1,24 @@
 {% extends "census/base.html" %}
 {% load static %}
+
 {% block content %}
+  {# pull in the modal CSS & JS #}
+  <link rel="stylesheet" href="{% static 'census/css/modal.css' %}">
+  <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
+  <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
 
-  <div class="wrapper">
-    <div class="page-copy-detail">
+  {# the backdrop #}
+  <div class="modal-backdrop fade in"></div>
 
-      <h2 class="copy-title">
-        Copy Details for {{ copy.issue.edition.title.title }} ({{ copy.issue.year }})
-        {% if copy.digital_facsimile_url %}
-          <span class="unicode-icon" title="Digital facsimile">
-            <a href="{{ copy.digital_facsimile_url }}" target="_blank">
-              <i class="fas fa-camera-retro"></i>
-            </a>
-          </span>
-        {% endif %}
-      </h2>
+  {# the visible modal #}
+  <div id="copyModal" class="modal fade in" role="dialog" style="display: block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
-      <p><strong>WC#:</strong> {{ copy.wc_number }}</p>
-      <p><strong>Location:</strong> {{ copy.location.name_of_library_collection }}</p>
-      <p><strong>Shelfmark:</strong> {{ copy.shelfmark }}</p>
+        {# reuse your existing fragment #}
+        {% include "census/copy_modal.html" %}
 
-      {% if copy.catalogue_url %}
-      <p>
-        <strong>Catalogue URL:</strong>
-        <a href="{{ copy.catalogue_url }}" target="_blank">{{ copy.catalogue_url }}</a>
-      </p>
-      {% endif %}
-
-      {% if copy.backend_notes %}
-      <p><strong>Copy-specific notes:</strong> {{ copy.backend_notes }}</p>
-      {% endif %}
-
-      {% if copy.marginalia %}
-      <p><strong>Marginalia:</strong> {{ copy.marginalia }}</p>
-      {% endif %}
-
-      {% if copy.provenance_records.all %}
-      <p>
-        <strong>Provenance:</strong>
-        {% for record in copy.provenance_records.all|dictsort:"provenance_name.name" %}
-          <a href="https://viaf.org/viaf/{{ record.provenance_name.viaf }}"
-             target="_blank"
-             title="{{ record.provenance_name.bio }}">
-            {{ record.provenance_name.name }}
-          </a>{% if not forloop.last %}; {% endif %}
-        {% endfor %}
-      </p>
-      {% endif %}
-
-      {% if copy.prov_info %}
-      <p><strong>Provenance notes:</strong> {{ copy.prov_info }}</p>
-      {% endif %}
-
-      {% if copy.height %}
-      <p><strong>Leaf Height:</strong> {{ copy.height }} cm</p>
-      {% endif %}
-      {% if copy.width %}
-      <p><strong>Leaf Width:</strong> {{ copy.width }} cm</p>
-      {% endif %}
-      {% if copy.bibliography %}
-      <p><strong>For scholarship on this copy, see:</strong> {{ copy.bibliography }}</p>
-      {% endif %}
-
+      </div>
     </div>
   </div>
-
 {% endblock %}
