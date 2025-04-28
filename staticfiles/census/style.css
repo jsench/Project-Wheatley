@@ -18,14 +18,7 @@ a:hover {
     color: #233237;
 }
 
-/* ────────────────────────────────────────────────────────────────────────────
-   Highlight “here” links in About
-───────────────────────────────────────────────────────────────────────────── */
-.link-highlight {
-    color: rgba(152, 75, 67, 1.0);
-    font-weight: bold;
-  }
-  
+
 /* Special “here” download links */
 .download-here {
     font-weight: bold;
