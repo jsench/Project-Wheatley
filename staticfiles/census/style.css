@@ -1,8 +1,9 @@
-/* ==========================================================================
-   1. GLOBAL STYLES & ABOUT PAGE HIGHLIGHTS
-   ========================================================================== */
+/*
+ * Global Styles
+ */
 
 /* Tag-level styles */
+
 html {
     margin-left: calc(100vw - 100%);
 }
@@ -17,37 +18,82 @@ a:hover {
     color: #233237;
 }
 
-/* Special “here” download links (About page) */
-.download-here {
+.guide-text a:link,
+.guide-text a:visited,
+.guide-text a:hover,
+.static-text a:link,
+.static-text a:visited,
+.static-text a:hover {
     color: rgba(152, 75, 67, 1.0);
     font-weight: bold;
-    text-decoration: underline;
 }
 
-/* Highlight block around key lines (About page) */
-.highlight-text {
-    background-color: rgba(152, 75, 67, 0.05);
-    padding: 0.75em;
-    margin: 1em auto;
-    border-radius: 4px;
-    width: 75%;
-    line-height: 1.5;
+a.linkbutton {
+    padding: 5px;
 }
 
-/* Emphasize numbers inside highlights */
-.highlight-number {
-    color: rgba(67, 75, 182, 1.0);
-    font-weight: bold;
+body {
+    font-family:"Open Sans", AppleGothic, sans-serif;
+    font-weight: lighter;
 }
 
-/* ==========================================================================
-   2. ICONS (VERIFIED / UNVERIFIED / CAMERA) & UNICODE FONTS
-   ========================================================================== */
+table {
+    margin: auto;
+    border-collapse: collapse;
+    font-weight: lighter;
+}
 
-.unicode-icon {
-    font-family: FontAwesome;
-    padding-left: 4px;
-    padding-right: 4px;
+th {
+    font-weight: lighter;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    margin: 3px;
+}
+
+/* Class-level styles */
+
+div.frame-container {
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    position: relative;
+}
+
+div.outer-frame {
+    position: relative;
+    max-width: 1024px;
+    min-width: 526px;
+    margin: 0 auto;
+}
+
+div.middle-frame {
+    max-width: 896px;
+    margin: 0px 20% 0px 20%;
+}
+
+.play-detail-set {
+    text-align: center;
+}
+
+.play-detail-set tr:nth-child(odd) {
+    background-color: rgba(35, 50, 55, 0.1);
+}
+
+.play-detail-set tr:nth-child(1) {
+    background-color: rgba(152, 75, 67, 0.5);
+}
+
+.play-detail-set tr {
+    border: none;
+}
+
+table.play-detail-set {
+    margin: 0% 12% 10% 12%;
 }
 
 span.unverified-symbol-small,
@@ -74,139 +120,27 @@ span.verified-symbol {
     font-size: 170%;
 }
 
-/* ==========================================================================
-   3. INPUTS, BUTTONS, & UI ELEMENTS
-   ========================================================================== */
-
-input,
-.button,
-.button-inline,
-.button-inline-selected,
-.button-inline-small {
-    cursor: pointer;
-    margin: 2px;
-    border: 1px solid rgba(152, 75, 67, 0.4);
-    border-radius: 4px;
-    padding: 2px 6px 3px 6px;
-    font-family: inherit;
-    user-select: none;
-}
-
-input,
-.button {
-    height: 25px;
-    font-size: 80%;
-}
-
-.button,
-input[type="submit"] {
-    background-color: rgba(152, 75, 67, 0.2);
-    font-weight: lighter;
-}
-
-.button-inline-selected {
-    background-color: rgba(152, 75, 67, 0.6);
-}
-
-.button-inline {
-    height: 18px;
-    font-size: 65%;
-    padding: 1px 6px 2px 6px;
-    margin: 2px 10px 3px 10px;
-}
-
-.button-inline-small {
-    height: 10px;
-    font-size: 50%;
-    padding: 1px 3px 1px 3px;
-    margin: 2px 10px 3px 10px;
-}
-
-input {
-    background-color: rgba(152, 75, 67, 0.1);
-}
-
-select {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: rgba(152, 75, 67, 0.2);
-    padding: 3px 5px;
-    margin: 3px;
-    font-weight: lighter;
-    font-size: 80%;
-    font-family: "Open Sans", AppleGothic, sans-serif;
-}
-
-/* ==========================================================================
-   4. LAYOUT FRAMES
-   ========================================================================== */
-
-div.frame-container {
-    width: 100%;
-    height: auto;
-    margin: 0 auto;
-    position: relative;
-}
-
-div.outer-frame {
-    position: relative;
-    max-width: 1024px;
-    min-width: 526px;
-    margin: 0 auto;
-}
-
-div.middle-frame {
-    max-width: 896px;
-    margin: 0px 20% 0px 20%;
-}
-
-/* ==========================================================================
-   5. DETAIL TABLE STYLES (SEARCH, COPY LIST, ETC.)
-   ========================================================================== */
-
-table {
-    margin: auto;
-    border-collapse: collapse;
-    font-weight: lighter;
-}
-
-th {
-    font-weight: lighter;
-}
-
-.play-detail-set {
-    text-align: center;
-}
-
-.play-detail-set tr:nth-child(odd) {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-
-.play-detail-set tr:nth-child(1) {
-    background-color: rgba(152, 75, 67, 0.5);
-}
-
-table.play-detail-set {
-    margin: 0% 12% 10% 12%;
-}
-
 .play-detail-set td,
 .play-detail-set th {
     width: 100px;
-    padding: 10px 6px;
+    padding: 10px 6px 10px 6px;
 }
 
-.play-detail-set th.detailed { width: 2000px; }
-.play-detail-set th.terse    { width:   40px; }
-.play-detail-set th.icon     { width:    5px; }
-.play-detail-set th.even     { width:  300px; }
+.play-detail-set th.detailed {
+    width: 2000px;
+}
 
-/* ... continued full original CSS below ... */
+.play-detail-set th.terse {
+    width: 40px;
+}
 
-/* ==========================================================================
-   6. WARNING / NOTICE BOXES
-   ========================================================================== */
+.play-detail-set th.icon {
+    width: 5px;
+}
+
+.play-detail-set th.even {
+    width: 300px;
+}
 
 .warning,
 .notice {
@@ -228,40 +162,135 @@ table.play-detail-set {
     background-color: rgba(152, 75, 67, 0.3);
 }
 
-/* ==========================================================================
-   7. STATIC-TEXT PARAGRAPHS ON ABOUT
-   ========================================================================== */
-
 p.static-text {
-    margin-left: auto;
-    margin-right: auto;
-    width: 70%;
-    text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+  text-align: left;
 }
 
-p.guide-text a:link,
-p.static-text a:link,
-a.guide-text a:visited {
-    color: rgba(152, 75, 67, 1.0);
-    font-weight: bold;
+p.error-text,
+p.guide-text,
+td p.static-text {
+  text-align: center;
 }
 
-/* ==========================================================================
-   8. CITATION STYLING
-   ========================================================================== */
+p.error-text {
+  margin-top: 0px;
+  margin-bottom: 40px;
+}
 
 span.citation {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 30px;
-    text-indent: -24px;
-    display: block;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 30px ;
+  text-indent: -24px ;
+  display: block;
 }
 
-/* ==========================================================================
-   9. HEADER & FOOTER NAVIGATION
-   ========================================================================== */
+.tucked {
+    text-align: right;
+}
+
+.unicode-icon {
+    font-family: FontAwesome;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.fa, .fas {
+    display: inline;
+}
+
+/* UI Styles (May be either class- or tag-level) */
+
+input,
+.button,
+.button-inline,
+.button-inline-selected,
+.button-inline-small {
+    cursor: pointer;
+    margin: 2px;
+    border: solid;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(152, 75, 67, 0.4);
+    padding: 2px 6px 3px 6px;
+    font-family: inherit;
+    user-select: none;
+}
+
+input,
+.button {
+    height: 25px;
+    font-size: 80%;
+}
+
+.admin-submit input[type="text"] {
+    width: 100%;
+}
+
+.button-inline {
+    height: 18px;
+    font-size: 65%;
+    padding: 1px 6px 2px 6px;
+    margin: 2px 10px 3px 10px;
+}
+
+.button-inline-small {
+    height: 10px;
+    font-size: 50%;
+    padding: 1px 3px 1px 3px;
+    margin: 2px 10px 3px 10px;
+}
+
+input {
+    background-color: rgba(152, 75, 67, 0.1);
+}
+
+.ui-menu .ui-menu-item {
+    background-color: rgba(152, 75, 67, 0.1);
+    font-size: 75%;
+}
+
+.ui-menu .ui-menu-item,
+.ui-menu .ui-menu-item .ui-state-active {
+    font-weight: lighter;
+    font-family: "Open Sans", AppleGothic, sans-serif;
+}
+
+.button,
+.button-inline,
+.button-inline-small,
+input[type="submit"] {
+    background-color: rgba(152, 75, 67, 0.2);
+    font-weight: lighter;
+}
+
+.button-inline-selected {
+    background-color: rgba(152, 75, 67, 0.6);
+}
+
+body:focus {
+    outline-color: rgba(152, 75, 67, 0.6);
+}
+
+select {
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none; /* Safari and Chrome */
+    appearance: none;
+    background-color: rgba(152, 75, 67, 0.2);
+    padding: 3px 5px 3px 5px;
+    margin: 3px;
+    font-weight: lighter;
+    font-size: 80%;
+    font-family: "Open Sans", AppleGothic, sans-serif;
+}
+
+/*
+ * Header and Footer Styles
+ */
 
 table.title {
     margin: 0% 20% 0% 20%;
@@ -275,14 +304,21 @@ table.title {
 .title th {
     font-size: 10px;
     height: 20px;
-    padding: 0px 6px;
+    padding: 0px 6px 0px 6px;
 }
 
 .title td {
-    padding: 10px 6px 0px;
+    padding: 10px 6px 0px 6px;
 }
 
-.footer-nav {
+.title {
+    font-family: "Open Sans", AppleGothic, sans-serif;
+    font-size: 25px;
+    text-align: center;
+    margin: 40px auto 20px auto;
+}
+
+table.footer-nav {
     margin-bottom: 20px;
     margin-top: 20px;
     font-size: 80%;
@@ -290,7 +326,12 @@ table.title {
 }
 
 .footer-nav span {
-    padding: 0 10px;
+    padding: 0px 10px 0px 10px;
+}
+
+.footer-nav th,
+.footer-nav td {
+    padding: 10px 15px 10px 15px;
 }
 
 .header-title-nav th,
@@ -298,43 +339,17 @@ table.title {
     padding: 10px;
 }
 
-/* ==========================================================================
-   10. SEARCH BAR & AUTOCOMPLETE
-   ========================================================================== */
-
 .search-bar {
     text-align: center;
     height: 32px;
-    padding: 0 0 15px;
+    padding: 0px 0px 15px 0px;
 }
 
 .search-bar form {
     margin-bottom: 0px;
 }
 
-.ui-menu .ui-menu-item {
-    background-color: rgba(152, 75, 67, 0.1);
-    font-size: 75%;
-}
-.ui-menu .ui-menu-item .ui-state-active {
-    font-weight: lighter;
-}
-
-/* ==========================================================================
-   11. MODAL WINDOWS
-   ========================================================================== */
-
-.modal-header {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-
-.modal-title {
-    font-weight: lighter;
-}
-
-/* ==========================================================================
-   12. FRONTPAGE TITLE ICONS & GRID
-   ========================================================================== */
+/* Frontpage Styles */
 
 td.play-title,
 td.play-title-icon {
@@ -342,28 +357,33 @@ td.play-title-icon {
 }
 
 div.play-title {
-    padding: 4px 0 20px;
+    padding: 4px 0px 20px 0px;
     margin: 2px;
 }
 
-.play-title-icon-border {
+div.play-title-icon {
+    text-align: center;
+    margin: 12px 0px 0px 0px;
+}
+
+div.play-title-icon-border {
     width: 100px;
     height: 100px;
-    margin: 0 auto;
-    border-radius: 100px;
+    margin: 0px auto;
+    border-radius:100px;
     border: 1px solid;
 }
 
 img.play-title-icon {
-    height: 80px;
-    width: 80px;
+    height:80px;
+    width:80px;
     margin: 10px;
     border-radius: 20px;
 }
 
 img.play-title-icon-generic {
-    height: 100px;
-    width: 100px;
+    height:100px;
+    width:100px;
     border-radius: 100px;
 }
 
@@ -383,4 +403,85 @@ img.play-title-icon-generic {
 
 .hidden {
     display: none;
+}
+
+.hidden-icon {
+    display: none;
+    /* visibility: hidden instead of display: none keeps the
+     * words from subtly changing position when the icon appears,
+     * but skews headers slightly, so it’s not perfect. */
+}
+
+/* Detail Table Styles */
+
+.play-title-header {
+    font-family: 'Open Sans', AppleGothic, sans-serif;
+    font-size: 20px;
+}
+
+table.play-title-header {
+    margin: 0px 10% 25px 10%;
+}
+
+td.play-title-header-icon {
+    vertical-align: top;
+    padding-right: 10px;
+}
+
+td.play-title-header {
+    height: 50px;
+}
+
+.play-issue-header {
+    font-size: 75%;
+}
+
+td.play-issue-header {
+    vertical-align: top;
+}
+
+.play-issue-header span {
+    display: inline-block;
+    padding: 0px 10px 0px 0px;
+}
+
+.modal-header {
+    background-color: rgba(152, 75, 67, 0.3);
+}
+
+.modal-title {
+    font-weight: lighter;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   New: make ✓ and ⃠ symbols larger & bolder everywhere
+   ───────────────────────────────────────────────────────────────────────────── */
+span.verified-symbol,
+span.unverified-symbol {
+    font-size: 1.3em;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/*
+   New: About-page highlights & “here” links
+*/
+.highlight-text {
+    background-color: rgba(152,75,67,0.05);
+    padding: 0.75em;
+    margin: 1em auto;
+    border-radius: 4px;
+    width: 70%;
+    line-height: 1.5;
+}
+
+.highlight-number {
+    color: rgba(67,75,182,1.0);
+    font-weight: bold;
+}
+
+.download-here {
+    color: rgba(152,75,67,1.0);
+    font-weight: bold;
+    text-decoration: underline;
 }
