@@ -2,7 +2,13 @@
  * Global Styles
  */
 
- html {
+ :root {
+    /* tweak this one value to resize both circles and images */
+    --icon-size: 160px;
+    --icon-padding: 20px;
+}
+
+html {
     margin-left: calc(100vw - 100%);
 }
 
@@ -31,7 +37,7 @@ a.linkbutton {
 }
 
 body {
-    font-family:"Open Sans", AppleGothic, sans-serif;
+    font-family: "Open Sans", AppleGothic, sans-serif;
     font-weight: lighter;
 }
 
@@ -170,7 +176,7 @@ table.title {
     margin: 40px auto 20px auto;
 }
 
-/* Sign‐in / Sign‐out floated right */
+/* Sign-in / Sign-out floated right */
 .tucked {
     text-align: right;
     margin: 10px 20px;
@@ -214,7 +220,7 @@ table.footer-nav {
     margin-bottom: 0px;
 }
 
-/* Frontpage Styles – BIGGER, ZOOMED‐IN CIRCLES */
+/* Frontpage Styles – outer circle & inner image now driven by variables */
 td.play-title,
 td.play-title-icon {
     width: 150px;
@@ -225,33 +231,26 @@ div.play-title {
     margin: 2px;
 }
 
-/* outer circle now 200×200, thicker border */
+/* outer circle: diameter = icon-size + 2 * icon-padding */
 div.play-title-icon {
     text-align: center;
-    margin: 24px 0px 30px 0px;
+    margin: calc(var(--icon-padding) * 1.2) 0px calc(var(--icon-padding) * 1.5) 0px;
 }
 
 div.play-title-icon-border {
-    width: 200px;
-    height: 200px;
-    margin: 0px auto;
+    width: calc(var(--icon-size) + var(--icon-padding) * 2);
+    height: calc(var(--icon-size) + var(--icon-padding) * 2);
+    margin: 0 auto;
     border-radius: 50%;
     border: 2px solid;
 }
 
-/* inner image 160×160, fully round */
-img.play-title-icon {
-    width: 160px;
-    height: 160px;
-    margin: 20px;
-    border-radius: 50%;
-}
-
-/* generic fallback same size */
+/* inner image */
+img.play-title-icon,
 img.play-title-icon-generic {
-    width: 160px;
-    height: 160px;
-    margin: 20px;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    margin: var(--icon-padding);
     border-radius: 50%;
 }
 
@@ -293,18 +292,16 @@ span.unverified-symbol {
     color: rgba(182, 75, 67, 1.0);
 }
 
-span.unverified-symbol {
+span.unverified-symbol,
+span.verified-symbol {
     font-size: 1.3em;
+    line-height: 1;
+    font-weight: bold;
 }
 
 span.verified-symbol-small,
 span.verified-symbol {
-    font-weight: bold;
     color: rgba(67, 75, 182, 1.0);
-}
-
-span.verified-symbol {
-    font-size: 1.3em;
 }
 
 .unicode-icon {
@@ -317,7 +314,13 @@ span.verified-symbol {
     display: inline;
 }
 
-/* “Here” links etc. (unchanged) */
+/* vertical alignment fix for issue‐page header */
+td.play-title-header-icon,
+td.play-title-header {
+    vertical-align: middle;
+}
+
+/* “Here” links etc. */
 
 .static-link a {
     text-decoration: underline;
