@@ -2,9 +2,7 @@
  * Global Styles
  */
 
-/* Tag-level styles */
-
-html {
+ html {
     margin-left: calc(100vw - 100%);
 }
 
@@ -37,26 +35,56 @@ body {
     font-weight: lighter;
 }
 
-table {
-    margin: auto;
-    border-collapse: collapse;
+code {
+    background-color: rgba(0,0,0,0.05);
+    padding: 2px 4px;
+    font-family: monospace;
+}
+
+/* UI Styles */
+input,
+.button,
+.button-inline,
+.button-inline-selected,
+.button-inline-small {
+    cursor: pointer;
+    margin: 2px;
+    border: 1px solid rgba(152, 75, 67, 0.4);
+    border-radius: 4px;
+    padding: 2px 6px 3px 6px;
+    font-family: inherit;
+    user-select: none;
+}
+
+input,
+.button {
+    height: 25px;
+    font-size: 80%;
+}
+
+input[type="submit"],
+.button {
+    background-color: rgba(152, 75, 67, 0.2);
     font-weight: lighter;
 }
 
-th {
-    font-weight: lighter;
+.button-inline-selected {
+    background-color: rgba(152, 75, 67, 0.6);
 }
 
-ul {
-    list-style: none;
-}
-
-li {
+select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: rgba(152, 75, 67, 0.2);
+    padding: 3px 5px;
     margin: 3px;
+    font-weight: lighter;
+    font-size: 80%;
+    font-family: "Open Sans", AppleGothic, sans-serif;
 }
 
-/* Class-level styles */
-
+/* Layout Frames */
 div.frame-container {
     width: 100%;
     height: auto;
@@ -76,32 +104,232 @@ div.middle-frame {
     margin: 0px 20% 0px 20%;
 }
 
-/* … all of your other existing rules … */
+/* Detail Tables */
+table {
+    margin: auto;
+    border-collapse: collapse;
+    font-weight: lighter;
+}
 
-/* -------------------------------------------------------------------------- */
-/* Enlarge & bold the ✔ and ⃠ symbols                                         */
-/* -------------------------------------------------------------------------- */
+th {
+    font-weight: lighter;
+}
+
+.play-detail-set {
+    text-align: center;
+    margin: 0% 12% 10% 12%;
+}
+
+.play-detail-set tr:nth-child(odd) {
+    background-color: rgba(35, 50, 55, 0.1);
+}
+
+.play-detail-set tr:nth-child(1) {
+    background-color: rgba(152, 75, 67, 0.5);
+}
+
+.play-detail-set tr {
+    border: none;
+}
+
+.play-detail-set td,
+.play-detail-set th {
+    width: 100px;
+    padding: 10px 6px 10px 6px;
+}
+
+.play-detail-set th.detailed { width: 2000px; }
+.play-detail-set th.terse    { width:   40px; }
+.play-detail-set th.icon     { width:    5px; }
+.play-detail-set th.even     { width:  300px; }
+
+/* Header & Footer */
+table.title {
+    margin: 0% 20% 0% 20%;
+}
+
+.title th,
+.title td {
+    width: 170px;
+}
+
+.title th {
+    font-size: 10px;
+    height: 20px;
+    padding: 0px 6px 0px 6px;
+}
+
+.title td {
+    padding: 10px 6px 0px 6px;
+}
+
+.title {
+    font-family: "Open Sans", AppleGothic, sans-serif;
+    font-size: 25px;
+    text-align: center;
+    margin: 40px auto 20px auto;
+}
+
+table.footer-nav {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    font-size: 80%;
+    border-top: 1px solid rgba(0, 0, 0, 0.65);
+}
+
+.footer-nav span {
+    padding: 0px 10px 0px 10px;
+}
+
+.footer-nav th,
+.footer-nav td {
+    padding: 10px 15px 10px 15px;
+}
+
+.header-title-nav th,
+.header-title-nav td {
+    padding: 10px;
+}
+
+.search-bar {
+    text-align: center;
+    height: 32px;
+    padding: 0px 0px 15px 0px;
+}
+
+.search-bar form {
+    margin-bottom: 0px;
+}
+
+/* Frontpage Styles */
+td.play-title,
+td.play-title-icon {
+    width: 150px;
+}
+
+div.play-title {
+    padding: 4px 0px 20px 0px;
+    margin: 2px;
+}
+
+div.play-title-icon {
+    text-align: center;
+    margin: 12px 0px 0px 0px;
+}
+
+div.play-title-icon-border {
+    width: 100px;
+    height: 100px;
+    margin: 0px auto;
+    border-radius: 100px;
+    border: 1px solid;
+}
+
+img.play-title-icon {
+    height: 80px;
+    width: 80px;
+    margin: 10px;
+    border-radius: 20px;
+}
+
+img.play-title-icon-generic {
+    height: 100px;
+    width: 100px;
+    border-radius: 100px;
+}
+
+.play-title,
+.body-text {
+    font-family: 'Open Sans', AppleGothic, sans-serif;
+    text-align: center;
+}
+
+.play-title {
+    font-size: 14px;
+}
+
+.about {
+    font-size: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.hidden-icon {
+    display: none;
+}
+
+/* Modal Styles */
+.modal-header {
+    background-color: rgba(152, 75, 67, 0.3);
+}
+
+.modal-title {
+    font-weight: lighter;
+}
+
+/* Icons */
+span.unverified-symbol-small,
+span.unverified-symbol {
+    font-weight: bold;
+    color: rgba(182, 75, 67, 1.0);
+}
+
+span.unverified-symbol { font-size: 130%; }
+
+span.verified-symbol-small,
+span.verified-symbol {
+    font-weight: bold;
+    color: rgba(67, 75, 182, 1.0);
+}
+
+span.verified-symbol-small { font-size: 110%; }
+span.verified-symbol       { font-size: 170%; }
+
+.unicode-icon {
+    font-family: FontAwesome;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.fa, .fas {
+    display: inline;
+}
+
+/* New: make ✓ and ⃠ symbols larger & bolder everywhere */
 span.verified-symbol,
 span.unverified-symbol {
-  font-size: 1.5em;
-  font-weight: bolder;
-  vertical-align: middle;
+    font-size: 1.3em;
+    font-weight: bold;
+    line-height: 1;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Style the camera icon inline (in the About page)                           */
-/* -------------------------------------------------------------------------- */
-.unicode-icon i.fa-camera-retro {
-  font-size: 1.2em;
-  vertical-align: middle;
-  margin: 0 0.2em;
+/* New: underline any “here” links in About (class="static-link") */
+.static-link a {
+    text-decoration: underline;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Make only the “here” links bold & underlined                               */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   ABOUT PAGE HIGHLIGHTS & “here” LINKS
+   ========================================================================= */
+
 .download-here {
-  font-weight: bold;
-  text-decoration: underline;
-  color: #985;
+    color: rgba(152, 75, 67, 1.0);
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.highlight-text {
+    background-color: rgba(152, 75, 67, 0.05);
+    padding: 0.75em;
+    margin: 1em auto;
+    border-radius: 4px;
+    width: 70%;
+    line-height: 1.5;
+}
+
+.highlight-number {
+    color: rgba(67, 75, 182, 1.0);
+    font-weight: bold;
 }
