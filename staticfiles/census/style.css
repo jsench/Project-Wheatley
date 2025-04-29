@@ -222,24 +222,23 @@ div.play-title {
 /* Larger circle + image sizing restored */
 div.play-title-icon {
     text-align: center;
-    margin: 12px 0px 20px 0px;
+    margin: 24px 0 30px 0;       /* more breathing room below */
 }
 
 div.play-title-icon-border {
-    width: 120px;      /* increased ring */
-    height: 120px;     /* increased ring */
-    margin: 0px auto;
-    border-radius: 100px;
-    border: 1px solid;
+    width: 200px;                /* outer circle twice as wide */
+    height: 200px;               /* outer circle twice as tall */
+    margin: 0 auto;
+    border-radius: 50%;          /* full round */
+    border: 2px solid;           /* a slightly thicker line */
 }
 
 img.play-title-icon {
-    height: 100px;     /* increased inner image */
-    width: 100px;      /* increased inner image */
-    margin: 10px;
-    border-radius: 20px;
+    width: 160px;                /* inner image 160×160 */
+    height: 160px;
+    margin: 20px;                /* center it inside the border */
+    border-radius: 50%;          /* keep it perfectly round */
 }
-
 img.play-title-icon-generic {
     height: 120px;     /* match ring */
     width: 120px;      /* match ring */
