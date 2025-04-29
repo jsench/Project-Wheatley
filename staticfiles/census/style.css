@@ -2,9 +2,7 @@
  * Global Styles
  */
 
-/* Tag-level styles */
-
-html {
+ html {
     margin-left: calc(100vw - 100%);
 }
 
@@ -37,26 +35,56 @@ body {
     font-weight: lighter;
 }
 
-table {
-    margin: auto;
-    border-collapse: collapse;
+code {
+    background-color: rgba(0,0,0,0.05);
+    padding: 2px 4px;
+    font-family: monospace;
+}
+
+/* UI Styles */
+input,
+.button,
+.button-inline,
+.button-inline-selected,
+.button-inline-small {
+    cursor: pointer;
+    margin: 2px;
+    border: 1px solid rgba(152, 75, 67, 0.4);
+    border-radius: 4px;
+    padding: 2px 6px 3px 6px;
+    font-family: inherit;
+    user-select: none;
+}
+
+input,
+.button {
+    height: 25px;
+    font-size: 80%;
+}
+
+input[type="submit"],
+.button {
+    background-color: rgba(152, 75, 67, 0.2);
     font-weight: lighter;
 }
 
-th {
-    font-weight: lighter;
+.button-inline-selected {
+    background-color: rgba(152, 75, 67, 0.6);
 }
 
-ul {
-    list-style: none;
-}
-
-li {
+select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: rgba(152, 75, 67, 0.2);
+    padding: 3px 5px;
     margin: 3px;
+    font-weight: lighter;
+    font-size: 80%;
+    font-family: "Open Sans", AppleGothic, sans-serif;
 }
 
-/* Class-level styles */
-
+/* Layout Frames */
 div.frame-container {
     width: 100%;
     height: auto;
@@ -76,8 +104,20 @@ div.middle-frame {
     margin: 0px 20% 0px 20%;
 }
 
+/* Detail Tables */
+table {
+    margin: auto;
+    border-collapse: collapse;
+    font-weight: lighter;
+}
+
+th {
+    font-weight: lighter;
+}
+
 .play-detail-set {
     text-align: center;
+    margin: 0% 12% 10% 12%;
 }
 
 .play-detail-set tr:nth-child(odd) {
@@ -92,206 +132,18 @@ div.middle-frame {
     border: none;
 }
 
-table.play-detail-set {
-    margin: 0% 12% 10% 12%;
-}
-
-span.unverified-symbol-small,
-span.unverified-symbol {
-    font-weight: bold;
-    color: rgba(182, 75, 67, 1.0);
-}
-
-span.unverified-symbol {
-    font-size: 130%;
-}
-
-span.verified-symbol-small,
-span.verified-symbol {
-    font-weight: bold;
-    color: rgba(67, 75, 182, 1.0);
-}
-
-span.verified-symbol-small {
-    font-size: 110%;
-}
-
-span.verified-symbol {
-    font-size: 170%;
-}
-
 .play-detail-set td,
 .play-detail-set th {
     width: 100px;
     padding: 10px 6px 10px 6px;
 }
 
-.play-detail-set th.detailed {
-    width: 2000px;
-}
+.play-detail-set th.detailed { width: 2000px; }
+.play-detail-set th.terse    { width:   40px; }
+.play-detail-set th.icon     { width:    5px; }
+.play-detail-set th.even     { width:  300px; }
 
-.play-detail-set th.terse {
-    width: 40px;
-}
-
-.play-detail-set th.icon {
-    width: 5px;
-}
-
-.play-detail-set th.even {
-    width: 300px;
-}
-
-.warning,
-.notice {
-    padding: 10px;
-    margin: 10px;
-}
-
-.notice {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-
-.note {
-    font-size: 75%;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-.warning {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-
-p.static-text {
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
-  text-align: left;
-}
-
-p.error-text,
-p.guide-text,
-td p.static-text {
-  text-align: center;
-}
-
-p.error-text {
-  margin-top: 0px;
-  margin-bottom: 40px;
-}
-
-span.citation {
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 30px ;
-  text-indent: -24px ;
-  display: block;
-}
-
-.tucked {
-    text-align: right;
-}
-
-.unicode-icon {
-    font-family: FontAwesome;
-    padding-left: 4px;
-    padding-right: 4px;
-}
-
-.fa, .fas {
-    display: inline;
-}
-
-/* UI Styles (May be either class- or tag-level) */
-
-input,
-.button,
-.button-inline,
-.button-inline-selected,
-.button-inline-small {
-    cursor: pointer;
-    margin: 2px;
-    border: solid;
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: rgba(152, 75, 67, 0.4);
-    padding: 2px 6px 3px 6px;
-    font-family: inherit;
-    user-select: none;
-}
-
-input,
-.button {
-    height: 25px;
-    font-size: 80%;
-}
-
-.admin-submit input[type="text"] {
-    width: 100%;
-}
-
-.button-inline {
-    height: 18px;
-    font-size: 65%;
-    padding: 1px 6px 2px 6px;
-    margin: 2px 10px 3px 10px;
-}
-
-.button-inline-small {
-    height: 10px;
-    font-size: 50%;
-    padding: 1px 3px 1px 3px;
-    margin: 2px 10px 3px 10px;
-}
-
-input {
-    background-color: rgba(152, 75, 67, 0.1);
-}
-
-.ui-menu .ui-menu-item {
-    background-color: rgba(152, 75, 67, 0.1);
-    font-size: 75%;
-}
-
-.ui-menu .ui-menu-item,
-.ui-menu .ui-menu-item .ui-state-active {
-    font-weight: lighter;
-    font-family: "Open Sans", AppleGothic, sans-serif;
-}
-
-.button,
-.button-inline,
-.button-inline-small,
-input[type="submit"] {
-    background-color: rgba(152, 75, 67, 0.2);
-    font-weight: lighter;
-}
-
-.button-inline-selected {
-    background-color: rgba(152, 75, 67, 0.6);
-}
-
-body:focus {
-    outline-color: rgba(152, 75, 67, 0.6);
-}
-
-select {
-    -moz-appearance: none; /* Firefox */
-    -webkit-appearance: none; /* Safari and Chrome */
-    appearance: none;
-    background-color: rgba(152, 75, 67, 0.2);
-    padding: 3px 5px 3px 5px;
-    margin: 3px;
-    font-weight: lighter;
-    font-size: 80%;
-    font-family: "Open Sans", AppleGothic, sans-serif;
-}
-
-/*
- * Header and Footer Styles
- */
-
+/* Header & Footer */
 table.title {
     margin: 0% 20% 0% 20%;
 }
@@ -350,7 +202,6 @@ table.footer-nav {
 }
 
 /* Frontpage Styles */
-
 td.play-title,
 td.play-title-icon {
     width: 150px;
@@ -370,20 +221,20 @@ div.play-title-icon-border {
     width: 100px;
     height: 100px;
     margin: 0px auto;
-    border-radius:100px;
+    border-radius: 100px;
     border: 1px solid;
 }
 
 img.play-title-icon {
-    height:80px;
-    width:80px;
+    height: 80px;
+    width: 80px;
     margin: 10px;
     border-radius: 20px;
 }
 
 img.play-title-icon-generic {
-    height:100px;
-    width:100px;
+    height: 100px;
+    width: 100px;
     border-radius: 100px;
 }
 
@@ -407,44 +258,9 @@ img.play-title-icon-generic {
 
 .hidden-icon {
     display: none;
-    /* visibility: hidden instead of display: none keeps the
-     * words from subtly changing position when the icon appears,
-     * but skews headers slightly, so it’s not perfect. */
 }
 
-/* Detail Table Styles */
-
-.play-title-header {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
-    font-size: 20px;
-}
-
-table.play-title-header {
-    margin: 0px 10% 25px 10%;
-}
-
-td.play-title-header-icon {
-    vertical-align: top;
-    padding-right: 10px;
-}
-
-td.play-title-header {
-    height: 50px;
-}
-
-.play-issue-header {
-    font-size: 75%;
-}
-
-td.play-issue-header {
-    vertical-align: top;
-}
-
-.play-issue-header span {
-    display: inline-block;
-    padding: 0px 10px 0px 0px;
-}
-
+/* Modal Styles */
 .modal-header {
     background-color: rgba(152, 75, 67, 0.3);
 }
@@ -453,9 +269,35 @@ td.play-issue-header {
     font-weight: lighter;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   New: make ✓ and ⃠ symbols larger & bolder everywhere
-   ───────────────────────────────────────────────────────────────────────────── */
+/* Icons */
+span.unverified-symbol-small,
+span.unverified-symbol {
+    font-weight: bold;
+    color: rgba(182, 75, 67, 1.0);
+}
+
+span.unverified-symbol { font-size: 130%; }
+
+span.verified-symbol-small,
+span.verified-symbol {
+    font-weight: bold;
+    color: rgba(67, 75, 182, 1.0);
+}
+
+span.verified-symbol-small { font-size: 110%; }
+span.verified-symbol       { font-size: 170%; }
+
+.unicode-icon {
+    font-family: FontAwesome;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.fa, .fas {
+    display: inline;
+}
+
+/* New: make ✓ and ⃠ symbols larger & bolder everywhere */
 span.verified-symbol,
 span.unverified-symbol {
     font-size: 1.3em;
@@ -463,11 +305,23 @@ span.unverified-symbol {
     line-height: 1;
 }
 
-/*
-   New: About-page highlights & “here” links
-*/
+/* New: underline any “here” links in About (class="static-link") */
+.static-link a {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   ABOUT PAGE HIGHLIGHTS & “here” LINKS
+   ========================================================================= */
+
+.download-here {
+    color: rgba(152, 75, 67, 1.0);
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .highlight-text {
-    background-color: rgba(152,75,67,0.05);
+    background-color: rgba(152, 75, 67, 0.05);
     padding: 0.75em;
     margin: 1em auto;
     border-radius: 4px;
@@ -476,12 +330,6 @@ span.unverified-symbol {
 }
 
 .highlight-number {
-    color: rgba(67,75,182,1.0);
+    color: rgba(67, 75, 182, 1.0);
     font-weight: bold;
-}
-
-.download-here {
-    color: rgba(152,75,67,1.0);
-    font-weight: bold;
-    text-decoration: underline;
 }
