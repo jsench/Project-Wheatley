@@ -1,100 +1,88 @@
 /* ==========================================================================
-   1. ABOUT PAGE HIGHLIGHTS & “here” LINKS
+   1. GLOBAL STYLES & ABOUT PAGE HIGHLIGHTS
    ========================================================================== */
 
-/* Bold, underlined accent for “here” */
+/* Tag-level styles */
+html {
+    margin-left: calc(100vw - 100%);
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link,
+a:visited,
+a:hover {
+    color: #233237;
+}
+
+/* Special “here” download links (About page) */
 .download-here {
     color: rgba(152, 75, 67, 1.0);
     font-weight: bold;
     text-decoration: underline;
-  }
-  
-  /* Shaded block around key lines (e.g. “The Census currently includes…”) */
-  .highlight-text {
+}
+
+/* Highlight block around key lines (About page) */
+.highlight-text {
     background-color: rgba(152, 75, 67, 0.05);
     padding: 0.75em;
     margin: 1em auto;
     border-radius: 4px;
-    width: 75%;            /* match your static-text width */
+    width: 75%;
     line-height: 1.5;
-  }
-  
-  /* Emphasize the numbers inside the highlight */
-  .highlight-number {
+}
+
+/* Emphasize numbers inside highlights */
+.highlight-number {
     color: rgba(67, 75, 182, 1.0);
     font-weight: bold;
-  }
-  
-  /* ==========================================================================
-     2. ICONS (VERIFIED / UNVERIFIED / CAMERA)
-     ========================================================================== */
-  
-  .unicode-icon {
+}
+
+/* ==========================================================================
+   2. ICONS (VERIFIED / UNVERIFIED / CAMERA) & UNICODE FONTS
+   ========================================================================== */
+
+.unicode-icon {
     font-family: FontAwesome;
     padding-left: 4px;
     padding-right: 4px;
-  }
-  
-  span.unverified-symbol,
-  span.unverified-symbol-small {
+}
+
+span.unverified-symbol-small,
+span.unverified-symbol {
     font-weight: bold;
     color: rgba(182, 75, 67, 1.0);
-  }
-  
-  span.unverified-symbol {
+}
+
+span.unverified-symbol {
     font-size: 130%;
-  }
-  
-  span.verified-symbol,
-  span.verified-symbol-small {
+}
+
+span.verified-symbol-small,
+span.verified-symbol {
     font-weight: bold;
     color: rgba(67, 75, 182, 1.0);
-  }
-  
-  span.verified-symbol {
+}
+
+span.verified-symbol-small {
+    font-size: 110%;
+}
+
+span.verified-symbol {
     font-size: 170%;
-  }
-  
-  /* ==========================================================================
-     3. GLOBAL & UI STYLES
-     ========================================================================== */
-  
-  /* Tag-level */
-  html {
-    margin-left: calc(100vw - 100%);
-  }
-  
-  a {
-    text-decoration: none;
-  }
-  
-  a:link,
-  a:visited,
-  a:hover {
-    color: #233237;
-  }
-  
-  a.linkbutton {
-    padding: 5px;
-  }
-  
-  body {
-    font-family: "Open Sans", AppleGothic, sans-serif;
-    font-weight: lighter;
-  }
-  
-  code {
-    background-color: rgba(0,0,0,0.05);
-    padding: 2px 4px;
-    font-family: monospace;
-  }
-  
-  /* Inputs & buttons */
-  input,
-  .button,
-  .button-inline,
-  .button-inline-selected,
-  .button-inline-small {
+}
+
+/* ==========================================================================
+   3. INPUTS, BUTTONS, & UI ELEMENTS
+   ========================================================================== */
+
+input,
+.button,
+.button-inline,
+.button-inline-selected,
+.button-inline-small {
     cursor: pointer;
     margin: 2px;
     border: 1px solid rgba(152, 75, 67, 0.4);
@@ -102,164 +90,297 @@
     padding: 2px 6px 3px 6px;
     font-family: inherit;
     user-select: none;
-  }
-  
-  input,
-  .button {
+}
+
+input,
+.button {
     height: 25px;
     font-size: 80%;
-  }
-  
-  input[type="submit"],
-  .button {
+}
+
+.button,
+input[type="submit"] {
     background-color: rgba(152, 75, 67, 0.2);
     font-weight: lighter;
-  }
-  
-  .button-inline-selected {
+}
+
+.button-inline-selected {
     background-color: rgba(152, 75, 67, 0.6);
-  }
-  
-  select {
+}
+
+.button-inline {
+    height: 18px;
+    font-size: 65%;
+    padding: 1px 6px 2px 6px;
+    margin: 2px 10px 3px 10px;
+}
+
+.button-inline-small {
+    height: 10px;
+    font-size: 50%;
+    padding: 1px 3px 1px 3px;
+    margin: 2px 10px 3px 10px;
+}
+
+input {
+    background-color: rgba(152, 75, 67, 0.1);
+}
+
+select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
     appearance: none;
     background-color: rgba(152, 75, 67, 0.2);
     padding: 3px 5px;
     margin: 3px;
+    font-weight: lighter;
     font-size: 80%;
-  }
-  
-  /* ==========================================================================
-     4. LAYOUT FRAMES
-     ========================================================================== */
-  
-  div.frame-container {
+    font-family: "Open Sans", AppleGothic, sans-serif;
+}
+
+/* ==========================================================================
+   4. LAYOUT FRAMES
+   ========================================================================== */
+
+div.frame-container {
     width: 100%;
+    height: auto;
     margin: 0 auto;
     position: relative;
-  }
-  
-  div.outer-frame {
+}
+
+div.outer-frame {
+    position: relative;
     max-width: 1024px;
     min-width: 526px;
     margin: 0 auto;
-  }
-  
-  div.middle-frame {
+}
+
+div.middle-frame {
     max-width: 896px;
-    margin: 0 20%;
-  }
-  
-  /* ==========================================================================
-     5. DETAIL TABLES (SEARCH, COPY LIST, ETC.)
-     ========================================================================== */
-  
-  table {
+    margin: 0px 20% 0px 20%;
+}
+
+/* ==========================================================================
+   5. DETAIL TABLE STYLES (SEARCH, COPY LIST, ETC.)
+   ========================================================================== */
+
+table {
     margin: auto;
     border-collapse: collapse;
     font-weight: lighter;
-  }
-  
-  th {
+}
+
+th {
     font-weight: lighter;
-  }
-  
-  .play-detail-set {
+}
+
+.play-detail-set {
     text-align: center;
-    margin: 0 12% 10% 12%;
-  }
-  
-  .play-detail-set tr:nth-child(odd) {
+}
+
+.play-detail-set tr:nth-child(odd) {
     background-color: rgba(35, 50, 55, 0.1);
-  }
-  
-  .play-detail-set tr:first-child {
+}
+
+.play-detail-set tr:nth-child(1) {
     background-color: rgba(152, 75, 67, 0.5);
-  }
-  
-  .play-detail-set td,
-  .play-detail-set th {
-    padding: 10px 6px;
+}
+
+table.play-detail-set {
+    margin: 0% 12% 10% 12%;
+}
+
+.play-detail-set td,
+.play-detail-set th {
     width: 100px;
-  }
-  
-  .play-detail-set th.detailed { width: 2000px; }
-  .play-detail-set th.terse    { width: 40px; }
-  .play-detail-set th.icon     { width:  5px; }
-  .play-detail-set th.even     { width: 300px; }
-  
-  /* ==========================================================================
-     6. HEADER & FOOTER
-     ========================================================================== */
-  
-  table.title {
-    margin: 0 20% 0 20%;
-  }
-  
-  .title {
-    font-family: "Open Sans", AppleGothic, sans-serif;
-    font-size: 25px;
-    text-align: center;
-    margin: 40px auto 20px;
-  }
-  
-  .footer-nav {
-    margin: 20px auto;
+    padding: 10px 6px;
+}
+
+.play-detail-set th.detailed { width: 2000px; }
+.play-detail-set th.terse    { width:   40px; }
+.play-detail-set th.icon     { width:    5px; }
+.play-detail-set th.even     { width:  300px; }
+
+/* ... continued full original CSS below ... */
+
+/* ==========================================================================
+   6. WARNING / NOTICE BOXES
+   ========================================================================== */
+
+.warning,
+.notice {
+    padding: 10px;
+    margin: 10px;
+}
+
+.notice {
+    background-color: rgba(35, 50, 55, 0.1);
+}
+
+.note {
+    font-size: 75%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.warning {
+    background-color: rgba(152, 75, 67, 0.3);
+}
+
+/* ==========================================================================
+   7. STATIC-TEXT PARAGRAPHS ON ABOUT
+   ========================================================================== */
+
+p.static-text {
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    text-align: left;
+}
+
+p.guide-text a:link,
+p.static-text a:link,
+a.guide-text a:visited {
+    color: rgba(152, 75, 67, 1.0);
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   8. CITATION STYLING
+   ========================================================================== */
+
+span.citation {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 30px;
+    text-indent: -24px;
+    display: block;
+}
+
+/* ==========================================================================
+   9. HEADER & FOOTER NAVIGATION
+   ========================================================================== */
+
+table.title {
+    margin: 0% 20% 0% 20%;
+}
+
+.title th,
+.title td {
+    width: 170px;
+}
+
+.title th {
+    font-size: 10px;
+    height: 20px;
+    padding: 0px 6px;
+}
+
+.title td {
+    padding: 10px 6px 0px;
+}
+
+.footer-nav {
+    margin-bottom: 20px;
+    margin-top: 20px;
     font-size: 80%;
     border-top: 1px solid rgba(0, 0, 0, 0.65);
-  }
-  
-  .footer-nav span {
+}
+
+.footer-nav span {
     padding: 0 10px;
-  }
-  
-  /* ==========================================================================
-     7. SEARCH AUTOCOMPLETE
-     ========================================================================== */
-  
-  .ui-menu .ui-menu-item {
+}
+
+.header-title-nav th,
+.header-title-nav td {
+    padding: 10px;
+}
+
+/* ==========================================================================
+   10. SEARCH BAR & AUTOCOMPLETE
+   ========================================================================== */
+
+.search-bar {
+    text-align: center;
+    height: 32px;
+    padding: 0 0 15px;
+}
+
+.search-bar form {
+    margin-bottom: 0px;
+}
+
+.ui-menu .ui-menu-item {
     background-color: rgba(152, 75, 67, 0.1);
     font-size: 75%;
-  }
-  
-  .ui-state-active {
+}
+.ui-menu .ui-menu-item .ui-state-active {
     font-weight: lighter;
-  }
-  
-  /* ==========================================================================
-     8. MODALS
-     ========================================================================== */
-  
-  .modal-header {
+}
+
+/* ==========================================================================
+   11. MODAL WINDOWS
+   ========================================================================== */
+
+.modal-header {
     background-color: rgba(152, 75, 67, 0.3);
-  }
-  
-  .modal-title {
+}
+
+.modal-title {
     font-weight: lighter;
-  }
-  
-  /* ==========================================================================
-     9. FRONT PAGE
-     ========================================================================== */
-  
-  .play-title-icon,
-  .play-title {
-    text-align: center;
-  }
-  
-  .play-title-icon-border {
+}
+
+/* ==========================================================================
+   12. FRONTPAGE TITLE ICONS & GRID
+   ========================================================================== */
+
+td.play-title,
+td.play-title-icon {
+    width: 150px;
+}
+
+div.play-title {
+    padding: 4px 0 20px;
+    margin: 2px;
+}
+
+.play-title-icon-border {
     width: 100px;
     height: 100px;
     margin: 0 auto;
     border-radius: 100px;
     border: 1px solid;
-  }
-  
-  .play-title-icon img {
+}
+
+img.play-title-icon {
+    height: 80px;
+    width: 80px;
+    margin: 10px;
     border-radius: 20px;
-  }
-  
-  .play-title {
+}
+
+img.play-title-icon-generic {
+    height: 100px;
+    width: 100px;
+    border-radius: 100px;
+}
+
+.play-title,
+.body-text {
+    font-family: 'Open Sans', AppleGothic, sans-serif;
+    text-align: center;
+}
+
+.play-title {
     font-size: 14px;
-    margin: 4px 0 20px;
-  }
-  
+}
+
+.about {
+    font-size: 10px;
+}
+
+.hidden {
+    display: none;
+}
