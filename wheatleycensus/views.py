@@ -1,3 +1,5 @@
+# marlowecensus/views.py
+
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
@@ -16,7 +18,7 @@ from .models import Title
 # ------------------------------------------------------------------------------
 def strip_article(s):
     """
-    If passed a Title instance, pull out its .title string first.
+    If passed a Title instance, pull out its `.title` string first.
     Then drop any leading 'A ', 'An ', or 'The '.
     """
     if isinstance(s, Title):
@@ -56,25 +58,23 @@ def homepage(request):
     tpl = loader.get_template('census/frontpage.html')
     titles = list(models.Title.objects.all())
 
+    # sort first by embedded year, then by title (minus leading article)
     def extract_year(t):
         import re
-        m = re.search(r'\b(\d{4})\b', t.title or '')
+        m = re.search(r'\b(\d{4})\b', t.title)
         return int(m.group(1)) if m else 9999
 
-    # sort by embedded year, then by title minus leading article
     titles.sort(key=lambda t: (extract_year(t), strip_article(t).lower()))
-
     rows = [titles[i:i+5] for i in range(0, len(titles), 5)]
+
     return HttpResponse(tpl.render({
         'titlerows': rows,
-        # now just the relative path; let {% static %} add /static/
         'icon_path': 'census/images/generic-title-icon.png'
     }, request))
 
 
 def search(request, field=None, value=None, order=None):
     tpl = loader.get_template('census/search-results.html')
-
     field = field or request.GET.get('field')
     value = value or request.GET.get('value')
     order = order or request.GET.get('order')
@@ -84,7 +84,7 @@ def search(request, field=None, value=None, order=None):
 
     display_field, display_value = field, value
 
-    # --- Filtering ---
+    # --- Filtering by field ---
     if field == 'keyword' or (not field and value):
         display_field = 'Keyword Search'
         q = (
@@ -96,6 +96,7 @@ def search(request, field=None, value=None, order=None):
             Q(provenance_records__provenance_name__name__icontains=value)
         )
         result_list = qs.filter(q)
+
     elif field == 'year' and value:
         display_field = 'Year'
         yr = convert_year_range(value)
@@ -107,27 +108,33 @@ def search(request, field=None, value=None, order=None):
             )
         else:
             result_list = qs.filter(issue__year__icontains=value)
+
     elif field == 'location' and value:
         display_field = 'Location'
         result_list = qs.filter(
             location__name_of_library_collection__icontains=value
         )
+
     elif field == 'census_id' and value:
         display_field = 'WC'
         result_list = qs.filter(wc_number=value)
+
     elif field == 'provenance_name' and value:
         display_field = 'Provenance Name'
         result_list = qs.filter(
             provenance_records__provenance_name__name__icontains=value
         )
+
     elif field == 'unverified':
         display_field = 'Unverified'
         display_value = 'All'
         result_list = qs.filter(verification='U')
+
     elif field == 'ghosts':
         display_field = 'Ghosts'
         display_value = 'All'
         result_list = models.Copy.objects.filter(verification='F')
+
     else:
         result_list = qs.none()
 
@@ -188,7 +195,6 @@ def search(request, field=None, value=None, order=None):
 def copy_list(request, id):
     tpl = loader.get_template('census/copy_list.html')
     issue = get_object_or_404(models.Issue, pk=id)
-
     qs = models.Copy.objects.filter(
         Q(verification='U') | Q(verification='V') | Q(verification__isnull=True),
         issue=id
@@ -212,7 +218,8 @@ def copy_data(request, copy_id):
 
 def copy_page(request, wc_number):
     """
-    Stand‐alone page for /wc/<n>/ that auto‐opens the modal.
+    Stand‐alone page for /wc/<n>/ that auto‐opens the same modal
+    used in the copy_list view.
     """
     copy = get_object_or_404(models.Copy, wc_number=wc_number)
     return render(request, 'census/copy_page.html', {
@@ -255,9 +262,7 @@ def about(request):
     facsimile_count = models.Copy.objects.exclude(
         Q(digital_facsimile_url='') | Q(digital_facsimile_url=None)
     ).count()
-    facsimile_percent = (
-        f"{round(100 * facsimile_count / copy_count)}%" if copy_count else "0%"
-    )
+    facsimile_percent = f"{round(100 * facsimile_count / copy_count)}%" if copy_count else "0%"
 
     return render(request, 'census/about.html', {
         'copy_count': copy_count,
@@ -276,7 +281,7 @@ def location_copy_count_csv_export(request):
     resp = HttpResponse(content_type='text/csv')
     resp['Content-Disposition'] = 'attachment; filename="census_location_copy_count.csv"'
     w = csv.writer(resp)
-    w.writerow(['Location','Number of Copies'])
+    w.writerow(['Location', 'Number of Copies'])
     for row in qs:
         loc = models.Location.objects.filter(pk=row['location']).first()
         w.writerow([loc.name_of_library_collection if loc else 'Unknown', row['total']])
@@ -288,7 +293,7 @@ def year_issue_copy_count_csv_export(request):
     resp = HttpResponse(content_type='text/csv')
     resp['Content-Disposition'] = 'attachment; filename="census_year_issue_copy_count.csv"'
     w = csv.writer(resp)
-    w.writerow(['Year','Title','Number of Copies'])
+    w.writerow(['Year', 'Title', 'Number of Copies'])
     for row in qs:
         iss = models.Issue.objects.filter(pk=row['issue']).first()
         if iss:
@@ -297,7 +302,7 @@ def year_issue_copy_count_csv_export(request):
 
 
 def export(request, groupby, column, aggregate):
-    agg = Sum if aggregate=='sum' else Count
+    agg = Sum if aggregate == 'sum' else Count
     try:
         qs = models.Copy.objects.values(groupby).annotate(agg=agg(column)).order_by(groupby)
     except Exception:
@@ -327,32 +332,42 @@ def autofill_provenance(request, query=None):
 
 def autofill_collection(request, query=None):
     choices = [
-        {'label':'With known early provenance (before 1700)','value':'earlyprovenance'},
-        {'label':'With a known woman owner','value':'womanowner'},
-        {'label':'With a known woman owner before 1800','value':'earlywomanowner'},
-        {'label':'Includes marginalia','value':'marginalia'},
-        {'label':'In an early sammelband','value':'earlysammelband'},
+        {'label': 'With known early provenance (before 1700)', 'value': 'earlyprovenance'},
+        {'label': 'With a known woman owner', 'value': 'womanowner'},
+        {'label': 'With a known woman owner before 1800', 'value': 'earlywomanowner'},
+        {'label': 'Includes marginalia', 'value': 'marginalia'},
+        {'label': 'In an early sammelband', 'value': 'earlysammelband'},
     ]
     return JsonResponse({'matches': choices})
 
 
 def get_collection(qs, name):
     if name == 'earlyprovenance':
-        return (qs.filter(provenance_records__provenance_name__start_century='17'),
-                'Copies with known early provenance (before 1700)')
+        return (
+            qs.filter(provenance_records__provenance_name__start_century='17'),
+            'Copies with known early provenance (before 1700)'
+        )
     if name == 'womanowner':
-        return (qs.filter(provenance_records__provenance_name__gender='F'),
-                'Copies with a known woman owner')
+        return (
+            qs.filter(provenance_records__provenance_name__gender='F'),
+            'Copies with a known woman owner'
+        )
     if name == 'earlywomanowner':
-        return (qs.filter(provenance_records__provenance_name__gender='F')
-                    .filter(Q(provenance_records__provenance_name__start_century__in=['17','18'])),
-                'Copies with a known woman owner before 1800')
+        return (
+            qs.filter(provenance_records__provenance_name__gender='F')
+              .filter(Q(provenance_records__provenance_name__start_century__in=['17','18'])),
+            'Copies with a known woman owner before 1800'
+        )
     if name == 'marginalia':
-        return (qs.exclude(Q(marginalia='')|Q(marginalia=None)),
-                'Copies that include marginalia')
+        return (
+            qs.exclude(Q(marginalia='') | Q(marginalia=None)),
+            'Copies that include marginalia'
+        )
     if name == 'earlysammelband':
-        return (qs.filter(in_early_sammelband=True),
-                'Copies in an early sammelband')
+        return (
+            qs.filter(in_early_sammelband=True),
+            'Copies in an early sammelband'
+        )
     return (qs.none(), 'Unknown collection')
 
 
@@ -362,14 +377,14 @@ def get_collection(qs, name):
 def login_user(request):
     tpl = loader.get_template('census/login.html')
     if request.method == 'POST':
-        u = request.POST.get('username','')
-        p = request.POST.get('password','')
+        u = request.POST.get('username', '')
+        p = request.POST.get('password', '')
         user = authenticate(username=u, password=p)
         if user:
             login(request, user)
-            return HttpResponseRedirect(request.GET.get('next','/admin/'))
+            return HttpResponseRedirect(request.GET.get('next', '/admin/'))
         return HttpResponse(tpl.render({'failed': True}, request))
-    return HttpResponse(tpl.render({'next': request.GET.get('next','')}, request))
+    return HttpResponse(tpl.render({'next': request.GET.get('next', '')}, request))
 
 
 def logout_user(request):
