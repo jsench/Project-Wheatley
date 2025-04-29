@@ -1,112 +1,84 @@
 {% load static %}
 
-<div class="tucked">
-    {% if user.is_authenticated %}
-    <a class="button" href="{% url 'logout_user' %}">Sign out</a>
-    <a class="button" href="{% url 'admin:index' %}">Site Administration</a>
+<header class="site-header">
+  <div class="site-header-left">
+    <div class="tucked">
+      {% if user.is_authenticated %}
+        <a class="button" href="{% url 'logout_user' %}">Sign out</a>
+        <a class="button" href="{% url 'admin:index' %}">Site Administration</a>
+      {% else %}
+        <a class="button" href="{% url 'login_user' %}">Sign in</a>
+      {% endif %}
+    </div>
+  </div>
 
-    {% else %}
-    <a class="button" href="{% url 'login_user' %}">Sign in</a>
+  <div class="site-header-center">
+    <div class="title">
+      {% if request.path == '/homepage' or request.path == '/' %}
+        <span>Wheatley Census</span>
+      {% else %}
+        <a href="{% url 'homepage' %}">Wheatley Census</a>
+      {% endif %}
+    </div>
 
-    {% endif %}
-    <!-- A normally-styled non-breaking space is used to ensure consistent div height. -->
-        &nbsp;
-</div>
-<table class="title">
-    <tr>
-        <th>
-            &nbsp;
-        </th>
-        <th>
-            &nbsp;
-        </th>
-        <th>
-            &nbsp;
-        </th>
-        <th>
-            &nbsp;
-        </th>
-   </tr>
-    <tr>
-        <td colspan="4">
-          {% if request.path == '/homepage' %}
-            <a>Wheatley Census</a>
-          {% else %}
-            <a href="{% url 'homepage' %}">Wheatley Census</a><br/>
-          {% endif %}
-        </td>
-    </tr>
-</table>
+    <nav class="header-nav">
+      <a href="{% url 'about' %}">about</a>
+      <a href="#search" id="site-search-button">search</a>
+    </nav>
+  </div>
 
-<table class="header-title-nav">
-   <tr>
-     <th>
-       <a href="{% url 'about' %}">about</a>
-     </th>
-     <th>
-       <a href="#search" id="site-search-button">search</a>
-     </th>
-   </tr>
-</table>
+  <div class="site-header-right">
+    <!-- reserved for future use or left empty to balance flex -->
+  </div>
+</header>
 
 <div class="search-bar">
-  <form id="search-bar-form" class="hidden" action="/search/" method="get">
+  <form id="search-bar-form" class="hidden" action="{% url 'search' %}" method="get">
     <select id="search-bar-form-field" name="field">
-      <option disabled selected value>Search by...</option>
+      <option disabled selected value>Search by…</option>
       <option value="keyword">Keyword</option>
       <option value="location">Location</option>
       <option value="provenance_name">Provenance Name</option>
       <option value="collection">Specific Features</option>
       <option value="year">Year</option>
       <option value="stc">STC / Wing #</option>
-      <option value="census_id">MC #</option>
+      <option value="census_id">WC #</option>
     </select>
-    <input id="search-bar-form-text" type="text" name="value" placeholder="Search..">
-    <input id="search-bar-form-submit" type="submit" value="Submit" >
+    <input id="search-bar-form-text" type="text" name="value" placeholder="Search…" />
+    <input id="search-bar-form-submit" type="submit" value="Submit" />
   </form>
 </div>
 
 <script>
-    utils.get.id('site-search-button').addEventListener('click', function () {
-        utils.togglehide.id('search-bar-form');
+  utils.get.id('site-search-button').addEventListener('click', function () {
+    utils.togglehide.id('search-bar-form');
+  });
+  $(function() {
+    var autofillMap = {
+      location: '/autofill/location/',
+      provenance_name: '/autofill/provenance/',
+      collection: '/autofill/collection/'
+    };
+    function autofillResponse(field, query, response) {
+      fetch(autofillMap[field] + query + '/')
+        .then(r => r.json())
+        .then(data => response(data.matches));
+    }
+    $('#search-bar-form-text').autocomplete({
+      minLength: 3,
+      source: function(req, res) {
+        var f = $('#search-bar-form-field').val();
+        if (autofillMap[f]) autofillResponse(f, req.term, res);
+      },
+      select: function(evt, ui) {
+        $('#search-bar-form-text').val(ui.item.value);
+        $('#search-bar-form').submit();
+      }
     });
-    $(function() {
-        var autofillMap = {
-            location: '/autofill/location/',
-            provenance_name: '/autofill/provenance/',
-            collection: '/autofill/collection/'
-        };
-
-        var autofillResponse = function(field, query, response) {
-            fetch(autofillMap[field] + query + '/')
-                .then((matches) => {
-                    return matches.json()
-                })
-                .then((matches_json) => {
-                    return response(matches_json.matches);
-                });
-        };
-
-        $('#search-bar-form-text').autocomplete({
-            minLength: 3,
-            source: function(request, response) {
-                var field_el = utils.get.id('search-bar-form-field');
-                var field = field_el.options[field_el.selectedIndex].value;
-                if (autofillMap.hasOwnProperty(field)) {
-                    autofillResponse(field, request.term, response);
-                }
-            },
-            select: function(evt, ui) {
-                $('#search-bar-form-text').val(ui.item.value);
-                $('#search-bar-form').submit();
-            },
-        });
-
-        $('#search-bar-form-field').change(function(evt) {
-            if ($('#search-bar-form-field option:selected').val() === 'collection') {
-                $('#search-bar-form-text').autocomplete('search', '   ');
-            }
-        });
+    $('#search-bar-form-field').change(function() {
+      if ($(this).val() === 'collection') {
+        $('#search-bar-form-text').autocomplete('search', '   ');
+      }
     });
-
+  });
 </script>

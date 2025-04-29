@@ -1,336 +1,184 @@
-/*
- * Global Styles
- */
+/* ==========================================================================
+   GLOBAL RESET & TYPOGRAPHY
+   ========================================================================== */
 
- html {
+   html {
     margin-left: calc(100vw - 100%);
-}
-
-a {
-    text-decoration: none;
-}
-
-a:link,
-a:visited,
-a:hover {
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans", AppleGothic, sans-serif;
+    font-weight: lighter;
     color: #233237;
-}
-
-.guide-text a:link,
-.guide-text a:visited,
-.guide-text a:hover,
-.static-text a:link,
-.static-text a:visited,
-.static-text a:hover {
-    color: rgba(152, 75, 67, 1.0);
-    font-weight: bold;
-}
-
-a.linkbutton {
-    padding: 5px;
-}
-
-body {
-    font-family:"Open Sans", AppleGothic, sans-serif;
-    font-weight: lighter;
-}
-
-code {
-    background-color: rgba(0,0,0,0.05);
-    padding: 2px 4px;
-    font-family: monospace;
-}
-
-/* UI Styles */
-input,
-.button,
-.button-inline,
-.button-inline-selected,
-.button-inline-small {
-    cursor: pointer;
-    margin: 2px;
-    border: 1px solid rgba(152, 75, 67, 0.4);
-    border-radius: 4px;
-    padding: 2px 6px 3px 6px;
-    font-family: inherit;
-    user-select: none;
-}
-
-input,
-.button {
-    height: 25px;
-    font-size: 80%;
-}
-
-input[type="submit"],
-.button {
-    background-color: rgba(152, 75, 67, 0.2);
-    font-weight: lighter;
-}
-
-.button-inline-selected {
-    background-color: rgba(152, 75, 67, 0.6);
-}
-
-select {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: rgba(152, 75, 67, 0.2);
-    padding: 3px 5px;
-    margin: 3px;
-    font-weight: lighter;
-    font-size: 80%;
-    font-family: "Open Sans", AppleGothic, sans-serif;
-}
-
-/* Layout Frames */
-div.frame-container {
-    width: 100%;
-    height: auto;
-    margin: 0 auto;
+  }
+  a {
+    text-decoration: none;
+    color: #233237;
+  }
+  
+  /* ==========================================================================
+     SITE HEADER (FLEX LAYOUT)
+     ========================================================================== */
+  
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: white;
     position: relative;
-}
-
-div.outer-frame {
-    position: relative;
-    max-width: 1024px;
-    min-width: 526px;
-    margin: 0 auto;
-}
-
-div.middle-frame {
-    max-width: 896px;
-    margin: 0px 20% 0px 20%;
-}
-
-/* Detail Tables */
-table {
-    margin: auto;
-    border-collapse: collapse;
-    font-weight: lighter;
-}
-
-th {
-    font-weight: lighter;
-}
-
-.play-detail-set {
-    text-align: center;
-    margin: 0% 12% 10% 12%;
-}
-
-.play-detail-set tr:nth-child(odd) {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-
-.play-detail-set tr:nth-child(1) {
-    background-color: rgba(152, 75, 67, 0.5);
-}
-
-.play-detail-set tr {
-    border: none;
-}
-
-.play-detail-set td,
-.play-detail-set th {
-    width: 100px;
-    padding: 10px 6px 10px 6px;
-}
-
-.play-detail-set th.detailed { width: 2000px; }
-.play-detail-set th.terse    { width:   40px; }
-.play-detail-set th.icon     { width:    5px; }
-.play-detail-set th.even     { width:  300px; }
-
-/* Header & Footer */
-table.title {
-    margin: 0% 20% 0% 20%;
-}
-
-.title th,
-.title td {
-    width: 170px;
-}
-
-.title th {
-    font-size: 10px;
-    height: 20px;
-    padding: 0px 6px 0px 6px;
-}
-
-.title td {
-    padding: 10px 6px 0px 6px;
-}
-
-.title {
-    font-family: "Open Sans", AppleGothic, sans-serif;
+    z-index: 1000;
+  }
+  .site-header-left,
+  .site-header-center,
+  .site-header-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  .site-header-center {
+    justify-content: center;
+    flex-direction: column;
+  }
+  .tucked {
+    display: flex;
+    gap: 10px;
+  }
+  .title {
     font-size: 25px;
     text-align: center;
-    margin: 40px auto 20px auto;
-}
-
-table.footer-nav {
-    margin-bottom: 20px;
-    margin-top: 20px;
+  }
+  .header-nav {
+    margin-top: 4px;
+  }
+  .header-nav a {
+    margin: 0 8px;
+    font-size: 90%;
+    text-transform: lowercase;
+  }
+  
+  /* ==========================================================================
+     SEARCH BAR
+     ========================================================================== */
+  
+  .search-bar {
+    text-align: center;
+    padding: 0 0 15px;
+  }
+  .search-bar form {
+    display: inline-block;
+  }
+  .search-bar select,
+  .search-bar input[type="text"],
+  .search-bar input[type="submit"] {
+    margin: 0 4px;
+    padding: 4px 8px;
+    font-size: 90%;
+    border: 1px solid rgba(152, 75, 67, 0.4);
+    border-radius: 4px;
+  }
+  .hidden {
+    display: none!important;
+  }
+  
+  /* ==========================================================================
+     FRONTPAGE ICON GRID
+     ========================================================================== */
+  
+  .play-title-icon-border {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    border: 1px solid #233237;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  img.play-title-icon,
+  img.play-title-icon-generic {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  /* ==========================================================================
+     DETAIL TABLES
+     ========================================================================== */
+  
+  table.play-detail-set,
+  .play-detail-set th,
+  .play-detail-set td {
+    border-collapse: collapse;
+    font-weight: lighter;
+    text-align: center;
+  }
+  .play-detail-set {
+    margin: 0 12% 20px 12%;
+  }
+  .play-detail-set tr:nth-child(odd) {
+    background-color: rgba(35, 50, 55, 0.05);
+  }
+  .play-detail-set th:nth-child(1) {
+    background-color: rgba(182, 75, 67, 0.3);
+    color: white;
+  }
+  .play-detail-set th,
+  .play-detail-set td {
+    padding: 10px 6px;
+  }
+  .play-detail-set th.terse { width:  40px; }
+  .play-detail-set th.icon  { width:   5px; }
+  .play-detail-set th.even  { width: 300px; }
+  
+  /* ==========================================================================
+     HEADER & FOOTER TABLES (legacy)
+     ========================================================================== */
+  
+  table.title {
+    width: 100%;
+    margin: 0 auto 20px;
+    font-size: 25px;
+    text-align: center;
+  }
+  table.footer-nav {
+    margin: 20px auto;
     font-size: 80%;
     border-top: 1px solid rgba(0, 0, 0, 0.65);
-}
-
-.footer-nav span {
-    padding: 0px 10px 0px 10px;
-}
-
-.footer-nav th,
-.footer-nav td {
-    padding: 10px 15px 10px 15px;
-}
-
-.header-title-nav th,
-.header-title-nav td {
-    padding: 10px;
-}
-
-.search-bar {
     text-align: center;
-    height: 32px;
-    padding: 0px 0px 15px 0px;
-}
-
-.search-bar form {
-    margin-bottom: 0px;
-}
-
-/* Frontpage Styles */
-td.play-title,
-td.play-title-icon {
-    width: 150px;
-}
-
-div.play-title {
-    padding: 4px 0px 20px 0px;
-    margin: 2px;
-}
-
-/* ← ADDED bottom margin so circles don’t overlap ↓ */
-div.play-title-icon {
-    text-align: center;
-    margin: 12px 0px 20px 0px;
-}
-
-div.play-title-icon-border {
-    width: 100px;
-    height: 100px;
-    margin: 0px auto;
-    border-radius: 100px;
-    border: 1px solid;
-}
-
-img.play-title-icon {
-    height: 80px;
-    width: 80px;
-    margin: 10px;
-    border-radius: 20px;
-}
-
-img.play-title-icon-generic {
-    height: 100px;
-    width: 100px;
-    border-radius: 100px;
-}
-
-.play-title,
-.body-text {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
-    text-align: center;
-}
-
-.play-title {
-    font-size: 14px;
-}
-
-.about {
-    font-size: 10px;
-}
-
-.hidden {
-    display: none;
-}
-
-.hidden-icon {
-    display: none;
-}
-
-/* Modal Styles */
-.modal-header {
+    padding-top: 10px;
+  }
+  .footer-nav a {
+    margin: 0 8px;
+  }
+  
+  /* ==========================================================================
+     MODAL STYLING
+     ========================================================================== */
+  
+  .modal-backdrop { z-index: 1040; }
+  .modal          { z-index: 1050; }
+  .modal-header {
     background-color: rgba(152, 75, 67, 0.3);
-}
-
-.modal-title {
+  }
+  .modal-title {
     font-weight: lighter;
-}
-
-/* Icons */
-span.unverified-symbol-small,
-span.unverified-symbol {
-    font-weight: bold;
-    color: rgba(182, 75, 67, 1.0);
-}
-
-span.unverified-symbol { font-size: 130%; }
-
-span.verified-symbol-small,
-span.verified-symbol {
-    font-weight: bold;
-    color: rgba(67, 75, 182, 1.0);
-}
-
-span.verified-symbol-small { font-size: 110%; }
-span.verified-symbol       { font-size: 170%; }
-
-.unicode-icon {
-    font-family: FontAwesome;
-    padding-left: 4px;
-    padding-right: 4px;
-}
-
-.fa, .fas {
+  }
+  
+  /* ==========================================================================
+     ICONS
+     ========================================================================== */
+  
+  .unicode-icon,
+  .fas {
     display: inline;
-}
-
-/* New: make ✓ and ⃠ symbols larger & bolder everywhere */
-span.verified-symbol,
-span.unverified-symbol {
+  }
+  span.unverified-symbol,
+  span.verified-symbol {
     font-size: 1.3em;
     font-weight: bold;
     line-height: 1;
-}
-
-/* New: underline any “here” links in About (class="static-link") */
-.static-link a {
-    text-decoration: underline;
-}
-
-/* ==========================================================================
-   ABOUT PAGE HIGHLIGHTS & “here” LINKS
-   ========================================================================= */
-
-.download-here {
-    color: rgba(152, 75, 67, 1.0);
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-.highlight-text {
-    background-color: rgba(152, 75, 67, 0.05);
-    padding: 0.75em;
-    margin: 1em auto;
-    border-radius: 4px;
-    width: 70%;
-    line-height: 1.5;
-}
-
-.highlight-number {
-    color: rgba(67, 75, 182, 1.0);
-    font-weight: bold;
-}
+  }
+  
