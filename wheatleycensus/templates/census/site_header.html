@@ -1,82 +1,79 @@
 {% load static %}
 
-<header class="site-header">
-  <div class="site-header-left">
-    {# nothing here, so our “Sign in” can live on the right #}
-  </div>
+<div class="tucked">
+    {% if user.is_authenticated %}
+      <a class="button" href="{% url 'logout_user' %}">Sign out</a>
+      <a class="button" href="{% url 'admin:index' %}">Site Administration</a>
+    {% else %}
+      <a class="button" href="{% url 'login_user' %}">Sign in</a>
+    {% endif %}
+</div>
 
-  <div class="site-header-center">
-    <div class="title">
-      {% if request.path == '/' or request.path == '/homepage' %}
-        <span>Wheatley Census</span>
-      {% else %}
-        <a href="{% url 'homepage' %}">Wheatley Census</a>
-      {% endif %}
-    </div>
-    <nav class="header-nav">
-      <a href="{% url 'about' %}">about</a>
-      <a href="#search" id="site-search-button">search</a>
-    </nav>
-  </div>
+<table class="title">
+    <tr><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>
+    <tr>
+      <td colspan="4">
+        {% if request.path == '/homepage' %}
+          <a>Wheatley Census</a>
+        {% else %}
+          <a href="{% url 'homepage' %}">Wheatley Census</a><br/>
+        {% endif %}
+      </td>
+    </tr>
+</table>
 
-  <div class="site-header-right">
-    <div class="tucked">
-      {% if user.is_authenticated %}
-        <a class="button" href="{% url 'logout_user' %}">Sign out</a>
-        <a class="button" href="{% url 'admin:index' %}">Site Admin</a>
-      {% else %}
-        <a class="button" href="{% url 'login_user' %}">Sign in</a>
-      {% endif %}
-    </div>
-  </div>
-</header>
+<table class="header-title-nav">
+   <tr>
+     <th><a href="{% url 'about' %}">about</a></th>
+     <th><a href="#search" id="site-search-button">search</a></th>
+   </tr>
+</table>
 
 <div class="search-bar">
-  <form id="search-bar-form" class="hidden" action="{% url 'search' %}" method="get">
-    <select name="field" id="search-bar-form-field">
-      <option disabled selected>Search by…</option>
+  <form id="search-bar-form" class="hidden" action="/search/" method="get">
+    <select id="search-bar-form-field" name="field">
+      <option disabled selected value>Search by...</option>
       <option value="keyword">Keyword</option>
       <option value="location">Location</option>
       <option value="provenance_name">Provenance Name</option>
       <option value="collection">Specific Features</option>
       <option value="year">Year</option>
-      <option value="stc">STC / Wing #</option>
-      <option value="census_id">WC #</option>
+      <option value="stc">STC / Wing #</option>
+      <option value="census_id">MC #</option>
     </select>
-    <input type="text" name="value" id="search-bar-form-text" placeholder="Search…" />
-    <input type="submit" id="search-bar-form-submit" value="Submit" />
+    <input id="search-bar-form-text" type="text" name="value" placeholder="Search..">
+    <input id="search-bar-form-submit" type="submit" value="Submit" >
   </form>
 </div>
 
 <script>
-  // Toggle the little search widget
-  document.getElementById('site-search-button').addEventListener('click', function(){
-    document.getElementById('search-bar-form').classList.toggle('hidden');
+  utils.get.id('site-search-button').addEventListener('click', function () {
+    utils.togglehide.id('search-bar-form');
   });
-
-  $(function(){
-    const autofillMap = {
+  $(function() {
+    var autofillMap = {
       location: '/autofill/location/',
       provenance_name: '/autofill/provenance/',
       collection: '/autofill/collection/'
     };
-    function sourceFn(request, response){
-      const field = $('#search-bar-form-field').val();
-      if (!autofillMap[field]) return;
-      fetch(autofillMap[field] + request.term + '/')
+    function autofillResponse(field, query, response) {
+      fetch(autofillMap[field] + query + '/')
         .then(r=>r.json())
         .then(data=>response(data.matches));
     }
     $('#search-bar-form-text').autocomplete({
       minLength: 3,
-      source: sourceFn,
+      source: function(req, resp) {
+        var field = $('#search-bar-form-field').val();
+        if (autofillMap[field]) autofillResponse(field, req.term, resp);
+      },
       select: function(evt, ui){
         $('#search-bar-form-text').val(ui.item.value);
         $('#search-bar-form').submit();
       }
     });
-    $('#search-bar-form-field').change(function(){
-      if (this.value==='collection'){
+    $('#search-bar-form-field').change(function() {
+      if ($(this).val()==='collection') {
         $('#search-bar-form-text').autocomplete('search','   ');
       }
     });

@@ -104,13 +104,6 @@ div.middle-frame {
     margin: 0px 20% 0px 20%;
 }
 
-/* Header & “Sign in” positioning */
-.tucked {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-}
-
 /* Detail Tables */
 table {
     margin: auto;
@@ -177,6 +170,23 @@ table.title {
     margin: 40px auto 20px auto;
 }
 
+/* Sign‐in / Sign‐out floated right */
+.tucked {
+    text-align: right;
+    margin: 10px 20px;
+}
+
+/* Center the about / search nav */
+table.header-title-nav {
+    margin: 0 auto 20px auto;
+}
+
+.header-title-nav th,
+.header-title-nav td {
+    padding: 10px;
+}
+
+/* Footer nav */
 table.footer-nav {
     margin-bottom: 20px;
     margin-top: 20px;
@@ -193,11 +203,7 @@ table.footer-nav {
     padding: 10px 15px 10px 15px;
 }
 
-.header-title-nav th,
-.header-title-nav td {
-    padding: 10px;
-}
-
+/* Search bar */
 .search-bar {
     text-align: center;
     height: 32px;
@@ -208,7 +214,7 @@ table.footer-nav {
     margin-bottom: 0px;
 }
 
-/* Frontpage Styles */
+/* Frontpage Styles – BIGGER, ZOOMED‐IN CIRCLES */
 td.play-title,
 td.play-title-icon {
     width: 150px;
@@ -219,30 +225,34 @@ div.play-title {
     margin: 2px;
 }
 
-/* Larger circle + image sizing restored */
+/* outer circle now 200×200, thicker border */
 div.play-title-icon {
     text-align: center;
-    margin: 24px 0 30px 0;       /* more breathing room below */
+    margin: 24px 0px 30px 0px;
 }
 
 div.play-title-icon-border {
-    width: 200px;                /* outer circle twice as wide */
-    height: 200px;               /* outer circle twice as tall */
-    margin: 0 auto;
-    border-radius: 50%;          /* full round */
-    border: 2px solid;           /* a slightly thicker line */
+    width: 200px;
+    height: 200px;
+    margin: 0px auto;
+    border-radius: 50%;
+    border: 2px solid;
 }
 
+/* inner image 160×160, fully round */
 img.play-title-icon {
-    width: 160px;                /* inner image 160×160 */
+    width: 160px;
     height: 160px;
-    margin: 20px;                /* center it inside the border */
-    border-radius: 50%;          /* keep it perfectly round */
+    margin: 20px;
+    border-radius: 50%;
 }
+
+/* generic fallback same size */
 img.play-title-icon-generic {
-    height: 120px;     /* match ring */
-    width: 120px;      /* match ring */
-    border-radius: 100px;
+    width: 160px;
+    height: 160px;
+    margin: 20px;
+    border-radius: 50%;
 }
 
 .play-title,
@@ -283,7 +293,9 @@ span.unverified-symbol {
     color: rgba(182, 75, 67, 1.0);
 }
 
-span.unverified-symbol { font-size: 130%; }
+span.unverified-symbol {
+    font-size: 1.3em;
+}
 
 span.verified-symbol-small,
 span.verified-symbol {
@@ -291,8 +303,9 @@ span.verified-symbol {
     color: rgba(67, 75, 182, 1.0);
 }
 
-span.verified-symbol-small { font-size: 110%; }
-span.verified-symbol       { font-size: 170%; }
+span.verified-symbol {
+    font-size: 1.3em;
+}
 
 .unicode-icon {
     font-family: FontAwesome;
@@ -304,22 +317,11 @@ span.verified-symbol       { font-size: 170%; }
     display: inline;
 }
 
-/* New: make ✓ and ⃠ symbols larger & bolder everywhere */
-span.verified-symbol,
-span.unverified-symbol {
-    font-size: 1.3em;
-    font-weight: bold;
-    line-height: 1;
-}
+/* “Here” links etc. (unchanged) */
 
-/* New: underline any “here” links in About (class="static-link") */
 .static-link a {
     text-decoration: underline;
 }
-
-/* ==========================================================================
-   ABOUT PAGE HIGHLIGHTS & “here” LINKS
-   ========================================================================= */
 
 .download-here {
     color: rgba(152, 75, 67, 1.0);

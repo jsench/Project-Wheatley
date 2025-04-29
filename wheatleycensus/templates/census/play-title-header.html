@@ -2,7 +2,6 @@
 {% load humanize %}
 
 <table class="play-title-header">
-  <!-- 1) Icon + title -->
   <tr>
     <td rowspan="3" class="play-title-header-icon">
       <div class="play-title-icon-border">
@@ -18,14 +17,10 @@
     <td class="play-title-header">
       <a href="{% url 'issue_list' title.id %}">{{ title.title }}</a>
       {% if user.is_staff %}
-        <span class="note">[
-          <a href="{% url 'admin:marlowecensus_title_change' title.id %}">Edit&nbsp;title</a>
-        ]</span>
+        <span class="note">[<a href="{% url 'admin:marlowecensus_title_change' title.id %}">Edit title</a>]</span>
       {% endif %}
     </td>
   </tr>
-
-  <!-- 2) Edition & Year -->
   <tr>
     <td class="play-issue-header">
       {% if selected_issue.edition.edition_number.isdigit %}
@@ -39,8 +34,6 @@
       &nbsp;{{ selected_issue.year }}
     </td>
   </tr>
-
-  <!-- 3) Extant‐copies count only -->
   <tr>
     <td class="play-issue-header">
       {% if copy_count > 0 %}
