@@ -212,9 +212,10 @@ div.play-title {
     margin: 2px;
 }
 
+/* ← ADDED bottom margin so circles don’t overlap ↓ */
 div.play-title-icon {
     text-align: center;
-    margin: 12px 0px 0px 0px;
+    margin: 12px 0px 20px 0px;
 }
 
 div.play-title-icon-border {
