@@ -104,44 +104,12 @@ div.middle-frame {
     margin: 0px 20% 0px 20%;
 }
 
-/* Detail Tables */
-table {
-    margin: auto;
-    border-collapse: collapse;
-    font-weight: lighter;
+/* Pin the Sign-in/out buttons */
+.tucked {
+    position: absolute;
+    top: 10px;
+    right: 20px;
 }
-
-th {
-    font-weight: lighter;
-}
-
-.play-detail-set {
-    text-align: center;
-    margin: 0% 12% 10% 12%;
-}
-
-.play-detail-set tr:nth-child(odd) {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-
-.play-detail-set tr:nth-child(1) {
-    background-color: rgba(152, 75, 67, 0.5);
-}
-
-.play-detail-set tr {
-    border: none;
-}
-
-.play-detail-set td,
-.play-detail-set th {
-    width: 100px;
-    padding: 10px 6px 10px 6px;
-}
-
-.play-detail-set th.detailed { width: 2000px; }
-.play-detail-set th.terse    { width:   40px; }
-.play-detail-set th.icon     { width:    5px; }
-.play-detail-set th.even     { width:  300px; }
 
 /* Header & Footer */
 table.title {
@@ -170,20 +138,10 @@ table.title {
     margin: 40px auto 20px auto;
 }
 
-table.footer-nav {
-    margin-bottom: 20px;
-    margin-top: 20px;
-    font-size: 80%;
-    border-top: 1px solid rgba(0, 0, 0, 0.65);
-}
-
-.footer-nav span {
-    padding: 0px 10px 0px 10px;
-}
-
-.footer-nav th,
-.footer-nav td {
-    padding: 10px 15px 10px 15px;
+/* Center the about/search nav */
+table.header-title-nav {
+    margin: 0 auto;
+    text-align: center;
 }
 
 .header-title-nav th,
@@ -191,6 +149,7 @@ table.footer-nav {
     padding: 10px;
 }
 
+/* Search bar toggle */
 .search-bar {
     text-align: center;
     height: 32px;
@@ -201,6 +160,37 @@ table.footer-nav {
     margin-bottom: 0px;
 }
 
+/* Detail Tables */
+table,
+.play-detail-set {
+    margin: auto;
+    border-collapse: collapse;
+    font-weight: lighter;
+}
+
+.play-detail-set {
+    text-align: center;
+    margin: 0% 12% 10% 12%;
+}
+
+.play-detail-set tr:nth-child(odd) {
+    background-color: rgba(35, 50, 55, 0.1);
+}
+
+.play-detail-set tr:nth-child(1) {
+    background-color: rgba(152, 75, 67, 0.5);
+}
+
+.play-detail-set td,
+.play-detail-set th {
+    padding: 10px 6px;
+}
+
+.play-detail-set th.detailed { width: 2000px; }
+.play-detail-set th.terse    { width:   40px; }
+.play-detail-set th.icon     { width:    5px; }
+.play-detail-set th.even     { width:  300px; }
+
 /* Frontpage Styles */
 td.play-title,
 td.play-title-icon {
@@ -208,33 +198,34 @@ td.play-title-icon {
 }
 
 div.play-title {
-    padding: 4px 0px 20px 0px;
+    padding: 4px 0px 20px;
     margin: 2px;
 }
 
+/* Larger circles/images */
 div.play-title-icon {
     text-align: center;
-    margin: 12px 0px 0px 0px;
+    margin: 12px 0px 20px;
 }
 
 div.play-title-icon-border {
-    width: 100px;
-    height: 100px;
-    margin: 0px auto;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
     border-radius: 100px;
     border: 1px solid;
 }
 
 img.play-title-icon {
-    height: 80px;
-    width: 80px;
+    height: 100px;
+    width: 100px;
     margin: 10px;
     border-radius: 20px;
 }
 
 img.play-title-icon-generic {
-    height: 100px;
-    width: 100px;
+    height: 120px;
+    width: 120px;
     border-radius: 100px;
 }
 
@@ -274,9 +265,9 @@ span.unverified-symbol-small,
 span.unverified-symbol {
     font-weight: bold;
     color: rgba(182, 75, 67, 1.0);
+    font-size: 1.3em;
+    line-height: 1;
 }
-
-span.unverified-symbol { font-size: 130%; }
 
 span.verified-symbol-small,
 span.verified-symbol {
@@ -284,35 +275,22 @@ span.verified-symbol {
     color: rgba(67, 75, 182, 1.0);
 }
 
-span.verified-symbol-small { font-size: 110%; }
-span.verified-symbol       { font-size: 170%; }
+span.verified-symbol-small { font-size: 1.1em; }
+span.verified-symbol       { font-size: 1.7em; }
 
 .unicode-icon {
     font-family: FontAwesome;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 0 4px;
 }
 
 .fa, .fas {
     display: inline;
 }
 
-/* New: make ✓ and ⃠ symbols larger & bolder everywhere */
-span.verified-symbol,
-span.unverified-symbol {
-    font-size: 1.3em;
-    font-weight: bold;
-    line-height: 1;
-}
-
-/* New: underline any “here” links in About (class="static-link") */
+/* About page “here” links */
 .static-link a {
     text-decoration: underline;
 }
-
-/* ==========================================================================
-   ABOUT PAGE HIGHLIGHTS & “here” LINKS
-   ========================================================================= */
 
 .download-here {
     color: rgba(152, 75, 67, 1.0);
