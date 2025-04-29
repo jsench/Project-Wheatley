@@ -55,22 +55,26 @@ def copy_census_id_sort_key(c):
 def homepage(request):
     tpl = loader.get_template('census/frontpage.html')
     titles = list(models.Title.objects.all())
-    # sort first by embedded year, then by title (minus leading article)
+
     def extract_year(t):
         import re
-        m = re.search(r'\b(\d{4})\b', t.title)
+        m = re.search(r'\b(\d{4})\b', t.title or '')
         return int(m.group(1)) if m else 9999
 
+    # sort by embedded year, then by title minus leading article
     titles.sort(key=lambda t: (extract_year(t), strip_article(t).lower()))
+
     rows = [titles[i:i+5] for i in range(0, len(titles), 5)]
     return HttpResponse(tpl.render({
         'titlerows': rows,
-        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png'
+        # now just the relative path; let {% static %} add /static/
+        'icon_path': 'census/images/generic-title-icon.png'
     }, request))
 
 
 def search(request, field=None, value=None, order=None):
     tpl = loader.get_template('census/search-results.html')
+
     field = field or request.GET.get('field')
     value = value or request.GET.get('value')
     order = order or request.GET.get('order')
@@ -80,7 +84,7 @@ def search(request, field=None, value=None, order=None):
 
     display_field, display_value = field, value
 
-    # --- Filtering by field ---
+    # --- Filtering ---
     if field == 'keyword' or (not field and value):
         display_field = 'Keyword Search'
         q = (
@@ -97,19 +101,25 @@ def search(request, field=None, value=None, order=None):
         yr = convert_year_range(value)
         if yr:
             start, end = yr
-            result_list = qs.filter(issue__start_date__lte=end,
-                                     issue__end_date__gte=start)
+            result_list = qs.filter(
+                issue__start_date__lte=end,
+                issue__end_date__gte=start
+            )
         else:
             result_list = qs.filter(issue__year__icontains=value)
     elif field == 'location' and value:
         display_field = 'Location'
-        result_list = qs.filter(location__name_of_library_collection__icontains=value)
+        result_list = qs.filter(
+            location__name_of_library_collection__icontains=value
+        )
     elif field == 'census_id' and value:
         display_field = 'WC'
         result_list = qs.filter(wc_number=value)
     elif field == 'provenance_name' and value:
         display_field = 'Provenance Name'
-        result_list = qs.filter(provenance_records__provenance_name__name__icontains=value)
+        result_list = qs.filter(
+            provenance_records__provenance_name__name__icontains=value
+        )
     elif field == 'unverified':
         display_field = 'Unverified'
         display_value = 'All'
@@ -122,7 +132,9 @@ def search(request, field=None, value=None, order=None):
         result_list = qs.none()
 
     # --- Sorting ---
-    if not order: order = 'date'
+    if not order:
+        order = 'date'
+
     if order == 'date':
         result_list = sorted(
             result_list,
@@ -160,7 +172,7 @@ def search(request, field=None, value=None, order=None):
         result_list = sorted(result_list, key=copy_census_id_sort_key)
 
     return HttpResponse(tpl.render({
-        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png',
+        'icon_path': 'census/images/generic-title-icon.png',
         'result_list': result_list,
         'copy_count': len(result_list),
         'field': field,
@@ -176,16 +188,18 @@ def search(request, field=None, value=None, order=None):
 def copy_list(request, id):
     tpl = loader.get_template('census/copy_list.html')
     issue = get_object_or_404(models.Issue, pk=id)
+
     qs = models.Copy.objects.filter(
-        Q(verification='U')|Q(verification='V')|Q(verification__isnull=True),
+        Q(verification='U') | Q(verification='V') | Q(verification__isnull=True),
         issue=id
     )
     copies = sorted(qs, key=copy_census_id_sort_key)
+
     return HttpResponse(tpl.render({
         'all_copies': copies,
         'copy_count': len(copies),
         'selected_issue': issue,
-        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png',
+        'icon_path': 'census/images/generic-title-icon.png',
         'title': issue.edition.title,
     }, request))
 
@@ -196,24 +210,14 @@ def copy_data(request, copy_id):
     return HttpResponse(tpl.render({'copy': copy}, request))
 
 
-# def static_copy(request, wc_number):
-#     """
-#     Allows /wc/<n>/ to render the same modal view but as a standalone page.
-#     """
-#     tpl = loader.get_template('census/copy_modal.html')
-#     copy = get_object_or_404(models.Copy, wc_number=wc_number)
-#     return HttpResponse(tpl.render({'copy': copy}, request))
-
 def copy_page(request, wc_number):
     """
-    Stand‐alone page for /wc/<n>/ that auto‐opens the same modal
-    used in the copy_list view.
+    Stand‐alone page for /wc/<n>/ that auto‐opens the modal.
     """
     copy = get_object_or_404(models.Copy, wc_number=wc_number)
     return render(request, 'census/copy_page.html', {
         'copy': copy,
     })
-
 
 
 # ------------------------------------------------------------------------------
@@ -229,7 +233,7 @@ def issue_list(request, id):
         i.start_date, i.end_date
     ))
     copy_count = models.Copy.objects.filter(
-        Q(verification='U')|Q(verification='V')|Q(verification__isnull=True),
+        Q(verification='U') | Q(verification='V') | Q(verification__isnull=True),
         issue__in=issues
     ).count()
 
@@ -237,7 +241,7 @@ def issue_list(request, id):
         'editions': editions,
         'issues': issues,
         'copy_count': copy_count,
-        'icon_path': settings.STATIC_URL + 'census/images/generic-title-icon.png',
+        'icon_path': 'census/images/generic-title-icon.png',
         'title': title,
     }, request))
 
@@ -251,7 +255,9 @@ def about(request):
     facsimile_count = models.Copy.objects.exclude(
         Q(digital_facsimile_url='') | Q(digital_facsimile_url=None)
     ).count()
-    facsimile_percent = f"{round(100 * facsimile_count / copy_count)}%" if copy_count else "0%"
+    facsimile_percent = (
+        f"{round(100 * facsimile_count / copy_count)}%" if copy_count else "0%"
+    )
 
     return render(request, 'census/about.html', {
         'copy_count': copy_count,
