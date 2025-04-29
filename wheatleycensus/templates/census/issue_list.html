@@ -35,10 +35,9 @@
     </table>
     <table class="play-detail-set">
         <tr>
-            <th class="even">Edition</th>
-            <th class="even">Year</th>
-            <th class="even">STC / Wing</th>
-            <th class="even">ESTC</th>
+            <th class="even"> Edition </th>
+            <th class="even"> Year </th>
+            <th class="even"> Bibliographic Data </th>
         </tr>
         {% for issue in issues %}
         <tr>
@@ -55,7 +54,7 @@
                 {% endif %}
             </td>
             <td><a href="{% url 'copy_list' issue.id %}">{{ issue.year }}</a></td>
-            <td><a href="{% url 'copy_list' issue.id %}">{{ issue.stc_wing }}</a></td>
+            <td>{{ issue.bibliographic_data }}</td>
             <td>
                 <a href="{% url 'copy_list' issue.id %}">{{ issue.estc }}</a>
                 {% if user.is_staff %}

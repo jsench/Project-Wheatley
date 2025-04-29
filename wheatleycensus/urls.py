@@ -5,9 +5,9 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('',                views.homepage,      name='homepage'),
-    path('homepage',        views.homepage,      name='homepage'),
-    path('search/',         views.search,        name='search'),
+    # path('',                views.homepage,      name='homepage'),
+    path('homepage',views.homepage,name='homepage'),
+    path('search/',views.search,name='search'),
     path('search/<str:field>/<str:value>/',          views.search, name='search'),
     path('search/<str:field>/<str:value>/<str:order>/', views.search, name='search'),
     path('title/<int:id>/', views.issue_list,     name='issue_list'),
