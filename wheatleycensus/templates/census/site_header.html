@@ -1,53 +1,112 @@
 {% load static %}
 
-<header class="site-header">
-  <!-- Sign-in / Admin Buttons -->
-  <div class="tucked">
+<div class="tucked">
     {% if user.is_authenticated %}
-      <a class="button" href="{% url 'logout_user' %}">Sign out</a>
-      <a class="button" href="{% url 'admin:index' %}">Admin</a>
+    <a class="button" href="{% url 'logout_user' %}">Sign out</a>
+    <a class="button" href="{% url 'admin:index' %}">Site Administration</a>
+
     {% else %}
-      <a class="button" href="{% url 'login_user' %}">Sign in</a>
+    <a class="button" href="{% url 'login_user' %}">Sign in</a>
+
     {% endif %}
-  </div>
+    <!-- A normally-styled non-breaking space is used to ensure consistent div height. -->
+        &nbsp;
+</div>
+<table class="title">
+    <tr>
+        <th>
+            &nbsp;
+        </th>
+        <th>
+            &nbsp;
+        </th>
+        <th>
+            &nbsp;
+        </th>
+        <th>
+            &nbsp;
+        </th>
+   </tr>
+    <tr>
+        <td colspan="4">
+          {% if request.path == '/homepage' %}
+            <a>Wheatley Census</a>
+          {% else %}
+            <a href="{% url 'homepage' %}">Wheatley Census</a><br/>
+          {% endif %}
+        </td>
+    </tr>
+</table>
 
-  <!-- Title & Navigation -->
-  <div class="outer-frame nav-wrap">
-    <h1 class="site-title">
-      <a href="{% url 'homepage' %}">Wheatley Census</a>
-    </h1>
-    <nav class="main-nav">
-      <a href="{% url 'homepage' %}">Home</a>
-      <a href="{% url 'about' %}">About</a>
-      <a href="#" id="site-search-button">Search</a>
-    </nav>
-  </div>
+<table class="header-title-nav">
+   <tr>
+     <th>
+       <a href="{% url 'about' %}">about</a>
+     </th>
+     <th>
+       <a href="#search" id="site-search-button">search</a>
+     </th>
+   </tr>
+</table>
 
-  <!-- Collapsible Search Bar -->
-  <div class="search-bar hidden" id="search-bar-form">
-    <form action="{% url 'search' %}" method="get" class="search-form">
-      <details>
-        <summary>Search & Filters</summary>
-        <select name="field">
-          <option disabled selected value>Search by...</option>
-          <option value="keyword"{% if request.GET.field == 'keyword' %} selected{% endif %}>Keyword</option>
-          <option value="location"{% if request.GET.field == 'location' %} selected{% endif %}>Location</option>
-          <option value="provenance_name"{% if request.GET.field == 'provenance_name' %} selected{% endif %}>Provenance Name</option>
-          <option value="collection"{% if request.GET.field == 'collection' %} selected{% endif %}>Specific Features</option>
-          <option value="year"{% if request.GET.field == 'year' %} selected{% endif %}>Year</option>
-          <option value="stc"{% if request.GET.field == 'stc' %} selected{% endif %}>STC / Wing #</option>
-          <option value="census_id"{% if request.GET.field == 'census_id' %} selected{% endif %}>MC #</option>
-        </select>
-        <input type="text" name="value" placeholder="Enter search term..." value="{{ request.GET.value|default_if_none:'' }}" />
-        <button type="submit" class="button">Go</button>
-      </details>
-    </form>
-  </div>
-</header>
+<div class="search-bar">
+  <form id="search-bar-form" class="hidden" action="/search/" method="get">
+    <select id="search-bar-form-field" name="field">
+      <option disabled selected value>Search by...</option>
+      <option value="keyword">Keyword</option>
+      <option value="location">Location</option>
+      <option value="provenance_name">Provenance Name</option>
+      <option value="collection">Specific Features</option>
+      <option value="year">Year</option>
+      <option value="stc">STC / Wing #</option>
+      <option value="census_id">WC #</option>
+    </select>
+    <input id="search-bar-form-text" type="text" name="value" placeholder="Search..">
+    <input id="search-bar-form-submit" type="submit" value="Submit" >
+  </form>
+</div>
 
 <script>
-  document.getElementById('site-search-button').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.getElementById('search-bar-form').classList.toggle('hidden');
-  });
+    utils.get.id('site-search-button').addEventListener('click', function () {
+        utils.togglehide.id('search-bar-form');
+    });
+    $(function() {
+        var autofillMap = {
+            location: '/autofill/location/',
+            provenance_name: '/autofill/provenance/',
+            collection: '/autofill/collection/'
+        };
+
+        var autofillResponse = function(field, query, response) {
+            fetch(autofillMap[field] + query + '/')
+                .then((matches) => {
+                    return matches.json()
+                })
+                .then((matches_json) => {
+                    return response(matches_json.matches);
+                });
+        };
+
+        $('#search-bar-form-text').autocomplete({
+            minLength: 3,
+            source: function(request, response) {
+                var field_el = utils.get.id('search-bar-form-field');
+                var field = field_el.options[field_el.selectedIndex].value;
+                if (autofillMap.hasOwnProperty(field)) {
+                    autofillResponse(field, request.term, response);
+                }
+            },
+            select: function(evt, ui) {
+                $('#search-bar-form-text').val(ui.item.value);
+                $('#search-bar-form').submit();
+            },
+        });
+
+        $('#search-bar-form-field').change(function(evt) {
+            if ($('#search-bar-form-field option:selected').val() === 'collection') {
+                $('#search-bar-form-text').autocomplete('search', '   ');
+            }
+        });
+    });
+
 </script>

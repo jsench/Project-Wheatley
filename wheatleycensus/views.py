@@ -1,4 +1,4 @@
-# marlowecensus/views.py
+
 
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
@@ -232,13 +232,19 @@ def search_results(request):
 # ------------------------------------------------------------------------------
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
-def copy_list(request, issue_id):
-    issue = get_object_or_404(Issue, pk=issue_id)
-    all_copies = Copy.objects.filter(issue=issue)
-    return render(request, 'census/copy_list.html', {
-         'selected_issue': issue,
-         'all_copies': all_copies,
-     })
+def copy_list(request, id):
+    selected_issue = get_object_or_404(models.Issue, pk=id)
+    all_copies = models.Copy.objects.filter(canonical_query & Q(issue = id)).order_by('location__name', 'shelfmark')
+    all_copies = sorted(all_copies, key=copy_sort_key)
+    template = loader.get_template('census/copy_list.html')
+    context = {
+        'all_copies': all_copies,
+        'copy_count': len(all_copies),
+        'selected_issue': selected_issue,
+        'icon_path': 'census/images/generic-title-icon.png',
+        'title': selected_issue.edition.title
+    }
+    return HttpResponse(template.render(context, request))
 def copy_data(request, copy_id):
     tpl = loader.get_template('census/copy_modal.html')
     copy = get_object_or_404(models.Copy, pk=copy_id)

@@ -2,55 +2,93 @@
 {% load humanize %}
 
 <table class="play-title-header">
-  <tr>
-    <td rowspan="3" class="play-title-header-icon">
-      <div class="play-title-icon-border">
-        <a href="{% url 'issue_list' title.id %}">
-          {% if title.image %}
-            <img
-              class="play-title-icon"
-              src="{{ title.image.url }}"
-              alt="{{ title.title }}"
-            >
-          {% else %}
-            <img
-              class="play-title-icon-generic"
-              src="{% static icon_path %}"
-              alt="Generic icon"
-            >
-          {% endif %}
-        </a>
-      </div>
-    </td>
-    <td class="play-title-header">
-      <a href="{% url 'issue_list' title.id %}">{{ title.title }}</a>
-      {% if user.is_staff %}
-        <span class="note">
-          [<a href="{% url 'admin:marlowecensus_title_change' title.id %}">Edit title</a>]
-        </span>
-      {% endif %}
-    </td>
-  </tr>
 
-  <tr>
-    <td class="play-issue-header">
-      {% if selected_issue.edition.edition_number.isdigit %}
-        {{ selected_issue.edition.edition_number|add:"0"|ordinal }} Edition
-      {% else %}
-        {{ selected_issue.edition.edition_number|capfirst }}
-      {% endif %}
-      {% if selected_issue.edition.edition_format %}
-        ({{ selected_issue.edition.edition_format }})
-      {% endif %}
-      &nbsp;{{ selected_issue.year }}
-    </td>
-  </tr>
+    <tr>
+        <td rowspan="3" class="play-title-header-icon">
+            <div class="play-title-icon-border">
+                <a href = "{% url 'issue_list' title.id %}">
+                    {% if title.image %}
+                        <img class="play-title-icon" src="{{ title.image.url }}">
+                    {% else %}
+                        <img class="play-title-icon-generic" src="{% static icon_path %}">
+                    {% endif %}
+                </a>
+            </div>
+        </td>
+        <td class="play-title-header">
+            <a href = "{% url 'issue_list' title.id %}">
+                {{ title.title }}
+            </a>
+        </td>
+    </tr>
 
-  <tr>
-    <td class="play-issue-header">
-      {% if copy_count > 0 %}
-        <span>Extant copies: {{ copy_count }}</span>
-      {% endif %}
-    </td>
-  </tr>
+    <tr>
+        <td class="play-issue-header">
+            <span>
+                {% if selected_issue.edition.edition_number.isdigit %}
+                {{ selected_issue.edition.edition_number|add:"0"|ordinal }}&nbsp;Edition
+                {% else %}
+                {{ selected_issue.edition.edition_number.capitalize }}
+                {% endif %}
+                {% if selected_issue.edition.edition_format %}
+                ({{ selected_issue.edition.edition_format }})
+                {% endif %}
+            </span>
+            <span>{{ selected_issue.year }}</span>
+            <span>STC&#8239;/&#8239;Wing:&nbsp;{{ selected_issue.stc_wing }}</span>
+
+            {% if selected_issue.estc and selected_issue.estc != 'not in estc' and ';' not in selected_issue.estc %}
+
+                 <span class="static-text">
+                    ESTC:&nbsp;<a href="http://estc.bl.uk/{{ selected_issue.estc }}" target="_blank">{{ selected_issue.estc }}</a>
+                </span>
+            {% elif ';' in selected_issue.estc %}
+                 <span class="static-text">
+                   ESTC:
+                   {% for estc, is_last in selected_issue.estc_as_list %}
+                      {% if not is_last %}
+                          &nbsp;<a href="http://estc.bl.uk/{{ estc }}" target="_blank">{{ estc }}</a>;
+                      {% else %}
+                          &nbsp;<a href="http://estc.bl.uk/{{ estc }}" target="_blank">{{ estc }}</a>
+                      {% endif %}
+                   {% endfor %}
+                 </span>
+
+            {% else %}
+                <span class="static-text">
+                    ESTC: not in ESTC
+                </span>
+            {% endif %}
+
+            {% if selected_issue.deep and selected_issue.deep != '0' and ';' not in selected_issue.deep %}
+                <span class="static-text">
+                    DEEP:&nbsp;<a href="http://deep.sas.upenn.edu/viewrecord.php?deep_id={{ selected_issue.deep }}" target="_blank">{{ selected_issue.deep }}</a>
+                </span>
+            {% elif ';' in selected_issue.deep%}
+                <span class="static-text">
+                  DEEP:
+                  {% for deep, is_last in selected_issue.deep_as_list %}
+                 {% if not is_last %}
+                  &nbsp;<a href="http://deep.sas.upenn.edu/viewrecord.php?deep_id={{ deep }}" target="_blank">{{ deep }}</a>;
+                  {% else %}
+                  &nbsp;<a href="http://deep.sas.upenn.edu/viewrecord.php?deep_id={{ deep }}" target="_blank">{{ deep }}</a>
+                  {% endif %}
+                  {% endfor %}
+                </span>
+            {% else %}
+                <span class="static-text">
+                    DEEP: not in DEEP
+                </span>
+            {% endif %}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="play-issue-header">
+            {% if copy_count > 0 %}
+                <span>Extant copies: {{ copy_count }} </span>
+            {% endif %}
+        </td>
+    </tr>
+
 </table>
