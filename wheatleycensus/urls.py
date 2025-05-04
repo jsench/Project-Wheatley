@@ -5,14 +5,16 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('',                views.homepage,      name='homepage'),
+    path('',                views.homepage,      name='frontpage'),
     # path('homepage',views.homepage,name='homepage'),
     path('search/',views.search,name='search'),
     path('search/<str:field>/<str:value>/',          views.search, name='search'),
     path('search/<str:field>/<str:value>/<str:order>/', views.search, name='search'),
+    path("search/",  views.search_results,  name="search"),
     path('title/<int:id>/', views.issue_list,     name='issue_list'),
     path('issue/<int:id>/', views.copy_list,      name='copy_list'),
     path('copydata/<int:copy_id>/', views.copy_data, name='copy_data'),
+    path( "copies/", views.copy_list, name="copy_list" ),
     path('wc/<int:wc_number>/', views.copy_page, name='copy_page'),
     path('about/',            views.about,         name='about'),
     path('about/<str:viewname>/', views.about,     name='about'),
