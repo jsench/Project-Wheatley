@@ -232,37 +232,13 @@ def search_results(request):
 # ------------------------------------------------------------------------------
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
-def copy_list(request, issue_id=None):
-    """
-    Displays all copies (or copies for a specific issue if issue_id is passed).
-    Paginated 20 per page.
-    """
-    if issue_id:
-        # If you’re filtering by issue (e.g. drilling in), otherwise use all()
-        issue = get_object_or_404(Issue, pk=issue_id)
-        qs = Copy.objects.filter(issue=issue).select_related('location', 'issue__edition')
-    else:
-        qs = Copy.objects.select_related('location', 'issue__edition').all()
-
-    paginator = Paginator(qs, 20)              # 20 items per page
-    page_number = request.GET.get('page')      # ?page=2
-    page_obj = paginator.get_page(page_number)
-
+def copy_list(request, issue_id):
+    issue = get_object_or_404(Issue, id=issue_id)
+    all_copies = Copy.objects.filter(issue=issue).select_related('location')
     return render(request, 'census/copy_list.html', {
-        'page_obj': page_obj,
-        'selected_issue': issue if issue_id else None,
-    })
-
-
-    return HttpResponse(tpl.render({
-        'all_copies': copies,
-        'copy_count': len(copies),
-        'selected_issue': issue,
-        'icon_path': 'census/images/generic-title-icon.png',
-        'title': issue.edition.title,
-    }, request))
-
-
+         'selected_issue': issue,
+         'all_copies': all_copies,
+     })
 def copy_data(request, copy_id):
     tpl = loader.get_template('census/copy_modal.html')
     copy = get_object_or_404(models.Copy, pk=copy_id)

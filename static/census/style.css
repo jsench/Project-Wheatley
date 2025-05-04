@@ -251,28 +251,27 @@ div.play-title-icon {
     margin: calc(var(--icon-padding,10px)*1.2) auto calc(var(--icon-padding,10px)*1.5) auto;
 }
 :root {
-    --icon-size: 120px;      /* circle diameter minus padding */
-    --icon-padding: 10px;    /* space inside the border */
+    --icon-size: 80px;      /* circle diameter minus padding */
+    --icon-padding: 5px;    /* space inside the border */
   }
 div.play-title-icon-border {
-    width: calc( var(--icon-size,120px) + var(--icon-padding,10px)*2 );
-    height: calc( var(--icon-size,120px) + var(--icon-padding,10px)*2 );
+    width: calc( var(--icon-size) + var(--icon-padding)*2 );
+    height: calc( var(--icon-size) + var(--icon-padding)*2 );
     border-radius: 50%;
     border: 2px solid;
     margin: 0 auto;
 }
 img.play-title-icon,
 img.play-title-icon-generic {
-    width: var(--icon-size,120px);
-    height: var(--icon-size,120px);
-    margin: var(--icon-padding,10px);
+    width: var(--icon-size);
+    height: var(--icon-size);
+    margin: var(--icon-padding);
     border-radius: 50%;
 }
 .play-title {
     display: inline-block;
-    margin-left: -8px;      /* nudge left so it lines up perfectly */
+    margin-left: -3px;      /* nudge left so it lines up perfectly */
     text-align: center;
-    font-size: 14px;
 }
 
 
