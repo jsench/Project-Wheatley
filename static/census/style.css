@@ -1,27 +1,10 @@
-/*==============================================================================
-=                                 Global Styles                                =
-==============================================================================*/
+/* Global Styles */
 
-/* Tag-level resets */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Open Sans", AppleGothic, sans-serif;
-    font-weight: lighter;
-}
-
+/* Tag-level styles */
 html {
     margin-left: calc(100vw - 100%);
 }
 
-body {
-    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-    color: #333;
-    line-height: 1.6;
-}
-
-/* Link styles */
 a {
     text-decoration: none;
     color: #233237;
@@ -31,10 +14,23 @@ a:hover,
 a:focus {
     color: #e74c3c;
 }
+
 .guide-text a,
 .static-text a {
     color: rgba(152, 75, 67, 1.0);
     font-weight: bold;
+}
+
+a.linkbutton {
+    padding: 5px;
+}
+
+body {
+    font-family: "Open Sans", AppleGothic, sans-serif;
+    font-weight: lighter;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    color: #333;
+    line-height: 1.6;
 }
 
 /* Utility classes */
@@ -42,225 +38,207 @@ a:focus {
 .hidden-icon {
     display: none;
 }
-ul { list-style: none; }
-li { margin: 3px 0; }
+ul {
+    list-style: none;
+}
+li {
+    margin: 3px;
+}
 .warning,
 .notice {
     padding: 10px;
     margin: 10px;
 }
-.notice { background-color: rgba(35, 50, 55, 0.1); }
-.warning { background-color: rgba(152, 75, 67, 0.3); }
+.notice {
+    background-color: rgba(35, 50, 55, 0.1);
+}
+.warning {
+    background-color: rgba(152, 75, 67, 0.3);
+}
 .note {
     font-size: 75%;
     margin: 0 10px;
 }
 
-/* FontAwesome icons */
 .unicode-icon {
     font-family: FontAwesome, sans-serif;
     padding: 0 4px;
 }
-.fa, .fas { display: inline; }
+.fa, .fas {
+    display: inline;
+}
 
-
-/*==============================================================================
-=                             Layout Frame Styles                              =
-==============================================================================*/
+/* Class-level styles */
 
 div.frame-container {
     width: 100%;
     margin: 0 auto;
     position: relative;
 }
+
 div.outer-frame {
     max-width: 1024px;
     margin: 0 auto;
     position: relative;
 }
+
 div.middle-frame {
     max-width: 896px;
     margin: 0 20%;
 }
 
-
-/*==============================================================================
-=                           Header & Navigation Styles                         =
-==============================================================================*/
-
-/* Sticky header */
-header.site-header {
-    background: #2c3e50;
-    color: #ecf0f1;
-    padding: 1rem;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-/* Title and nav layout */
-header.site-header .tucked {
-    text-align: right;
-    margin-bottom: 0.5rem;
-}
-header.site-header h1.site-title {
-    font-size: 2.5rem;
-    letter-spacing: 2px;
-    margin-bottom: 0.5rem;
-}
-header.site-header h1.site-title a {
-    color: #ecf0f1;
-    text-decoration: none;
-}
-nav.main-nav {
-    margin-top: 0.5rem;
-}
-nav.main-nav a {
-    margin: 0 1rem;
-    color: #ecf0f1;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-nav.main-nav a:hover,
-nav.main-nav a:focus {
-    color: #e74c3c;
-}
-
-/* Center the footer nav */
-.footer-nav {
-    text-align: center;
-  }
-  .footer-nav span {
-    display: inline-block;
-  }
-
-/*==============================================================================
-=                            Search Form & Bar Styles                           =
-==============================================================================*/
-
-.search-bar {
-    background: rgba(255,255,255,0.8);
-    padding: 2rem;
-    text-align: center;
-}
-.search-form {
-    display: inline-grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    align-items: end;
-    justify-content: center;
-}
-.search-form details {
-    background: #fff;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 6px;
-    padding: 1rem;
-}
-.search-form summary {
+/* UI Styles */
+input,
+.button,
+.button-inline,
+.button-inline-selected,
+.button-inline-small {
     cursor: pointer;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-.search-form input,
-.search-form select {
-    width: 100%;
-    padding: 0.8rem;
-    border: none;
-    border-radius: 25px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: width 0.3s ease;
-}
-.search-form input:focus,
-.search-form select:focus {
-    width: 100%;
-    outline: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-.search-form .button {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 25px;
-    background: #e74c3c;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.search-form .button:hover,
-.search-form .button:focus {
-    background: #c0392b;
+    margin: 2px;
+    border: 1px solid rgba(152, 75, 67, 0.4);
+    border-radius: 4px;
+    padding: 2px 6px 3px 6px;
+    font-family: inherit;
+    user-select: none;
 }
 
+input,
+.button {
+    height: 25px;
+    font-size: 80%;
+}
 
-/*==============================================================================
-=                             Detail Table Styles                              =
-==============================================================================*/
-
-.play-detail-set {
-    margin: 2rem auto;
-    width: 80%;
-    border-collapse: collapse;
+input[type="submit"],
+.button {
+    background-color: rgba(152, 75, 67, 0.2);
     font-weight: lighter;
+}
+
+.button-inline {
+    height: 18px;
+    font-size: 65%;
+    padding: 1px 6px;
+    margin: 2px 10px;
+}
+
+.button-inline-small {
+    height: 10px;
+    font-size: 50%;
+    padding: 1px 3px;
+    margin: 2px 10px;
+}
+
+.admin-submit input[type="text"] {
+    width: 100%;
+}
+
+select {
+    appearance: none;
+    background-color: rgba(152, 75, 67, 0.2);
+    padding: 3px 5px;
+    margin: 3px;
+    font-weight: lighter;
+    font-size: 80%;
+    font-family: "Open Sans", AppleGothic, sans-serif;
+}
+
+body:focus {
+    outline-color: rgba(152, 75, 67, 0.6);
+}
+
+/* Header and Footer Styles */
+
+table.title {
+    margin: 0 20% 0 20%;
+}
+
+.title th,
+.title td {
+    width: 170px;
+}
+
+.title th {
+    font-size: 10px;
+    height: 20px;
+    padding: 0 6px;
+}
+
+.title td {
+    padding: 10px 6px 0;
+}
+
+.title {
+    font-family: "Open Sans", AppleGothic, sans-serif;
+    font-size: 25px;
+    text-align: center;
+    margin: 40px auto 20px;
+}
+
+table.footer-nav {
+    margin: 20px auto;
+    font-size: 80%;
+    border-top: 1px solid rgba(0, 0, 0, 0.65);
     text-align: center;
 }
-.play-detail-set th,
-.play-detail-set td {
-    padding: 0.75rem 1rem;
-}
-.play-detail-set tr:nth-child(odd) {
-    background: rgba(35,50,55,0.05);
-}
-.play-detail-set tr:first-child {
-    background: rgba(152,75,67,0.3);
-}
-.play-detail-set th.terse { width:  5%; }
-.play-detail-set th.detailed { width: auto; }
-.play-detail-set th.icon   { width:  3%; }
-.play-detail-set td,
-.play-detail-set th {
-    vertical-align: middle;
+
+.footer-nav span {
+    display: inline-block;
+    padding: 10px;
 }
 
-/* Verified / Unverified Symbols */
-span.unverified-symbol {
-    color: rgba(182,75,67,1.0);
-    font-weight: bold;
-    font-size: 1.3em;
-}
-span.verified-symbol {
-    color: rgba(67,75,182,1.0);
-    font-weight: bold;
-    font-size: 1.3em;
+.footer-nav th,
+.footer-nav td {
+    padding: 10px 15px;
 }
 
+.header-title-nav th,
+.header-title-nav td {
+    padding: 10px;
+}
 
-/*==============================================================================
-=                     Frontpage Icon & Title Styles                           =
-==============================================================================*/
+/* Search Bar */
+.search-bar {
+    text-align: center;
+    height: auto;
+    padding: 15px 0;
+    background: rgba(255,255,255,0.8);
+}
+
+.search-bar form {
+    margin-bottom: 0;
+}
+
+/* Frontpage Styles */
 
 td.play-title,
 td.play-title-icon {
-    width: calc( var(--icon-size, 120px) + var(--icon-padding, 10px) * 2 );
+    width: calc(var(--icon-size,120px) + var(--icon-padding,10px)*2);
 }
+
 div.play-title {
-    margin: 1rem 0;
+    padding: 4px 0 20px;
+    margin: 2px;
     text-align: center;
 }
+
 div.play-title-icon {
-    margin: calc(var(--icon-padding,10px)*1.2) auto calc(var(--icon-padding,10px)*1.5) auto;
+    text-align: center;
+    margin: 12px 0;
 }
+
 :root {
-    --icon-size: 80px;      /* circle diameter minus padding */
-    --icon-padding: 5px;    /* space inside the border */
-  }
+    --icon-size: 120px;
+    --icon-padding: 10px;
+}
+
 div.play-title-icon-border {
-    width: calc( var(--icon-size) + var(--icon-padding)*2 );
-    height: calc( var(--icon-size) + var(--icon-padding)*2 );
+    width: calc(var(--icon-size) + var(--icon-padding)*2);
+    height: calc(var(--icon-size) + var(--icon-padding)*2);
+    margin: 0 auto;
     border-radius: 50%;
     border: 2px solid;
-    margin: 0 auto;
 }
+
 img.play-title-icon,
 img.play-title-icon-generic {
     width: var(--icon-size);
@@ -268,126 +246,47 @@ img.play-title-icon-generic {
     margin: var(--icon-padding);
     border-radius: 50%;
 }
+
 .play-title {
     display: inline-block;
-    margin-left: -3px;      /* nudge left so it lines up perfectly */
+    margin-left: -8px;
+    font-size: 14px;
     text-align: center;
 }
 
-
-/*==============================================================================
-=                       Data Display – Card Grid Styles                        =
-==============================================================================*/
-
-.results-grid,
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
-    gap: 1.5rem;
-    padding: 2rem;
-}
-.result-card,
-.card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
-}
-.result-card:hover,
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-.card-icon img {
-    width: 100%;
-    border-radius: 5px;
-    margin-bottom: 1rem;
-}
-.card-title,
-.card h3 {
-    color: #2c3e50;
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-}
-.card-meta,
-.card p {
-    color: #7f8c8d;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-}
-
-
-/*==============================================================================
-=                             Pagination Styles                               =
-==============================================================================*/
-
-.pagination {
+.about {
+    font-size: 10px;
     text-align: center;
-    margin: 2rem 0;
-}
-.pagination a {
-    display: inline-block;
-    margin: 0 0.5rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 4px;
-    color: #2c3e50;
-    text-decoration: none;
-    transition: background 0.3s;
-}
-.pagination a:hover,
-.pagination a:focus {
-    background: rgba(0,0,0,0.05);
 }
 
+/* Detail Table Styles */
 
-/*==============================================================================
-=                       Animation for New Entries                              =
-==============================================================================*/
-
-@keyframes slideIn {
-    from { transform: translateY(20px); opacity: 0; }
-    to   { transform: translateY(0);      opacity: 1; }
-}
-.result-card.new,
-.card.new {
-    animation: slideIn 0.5s ease;
+.play-title-header {
+    font-family: 'Open Sans', AppleGothic, sans-serif;
+    font-size: 20px;
 }
 
-
-/*==============================================================================
-=                        Modal & Miscellaneous Styles                          =
-==============================================================================*/
-
-.modal-header {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-.modal-title {
-    font-weight: lighter;
+table.play-title-header {
+    margin: 0 10% 25px 10%;
 }
 
-/*==============================================================================
-=                         Responsive Tweaks                                    =
-==============================================================================*/
-
-@media (max-width: 768px) {
-    nav.main-nav a {
-        display: block;
-        margin: 0.5rem 0;
-    }
+td.play-title-header-icon {
+    vertical-align: top;
+    padding-right: 10px;
 }
-@media (max-width: 600px) {
-    .search-form input,
-    .search-form select,
-    .search-form .button {
-        width: 100%;
-        margin: 0.5rem 0;
-    }
-    .results-grid,
-    .card-grid {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-    }
+
+td.play-title-header {
+    height: 50px;
+}
+
+.play-issue-header {
+    font-size: 75%;
+}
+
+td.play-issue-header {
+    vertical-align: top;
+}
+
+.play-issue-header span {
+    display: inline-
 }

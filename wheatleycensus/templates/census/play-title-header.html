@@ -7,9 +7,17 @@
       <div class="play-title-icon-border">
         <a href="{% url 'issue_list' title.id %}">
           {% if title.image %}
-            <img class="play-title-icon" src="{{ title.image.url }}" alt="{{ title.title }}">
+            <img
+              class="play-title-icon"
+              src="{{ title.image.url }}"
+              alt="{{ title.title }}"
+            >
           {% else %}
-            <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Generic icon">
+            <img
+              class="play-title-icon-generic"
+              src="{% static icon_path %}"
+              alt="Generic icon"
+            >
           {% endif %}
         </a>
       </div>
@@ -17,16 +25,19 @@
     <td class="play-title-header">
       <a href="{% url 'issue_list' title.id %}">{{ title.title }}</a>
       {% if user.is_staff %}
-        <span class="note">[<a href="{% url 'admin:marlowecensus_title_change' title.id %}">Edit title</a>]</span>
+        <span class="note">
+          [<a href="{% url 'admin:marlowecensus_title_change' title.id %}">Edit title</a>]
+        </span>
       {% endif %}
     </td>
   </tr>
+
   <tr>
     <td class="play-issue-header">
       {% if selected_issue.edition.edition_number.isdigit %}
         {{ selected_issue.edition.edition_number|add:"0"|ordinal }} Edition
       {% else %}
-        {{ selected_issue.edition.edition_number.capitalize }}
+        {{ selected_issue.edition.edition_number|capfirst }}
       {% endif %}
       {% if selected_issue.edition.edition_format %}
         ({{ selected_issue.edition.edition_format }})
@@ -34,6 +45,7 @@
       &nbsp;{{ selected_issue.year }}
     </td>
   </tr>
+
   <tr>
     <td class="play-issue-header">
       {% if copy_count > 0 %}
