@@ -1,3 +1,4 @@
+# wheatleycensus/urls.py
 from django.conf import settings
 from django.urls import path
 from django.conf.urls.static import static
@@ -5,33 +6,43 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('',                views.homepage,      name='homepage'),
-    path('search/',views.search,name='search'),
-    path('search/<str:field>/<str:value>/',          views.search, name='search'),
-    path('search/<str:field>/<str:value>/<str:order>/', views.search, name='search'),
-    path("search/",  views.search_results,  name="search"),
-    path('title/<int:id>/', views.issue_list,     name='issue_list'),
-    path('issue/<int:id>/', views.copy_list, name='copy_list'),
-    path('copydata/<int:copy_id>/', views.copy_data, name='copy_data'),
-    # path( "copies/", views.copy_list, name="copy_list" ),
-    path('copy/<int:census_id>/', views.cen_copy_modal, name='cen_copy_modal'),
-    path('wc/<int:wc_number>/', views.copy_page, name='copy_page'),
-    path('about/',            views.about,         name='about'),
-    path('about/<str:viewname>/', views.about,     name='about'),
+    path('',                        views.homepage,      name='homepage'),
+    path('search/',                 views.search,        name='search'),
+    path('search/<str:field>/',     views.search,        name='search'),
+    path('search/<str:field>/<str:value>/',                 
+                                    views.search,        name='search'),
+    path('search/<str:field>/<str:value>/<str:order>/',      
+                                    views.search,        name='search'),
+    path('search/',                 views.search_results, name='search'),
+    path('title/<int:id>/',         views.issue_list,    name='issue_list'),
+    path('issue/<int:id>/',         views.copy_list,     name='copy_list'),
+    path('copydata/<int:copy_id>/', views.copy_data,     name='copy_data'),
+    # modal endpoint now points to the alias we just added:
+    path('copy/<int:census_id>/',   views.cen_copy_modal, name='cen_copy_modal'),
+    path('wc/<int:wc_number>/',      views.copy_page,     name='copy_page'),
+    path('about/',                  views.about,         name='about'),
+    path('about/<str:viewname>/',   views.about,         name='about'),
     path('autofill/location/',           views.autofill_location,   name='autofill_location'),
-    path('autofill/location/<str:query>/', views.autofill_location,  name='autofill_location'),
+    path('autofill/location/<str:query>/', views.autofill_location,   name='autofill_location'),
     path('autofill/provenance/',         views.autofill_provenance, name='autofill_provenance'),
-    path('autofill/provenance/<str:query>/', views.autofill_provenance, name='autofill_provenance'),
+    path('autofill/provenance/<str:query>/', 
+                                        views.autofill_provenance, name='autofill_provenance'),
     path('autofill/collection/',         views.autofill_collection, name='autofill_collection'),
-    path('autofill/collection/<str:query>/', views.autofill_collection, name='autofill_collection'),
-    path('location_copy_count_csv_export/', views.location_copy_count_csv_export, name='location_copy_count_csv_export'),
-    path('year_issue_copy_count_csv_export/', views.year_issue_copy_count_csv_export, name='year_issue_copy_count_csv_export'),
-    path('export/<str:groupby>/<str:column>/<str:aggregate>/', views.export, name='export'),
-    path('login',  views.login_user,  name='login_user'),
-    path('logout', views.logout_user, name='logout_user'),
-    path(settings.ADMIN_URL, admin.site.urls),
+    path('autofill/collection/<str:query>/', 
+                                        views.autofill_collection, name='autofill_collection'),
+    path('location_copy_count_csv_export/',
+                                    views.location_copy_count_csv_export,
+                                    name='location_copy_count_csv_export'),
+    path('year_issue_copy_count_csv_export/',
+                                    views.year_issue_copy_count_csv_export,
+                                    name='year_issue_copy_count_csv_export'),
+    path('export/<str:groupby>/<str:column>/<str:aggregate>/',
+                                    views.export,         name='export'),
+    path('login',                   views.login_user,     name='login_user'),
+    path('logout',                  views.logout_user,    name='logout_user'),
+    path(settings.ADMIN_URL,        admin.site.urls),
 ]
 
-# serve media & static in DEBUG / on Render
+# In DEBUG serve static & media
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

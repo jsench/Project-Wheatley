@@ -1,4 +1,4 @@
-
+# wheatleycensus/views.py
 
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
@@ -7,12 +7,11 @@ from django.template import loader
 from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator
-from .models import Copy, Issue
+from .models import Copy, Issue, Title
 from datetime import datetime
 import csv
 
 from . import models
-from .models import Title
 
 
 # ------------------------------------------------------------------------------
@@ -51,6 +50,13 @@ def copy_census_id_sort_key(c):
     except ValueError:
         a, b = 0, 0
     return (a, b)
+
+
+def copy_sort_key(c):
+    # example sorting by location then shelfmark; adjust if needed
+    key_loc = strip_article(c.location.name_of_library_collection or '').lower()
+    key_shelf = c.shelfmark or ''
+    return (key_loc, key_shelf)
 
 
 # ------------------------------------------------------------------------------
@@ -190,6 +196,7 @@ def search(request, field=None, value=None, order=None):
         'display_value': display_value,
     }, request))
 
+
 def search_results(request):
     """
     Applies filters from GET params and paginates the matching copies.
@@ -229,12 +236,15 @@ def search_results(request):
         'display_value': request.GET.get('value', 'All'),
         'copy_count': qs.count(),
     })
+
+
 # ------------------------------------------------------------------------------
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
 def copy_list(request, id):
     selected_issue = get_object_or_404(models.Issue, pk=id)
-    all_copies = models.Copy.objects.filter(canonical_query & Q(issue = id)).order_by('location__name', 'shelfmark')
+    canonical_query = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
+    all_copies = models.Copy.objects.filter(canonical_query, issue=id).order_by('location__name', 'shelfmark')
     all_copies = sorted(all_copies, key=copy_sort_key)
     template = loader.get_template('census/copy_list.html')
     context = {
@@ -245,6 +255,8 @@ def copy_list(request, id):
         'title': selected_issue.edition.title
     }
     return HttpResponse(template.render(context, request))
+
+
 def copy_data(request, copy_id):
     tpl = loader.get_template('census/copy_modal.html')
     copy = get_object_or_404(models.Copy, pk=copy_id)
@@ -260,6 +272,13 @@ def copy_page(request, wc_number):
     return render(request, 'census/copy_page.html', {
         'copy': copy,
     })
+
+
+def cen_copy_modal(request, census_id):
+    """
+    Alias view for the modal endpoint; delegates to copy_data.
+    """
+    return copy_data(request, census_id)
 
 
 # ------------------------------------------------------------------------------
