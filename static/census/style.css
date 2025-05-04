@@ -1,22 +1,29 @@
-/* Global Styles */
+/*
+ * Global Styles
+ */
 
 /* Tag-level styles */
+
 html {
     margin-left: calc(100vw - 100%);
 }
 
 a {
-    text-decoration: none;
-    color: #233237;
-    transition: color 0.2s;
-}
-a:hover,
-a:focus {
-    color: #e74c3c;
+    text-decoration: none
 }
 
-.guide-text a,
-.static-text a {
+a:link,
+a:visited,
+a:hover {
+    color: #233237;
+}
+
+.guide-text a:link,
+.guide-text a:visited,
+.guide-text a:hover,
+.static-text a:link,
+.static-text a:visited,
+.static-text a:hover {
     color: rgba(152, 75, 67, 1.0);
     font-weight: bold;
 }
@@ -26,68 +33,178 @@ a.linkbutton {
 }
 
 body {
-    font-family: "Open Sans", AppleGothic, sans-serif;
+    font-family:"Open Sans", AppleGothic, sans-serif;
     font-weight: lighter;
-    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-    color: #333;
-    line-height: 1.6;
 }
 
-/* Utility classes */
-.hidden,
-.hidden-icon {
-    display: none;
+table {
+    margin: auto;
+    border-collapse: collapse;
+    font-weight: lighter;
 }
+
+th {
+    font-weight: lighter;
+}
+
 ul {
     list-style: none;
 }
+
 li {
     margin: 3px;
-}
-.warning,
-.notice {
-    padding: 10px;
-    margin: 10px;
-}
-.notice {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-.warning {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-.note {
-    font-size: 75%;
-    margin: 0 10px;
-}
-
-.unicode-icon {
-    font-family: FontAwesome, sans-serif;
-    padding: 0 4px;
-}
-.fa, .fas {
-    display: inline;
 }
 
 /* Class-level styles */
 
 div.frame-container {
     width: 100%;
+    height: auto;
     margin: 0 auto;
     position: relative;
 }
 
 div.outer-frame {
-    max-width: 1024px;
-    margin: 0 auto;
     position: relative;
+    max-width: 1024px;
+    min-width: 526px;
+    margin: 0 auto;
 }
 
 div.middle-frame {
     max-width: 896px;
-    margin: 0 20%;
+    margin: 0px 20% 0px 20%;
 }
 
-/* UI Styles */
+.play-detail-set {
+    text-align: center;
+}
+
+.play-detail-set tr:nth-child(odd) {
+    background-color: rgba(35, 50, 55, 0.1);
+}
+
+.play-detail-set tr:nth-child(1) {
+    background-color: rgba(152, 75, 67, 0.5);
+}
+
+.play-detail-set tr {
+    border: none;
+}
+
+table.play-detail-set {
+    margin: 0% 12% 10% 12%;
+}
+
+span.unverified-symbol-small,
+span.unverified-symbol {
+    font-weight: bold;
+    color: rgba(182, 75, 67, 1.0);
+}
+
+span.unverified-symbol {
+    font-size: 130%;
+}
+
+span.verified-symbol-small,
+span.verified-symbol {
+    font-weight: bold;
+    color: rgba(67, 75, 182, 1.0);
+}
+
+span.verified-symbol-small {
+    font-size: 110%;
+}
+
+span.verified-symbol {
+    font-size: 170%;
+}
+
+.play-detail-set td,
+.play-detail-set th {
+    width: 100px;
+    padding: 10px 6px 10px 6px;
+}
+
+.play-detail-set th.detailed {
+    width: 2000px;
+}
+
+.play-detail-set th.terse {
+    width: 40px;
+}
+
+.play-detail-set th.icon {
+    width: 5px;
+}
+
+.play-detail-set th.even {
+    width: 300px;
+}
+
+.warning,
+.notice {
+    padding: 10px;
+    margin: 10px;
+}
+
+.notice {
+    background-color: rgba(35, 50, 55, 0.1);
+}
+
+.note {
+    font-size: 75%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.warning {
+    background-color: rgba(152, 75, 67, 0.3);
+}
+
+p.static-text {
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+  text-align: left;
+}
+
+p.error-text,
+p.guide-text,
+td p.static-text {
+  text-align: center;
+}
+
+p.error-text {
+  margin-top: 0px;
+  margin-bottom: 40px;
+}
+
+span.citation {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 30px ;
+  text-indent: -24px ;
+  display: block;
+}
+
+.tucked {
+    text-align: right;
+}
+
+.unicode-icon {
+    font-family: FontAwesome;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.fa, .fas {
+    display: inline;
+}
+
+/* UI Styles (May be either class- or tag-level) */
+
 input,
 .button,
 .button-inline,
@@ -95,8 +212,10 @@ input,
 .button-inline-small {
     cursor: pointer;
     margin: 2px;
-    border: 1px solid rgba(152, 75, 67, 0.4);
+    border: solid;
     border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(152, 75, 67, 0.4);
     padding: 2px 6px 3px 6px;
     font-family: inherit;
     user-select: none;
@@ -108,48 +227,73 @@ input,
     font-size: 80%;
 }
 
-input[type="submit"],
-.button {
-    background-color: rgba(152, 75, 67, 0.2);
-    font-weight: lighter;
+.admin-submit input[type="text"] {
+    width: 100%;
 }
 
 .button-inline {
     height: 18px;
     font-size: 65%;
-    padding: 1px 6px;
-    margin: 2px 10px;
+    padding: 1px 6px 2px 6px;
+    margin: 2px 10px 3px 10px;
 }
 
 .button-inline-small {
     height: 10px;
     font-size: 50%;
-    padding: 1px 3px;
-    margin: 2px 10px;
+    padding: 1px 3px 1px 3px;
+    margin: 2px 10px 3px 10px;
 }
 
-.admin-submit input[type="text"] {
-    width: 100%;
+input {
+    background-color: rgba(152, 75, 67, 0.1);
 }
 
-select {
-    appearance: none;
-    background-color: rgba(152, 75, 67, 0.2);
-    padding: 3px 5px;
-    margin: 3px;
+.ui-menu .ui-menu-item {
+    background-color: rgba(152, 75, 67, 0.1);
+    font-size: 75%;
+}
+
+.ui-menu .ui-menu-item,
+.ui-menu .ui-menu-item .ui-state-active {
     font-weight: lighter;
-    font-size: 80%;
     font-family: "Open Sans", AppleGothic, sans-serif;
+}
+
+.button,
+.button-inline,
+.button-inline-small,
+input[type="submit"] {
+    background-color: rgba(152, 75, 67, 0.2);
+    font-weight: lighter;
+}
+
+.button-inline-selected {
+    background-color: rgba(152, 75, 67, 0.6);
 }
 
 body:focus {
     outline-color: rgba(152, 75, 67, 0.6);
 }
 
-/* Header and Footer Styles */
+select {
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none; /* Safari and Chrome */
+    appearance: none;
+    background-color: rgba(152, 75, 67, 0.2);
+    padding: 3px 5px 3px 5px;
+    margin: 3px;
+    font-weight: lighter;
+    font-size: 80%;
+    font-family: "Open Sans", AppleGothic, sans-serif;
+}
+
+/*
+ * Header and Footer Styles
+ */
 
 table.title {
-    margin: 0 20% 0 20%;
+    margin: 0% 20% 0% 20%;
 }
 
 .title th,
@@ -160,35 +304,34 @@ table.title {
 .title th {
     font-size: 10px;
     height: 20px;
-    padding: 0 6px;
+    padding: 0px 6px 0px 6px;
 }
 
 .title td {
-    padding: 10px 6px 0;
+    padding: 10px 6px 0px 6px;
 }
 
 .title {
     font-family: "Open Sans", AppleGothic, sans-serif;
     font-size: 25px;
     text-align: center;
-    margin: 40px auto 20px;
+    margin: 40px auto 20px auto;
 }
 
 table.footer-nav {
-    margin: 20px auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
     font-size: 80%;
     border-top: 1px solid rgba(0, 0, 0, 0.65);
-    text-align: center;
 }
 
 .footer-nav span {
-    display: inline-block;
-    padding: 10px;
+    padding: 0px 10px 0px 10px;
 }
 
 .footer-nav th,
 .footer-nav td {
-    padding: 10px 15px;
+    padding: 10px 15px 10px 15px;
 }
 
 .header-title-nav th,
@@ -196,67 +339,79 @@ table.footer-nav {
     padding: 10px;
 }
 
-/* Search Bar */
 .search-bar {
     text-align: center;
-    height: auto;
-    padding: 15px 0;
-    background: rgba(255,255,255,0.8);
+    height: 32px;
+    padding: 0px 0px 15px 0px;
 }
 
 .search-bar form {
-    margin-bottom: 0;
+    margin-bottom: 0px;
 }
 
 /* Frontpage Styles */
 
 td.play-title,
 td.play-title-icon {
-    width: calc(var(--icon-size,120px) + var(--icon-padding,10px)*2);
+    width: 150px;
 }
 
 div.play-title {
-    padding: 4px 0 20px;
+    padding: 4px 0px 20px 0px;
     margin: 2px;
-    text-align: center;
 }
 
 div.play-title-icon {
     text-align: center;
-    margin: 12px 0;
-}
-
-:root {
-    --icon-size: 120px;
-    --icon-padding: 10px;
+    margin: 12px 0px 0px 0px;
 }
 
 div.play-title-icon-border {
-    width: calc(var(--icon-size) + var(--icon-padding)*2);
-    height: calc(var(--icon-size) + var(--icon-padding)*2);
-    margin: 0 auto;
-    border-radius: 50%;
-    border: 2px solid;
+    width: 100px;
+    height: 100px;
+    margin: 0px auto;
+    border-radius:100px;
+    border: 1px solid;
 }
 
-img.play-title-icon,
+img.play-title-icon {
+    height:80px;
+    width:80px;
+    margin: 10px;
+    border-radius: 20px;
+}
+
 img.play-title-icon-generic {
-    width: var(--icon-size);
-    height: var(--icon-size);
-    margin: var(--icon-padding);
-    border-radius: 50%;
+    height:100px;
+    width:100px;
+    border-radius: 100px;
+}
+
+.play-title,
+.body-text {
+    font-family: 'Open Sans', AppleGothic, sans-serif;
+    text-align: center;
 }
 
 .play-title {
-    display: inline-block;
-    margin-left: -8px;
     font-size: 14px;
-    text-align: center;
 }
 
 .about {
     font-size: 10px;
-    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.hidden-icon {
+    display: none;
+    /* visibility: hidden; */
+    /* Using visibility: hidden instead of display: none keeps the
+     * words from subtly changing position when the icon appears.
+     * But it skews the headers slightly to one side, so it's not
+     * a perfect solution; still working on this problem. */
 }
 
 /* Detail Table Styles */
@@ -267,7 +422,7 @@ img.play-title-icon-generic {
 }
 
 table.play-title-header {
-    margin: 0 10% 25px 10%;
+    margin: 0px 10% 25px 10%;
 }
 
 td.play-title-header-icon {
@@ -288,5 +443,14 @@ td.play-issue-header {
 }
 
 .play-issue-header span {
-    display: inline-
+    display: inline-block;
+    padding: 0px 10px 0px 0px;
+}
+
+.modal-header {
+    background-color: rgba(152, 75, 67, 0.3);
+}
+
+.modal-title {
+    font-weight: lighter;
 }
