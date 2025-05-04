@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
+from django.core.paginator import Paginator
+from .models import Copy, Issue
 from datetime import datetime
 import csv
 
@@ -188,18 +190,69 @@ def search(request, field=None, value=None, order=None):
         'display_value': display_value,
     }, request))
 
+def search_results(request):
+    """
+    Applies filters from GET params and paginates the matching copies.
+    Supported filters: q (keywords in title), year, provenance, author.
+    """
+    qs = Copy.objects.select_related('location', 'issue__edition').all()
 
+    # Basic text search on edition title or WC#
+    q = request.GET.get('q')
+    if q:
+        qs = qs.filter(issue__edition__title__icontains=q)
+
+    # Year filter
+    year = request.GET.get('year')
+    if year:
+        qs = qs.filter(issue__year=year)
+
+    # Provenance filter (library/collection name)
+    provenance = request.GET.get('provenance')
+    if provenance:
+        qs = qs.filter(location__name_of_library_collection__icontains=provenance)
+
+    # Author/Printer filter
+    author = request.GET.get('author')
+    if author:
+        qs = qs.filter(issue__edition__author__icontains=author)
+
+    # Pagination
+    paginator = Paginator(qs, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'census/search-results.html', {
+        'page_obj': page_obj,
+        'field': request.GET.get('field', ''),
+        'display_field': request.GET.get('field', '').capitalize(),
+        'display_value': request.GET.get('value', 'All'),
+        'copy_count': qs.count(),
+    })
 # ------------------------------------------------------------------------------
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
-def copy_list(request, id):
-    tpl = loader.get_template('census/copy_list.html')
-    issue = get_object_or_404(models.Issue, pk=id)
-    qs = models.Copy.objects.filter(
-        Q(verification='U') | Q(verification='V') | Q(verification__isnull=True),
-        issue=id
-    )
-    copies = sorted(qs, key=copy_census_id_sort_key)
+def copy_list(request, issue_id=None):
+    """
+    Displays all copies (or copies for a specific issue if issue_id is passed).
+    Paginated 20 per page.
+    """
+    if issue_id:
+        # If you’re filtering by issue (e.g. drilling in), otherwise use all()
+        issue = get_object_or_404(Issue, pk=issue_id)
+        qs = Copy.objects.filter(issue=issue).select_related('location', 'issue__edition')
+    else:
+        qs = Copy.objects.select_related('location', 'issue__edition').all()
+
+    paginator = Paginator(qs, 20)              # 20 items per page
+    page_number = request.GET.get('page')      # ?page=2
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'census/copy_list.html', {
+        'page_obj': page_obj,
+        'selected_issue': issue if issue_id else None,
+    })
+
 
     return HttpResponse(tpl.render({
         'all_copies': copies,
