@@ -1,104 +1,64 @@
 {% extends "census/base.html" %}
-{% load static %}
-{% load humanize %}
+{% load static humanize %}
+
+{% block title %}Search Results - Wheatley Census{% endblock %}
+
 {% block content %}
+<div>
+  <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
+  <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
+  <div id="copyModal" class="modal fade" role="dialog"></div>
+</div>
 
-<div class="wrapper">
-  <div>
-    <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-    <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
-    <div id="copyModal" class="modal fade" role="dialog"></div>
-  </div>
+<!-- Search Form (Filters) -->
+<div class="search-bar">
+  <form method="get" class="search-form">
+    <details open>
+      <summary>Basic Filters</summary>
+      <input type="text" name="q" placeholder="Keyword, Title, STC number…" value="{{ request.GET.q|default_if_none:'' }}" />
+      <input type="text" name="year" placeholder="Year (e.g. 1623)" value="{{ request.GET.year|default_if_none:'' }}" />
+    </details>
+    <details>
+      <summary>Provenance &amp; Author</summary>
+      <input type="text" name="provenance" placeholder="Provenance" value="{{ request.GET.provenance|default_if_none:'' }}" />
+      <input type="text" name="author" placeholder="Author / Printer" value="{{ request.GET.author|default_if_none:'' }}" />
+    </details>
+    <button type="submit" class="button">Search</button>
+  </form>
+</div>
 
-  <table class="play-title-header">
-    <tr>
-      <td rowspan="3" class="play-title-header-icon">
-        <div class="play-title-icon-border">
-          <img class="play-title-icon-generic" src="{% static icon_path %}">
-        </div>
-      </td>
-      <td class="play-title-header">Search Results</td>
-    </tr>
-    <tr>
-      <td class="play-issue-header">
-        {% if field == "ghosts" %}
-          ESTC Ghosts
-        {% elif display_value == "All" %}
-          {{ display_field }}
-        {% else %}
-          {{ display_field }}: {{ display_value }}
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td class="play-issue-header">
-        <span>
-          {% if field == "ghosts" %}
-            {{ copy_count }} Records
+<!-- Results Grid -->
+<div class="results-grid">
+  {% for copy in page_obj %}
+    <div class="result-card">
+      <a href="{% url 'copy_detail' copy.id %}">
+        <div class="card-icon">
+          {% if copy.issue.edition.cover_image_url %}
+            <img src="{{ copy.issue.edition.cover_image_url }}" alt="{{ copy.issue.edition.title }}" />
           {% else %}
-            Extant copies: {{ copy_count }}
+            <img src="{% static 'census/images/generic-icon.png' %}" alt="Generic Icon" />
           {% endif %}
-        </span>
-      </td>
-    </tr>
-  </table>
+        </div>
+        <h2 class="card-title">{{ copy.issue.edition.title }}</h2>
+        <p class="card-meta">Year: {{ copy.issue.year }}</p>
+        <p class="card-meta">WC #: {{ copy.wc_number }}</p>
+      </a>
+    </div>
+  {% empty %}
+    <p class="sansserif" style="text-align:center; padding:20px;">No copies found.</p>
+  {% endfor %}
+</div>
 
-  <table class="play-detail-set">
-    {% if result_list %}
-    <tr>
-      <th class="terse">
-        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=census_id">WC #</a>
-      </th>
-      <th>
-        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=date">Year</a>
-      </th>
-      <th class="detailed">
-        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=title">Title</a>
-      </th>
-      <th class="detailed">
-        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=location">Location</a>
-      </th>
-      <th class="terse">
-        <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=stc">STC / Wing</a>
-      </th>
-    </tr>
-    {% for copy in result_list %}
-    <tr>
-      <td>
-        <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
-          {{ copy.wc_number }}
-        </a>
-        {% if user.is_staff %}
-          <span class="note">[<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit copy</a>]</span>
-        {% endif %}
-      </td>
-      <td>
-        <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
-          {{ copy.issue.year }}
-        </a>
-      </td>
-      <td>
-        <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
-          {{ copy.issue.edition.title }}
-        </a>
-      </td>
-      <td>
-        <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
-          {{ copy.location.name_of_library_collection }}
-        </a>
-      </td>
-      <td>
-        <a href="{% url 'copy_list' copy.issue.id %}" target="_blank">
-          {{ copy.issue.stc_wing }} <i class="fas fa-external-link-alt"></i>
-        </a>
-      </td>
-    </tr>
-    {% endfor %}
-    {% else %}
-      <p class="sansserif" align="center">No copies found.</p>
-    {% endif %}
-  </table>
+<!-- Pagination -->
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">« Prev</a>
+  {% endif %}
+  <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next »</a>
+  {% endif %}
 </div>
 
 {% endblock content %}

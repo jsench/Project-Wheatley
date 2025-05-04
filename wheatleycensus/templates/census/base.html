@@ -1,21 +1,45 @@
-{% load static %}
-<html>
-    <head>
-        {% include "census/site_head.html" %}
-    </head>
-    <body>
-        <div class="frame-container">
-            <div class="outer-frame">
-                <header>
-                    {% include "census/site_header.html" %}
-                </header>
-
-                {% block content %}{% endblock content %}
-
-                <div class="footer">
-                    {% include "census/site_footer.html" %}
-                </div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Wheatley Census{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'census/css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Sticky Header -->
+    <header class="site-header">
+        <!-- Sign-in/Sign-out -->
+        <div class="outer-frame tucked">
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Sign out</a>
+            {% else %}
+                <a href="{% url 'login' %}">Sign in</a>
+            {% endif %}
         </div>
-    </body>
+        <!-- Title and Main Navigation -->
+        <div class="outer-frame nav-wrap">
+            <h1 class="site-title">
+                <a href="{% url 'frontpage' %}">Wheatley Census</a>
+            </h1>
+            <nav class="main-nav">
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'search' %}">Search</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="outer-frame">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer Navigation -->
+    <footer class="footer-nav outer-frame">
+        <span><a href="{% url 'frontpage' %}">Home</a></span>
+        <span><a href="{% url 'about' %}">About</a></span>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
 </html>

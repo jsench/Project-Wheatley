@@ -1,81 +1,84 @@
 {% extends "census/base.html" %}
-{% load static %}
-{% load humanize %}
+{% load static humanize %}
+
+{% block title %}Copies - Wheatley Census{% endblock %}
+
 {% block content %}
+<div class="outer-frame">
+  <!-- Modal scripts -->
+  <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
+  <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
+  <div id="copyModal" class="modal fade" role="dialog"></div>
 
-<div class="wrapper">
-    <div>
-        <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-        <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
-        <div id="copyModal" class="modal fade" role="dialog"></div>
-    </div>
+  <!-- Play title header -->
+  {% include "census/play-title-header.html" with selected_issue=selected_issue icon_path=icon_path title=title copy_count=copy_count %}
 
-    {% include "census/play-title-header.html" with selected_issue=selected_issue icon_path=icon_path title=title copy_count=copy_count %}
-
-    <table class="play-detail-set">
-        {% if all_copies %}
-        <tr>
-            <th class="terse">WC #</th>
-            <th class="detailed">Location</th>
-            <th class="even">Shelfmark</th>
-            <th class="icon"></th>
-            <th class="icon"></th>
-            <th class="icon"></th>
-        </tr>
-        {% for copy in all_copies %}
-        <tr>
-            <td>
-                {% if copy.wc_number and copy.wc_number != '0' %}
-                    <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                        {{ copy.wc_number }}
-                    </a>
-                {% endif %}
-                {% if user.is_staff %}
-                    <span class="note">[<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit copy</a>]</span>
-                {% endif %}
-            </td>
-            <td>
-                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                    {{ copy.location.name_of_library_collection }}
-                </a>
-            </td>
-            <td>
-                {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}
-                    <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                        {{ copy.shelfmark }}
-                    </a>
-                {% endif %}
-            </td>
-            <td>
-                {% if copy.from_estc and copy.verification == "U" %}
-                    <span title="Unverified (from ESTC)" class="unverified-symbol">⃠</span>
-                {% elif copy.verification == "U" %}
-                    <span title="Unverified" class="unverified-symbol">⃠</span>
-                {% elif copy.verification == "V" %}
-                    <span title="Verified" class="verified-symbol">✓</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if copy.fragment %}
-                    <span title="Fragment" class="unicode-icon"><i class="fas fa-industry"></i></span>
-                {% endif %}
-            </td>
-            <td>
-                {% if copy.digital_facsimile_url %}
-                    <span title="Digital facsimile" class="unicode-icon">
-                        <a href="{{ copy.digital_facsimile_url }}" target="_blank">
-                            <i class="fas fa-camera-retro"></i>
-                        </a>
-                    </span>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-        {% else %}
-        <p class="sansserif" align="center">No copies are available.</p>
-        {% endif %}
-    </table>
+  <!-- Copies Table -->
+  <table class="play-detail-set">
+    {% if all_copies %}
+    <thead>
+      <tr>
+        <th class="terse">WC&nbsp;#</th>
+        <th class="detailed">Location</th>
+        <th class="even">Shelfmark</th>
+        <th class="icon"></th>
+        <th class="icon"></th>
+        <th class="icon"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for copy in all_copies %}
+      <tr>
+        <td>
+          {% if copy.wc_number and copy.wc_number != '0' %}
+            <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+              {{ copy.wc_number }}
+            </a>
+          {% endif %}
+          {% if user.is_staff %}
+            <span class="note">[<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit copy</a>]</span>
+          {% endif %}
+        </td>
+        <td>
+          <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+            {{ copy.location.name_of_library_collection }}
+          </a>
+        </td>
+        <td>
+          {% if copy.shelfmark and copy.shelfmark != '[Shelfmark not available]' %}
+            <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+              {{ copy.shelfmark }}
+            </a>
+          {% endif %}
+        </td>
+        <td>
+          {% if copy.verification == 'U' %}
+            <span title="Unverified" class="unverified-symbol">⃠</span>
+          {% elif copy.verification == 'V' %}
+            <span title="Verified" class="verified-symbol">✓</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if copy.fragment %}
+            <span title="Fragment" class="unicode-icon"><i class="fas fa-industry"></i></span>
+          {% endif %}
+        </td>
+        <td>
+          {% if copy.digital_facsimile_url %}
+            <span title="Digital facsimile" class="unicode-icon">
+              <a href="{{ copy.digital_facsimile_url }}" target="_blank"><i class="fas fa-camera-retro"></i></a>
+            </span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    {% else %}
+      <tr>
+        <td colspan="6" style="text-align:center; padding:20px;">No copies available.</td>
+      </tr>
+    {% endif %}
+  </table>
 </div>
-
 {% endblock content %}
