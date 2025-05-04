@@ -233,8 +233,8 @@ def search_results(request):
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
 def copy_list(request, issue_id):
-    issue = get_object_or_404(Issue, id=issue_id)
-    all_copies = Copy.objects.filter(issue=issue).select_related('location')
+    issue = get_object_or_404(Issue, pk=issue_id)
+    all_copies = Copy.objects.filter(issue=issue)
     return render(request, 'census/copy_list.html', {
          'selected_issue': issue,
          'all_copies': all_copies,
