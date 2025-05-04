@@ -2,43 +2,27 @@
 {% load static %}
 {% block content %}
 
-<table class="play-title-icon">
+<div class="results-grid">
   {% for row in titlerows %}
-    <tr class="play-title-icon">
-      {% for title in row %}
-        <td class="play-title-icon">
-          <div class="play-title-icon">
-            <div class="play-title-icon-border">
-              {% if title.first_issue %}
-                <a href="{% url 'copy_list' title.first_issue.id %}">
+    {% for title in row %}
+      <div class="result-card">
+        {% if title.first_issue %}
+          <a href="{% url 'copy_list' title.first_issue.id %}">
+        {% else %}
+          <a href="{% url 'issue_list' title.id %}">
+        {% endif %}
+            <div class="card-icon">
+              {% if title.image %}
+                <img src="{{ title.image.url }}" alt="{{ title.title }}">
               {% else %}
-                <a href="{% url 'issue_list' title.id %}">
+                <img src="{% static icon_path %}" alt="Generic icon for {{ title.title }}">
               {% endif %}
-                  {% if title.image %}
-                    <img class="play-title-icon" src="{{ title.image.url }}" alt="{{ title.title }}">
-                  {% else %}
-                    <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Generic icon">
-                  {% endif %}
-                </a>
             </div>
-          </div>
-        </td>
-      {% endfor %}
-    </tr>
-    <tr class="play-title">
-      {% for title in row %}
-        <td class="play-title">
-          {% if title.first_issue %}
-            <a class="linkbutton" href="{% url 'copy_list' title.first_issue.id %}">
-          {% else %}
-            <a class="linkbutton" href="{% url 'issue_list' title.id %}">
-          {% endif %}
-              {{ title.title }}
-            </a>
-        </td>
-      {% endfor %}
-    </tr>
+            <h3 class="card-title">{{ title.title }}</h3>
+          </a>
+      </div>
+    {% endfor %}
   {% endfor %}
-</table>
+</div>
 
 {% endblock content %}
