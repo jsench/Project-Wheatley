@@ -1,445 +1,381 @@
-/*
- * Global Styles
- */
- :root {
-    /* Icon sizing */
-    --icon-size: 120px;
-    --icon-padding: 10px;
+/*==============================================================================
+=                                 Global Styles                                =
+==============================================================================*/
 
-    /* Color palette */
-    --primary-color: #233237;
-    --accent-color: rgba(152, 75, 67, 1.0);
-    --accent-light: rgba(152, 75, 67, 0.2);
-    --bg-light: #ffffff;
+/* Tag-level resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", AppleGothic, sans-serif;
 }
 
 html {
     margin-left: calc(100vw - 100%);
 }
 
+body {
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Link styles */
 a {
     text-decoration: none;
-    color: var(--primary-color);
+    color: #233237;
+    transition: color 0.2s;
 }
-
-a:link,
-a:visited,
-a:hover {
-    color: var(--primary-color);
+a:hover,
+a:focus {
+    color: #e74c3c;
 }
-
 .guide-text a,
 .static-text a {
-    color: var(--accent-color);
+    color: rgba(152, 75, 67, 1.0);
     font-weight: bold;
 }
 
-a.linkbutton {
-    padding: 5px;
+/* Utility classes */
+.hidden,
+.hidden-icon {
+    display: none;
+}
+ul { list-style: none; }
+li { margin: 3px 0; }
+.warning,
+.notice {
+    padding: 10px;
+    margin: 10px;
+}
+.notice { background-color: rgba(35, 50, 55, 0.1); }
+.warning { background-color: rgba(152, 75, 67, 0.3); }
+.note {
+    font-size: 75%;
+    margin: 0 10px;
 }
 
-body {
-    font-family: "Open Sans", AppleGothic, sans-serif;
-    font-weight: lighter;
-    color: var(--primary-color);
-    margin: 0;
-    padding: 0;
-    background: var(--bg-light);
+/* FontAwesome icons */
+.unicode-icon {
+    font-family: FontAwesome, sans-serif;
+    padding: 0 4px;
 }
+.fa, .fas { display: inline; }
 
-code {
-    background-color: rgba(0,0,0,0.05);
-    padding: 2px 4px;
-    font-family: monospace;
-}
 
-/* UI Styles */
-input,
-.button,
-.button-inline,
-.button-inline-selected,
-.button-inline-small {
-    cursor: pointer;
-    margin: 2px;
-    border: 1px solid var(--accent-light);
-    border-radius: 4px;
-    padding: 2px 6px 3px 6px;
-    font-family: inherit;
-    user-select: none;
-}
+/*==============================================================================
+=                             Layout Frame Styles                              =
+==============================================================================*/
 
-input,
-.button {
-    height: 25px;
-    font-size: 80%;
-}
-
-input[type="submit"],
-.button {
-    background-color: var(--accent-light);
-    font-weight: lighter;
-}
-
-.button-inline-selected {
-    background-color: rgba(152, 75, 67, 0.6);
-}
-
-select {
-    appearance: none;
-    background-color: var(--accent-light);
-    padding: 3px 5px;
-    margin: 3px;
-    font-weight: lighter;
-    font-size: 80%;
-    font-family: inherit;
-}
-
-/* Layout Frames */
 div.frame-container {
     width: 100%;
     margin: 0 auto;
     position: relative;
 }
-
 div.outer-frame {
-    position: relative;
     max-width: 1024px;
     margin: 0 auto;
+    position: relative;
 }
-
 div.middle-frame {
     max-width: 896px;
     margin: 0 20%;
 }
 
-/* Pin the Sign-in/out buttons */
-.tucked {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-}
 
-/* Header & Footer */
-table.title {
-    margin: 0 20% 20px;
-}
+/*==============================================================================
+=                           Header & Navigation Styles                         =
+==============================================================================*/
 
-.title {
-    font-family: inherit;
-    font-size: 25px;
+/* Sticky header */
+header.site-header {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 1rem;
     text-align: center;
-    margin: 40px auto 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Center the about/search nav */
-table.header-title-nav {
-    margin: 0 auto;
-    text-align: center;
+/* Title and nav layout */
+header.site-header .tucked {
+    text-align: right;
+    margin-bottom: 0.5rem;
+}
+header.site-header h1.site-title {
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+header.site-header h1.site-title a {
+    color: #ecf0f1;
+    text-decoration: none;
+}
+nav.main-nav {
+    margin-top: 0.5rem;
+}
+nav.main-nav a {
+    margin: 0 1rem;
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+nav.main-nav a:hover,
+nav.main-nav a:focus {
+    color: #e74c3c;
 }
 
-.header-title-nav th a,
-.header-title-nav td a {
-    padding: 0 10px;  /* increased clickable area */
-    color: var(--primary-color);
-}
 
-/* Footer nav */
-table.footer-nav {
-    margin: 20px auto;
-    font-size: 80%;
-    border-top: 1px solid rgba(0, 0, 0, 0.65);
-}
+/*==============================================================================
+=                            Search Form & Bar Styles                           =
+==============================================================================*/
 
-.footer-nav th,
-.footer-nav td {
-    padding: 10px 15px;
-}
-
-.footer-nav span {
-    padding: 0 10px;
-}
-
-/* Search bar (original) */
 .search-bar {
+    background: rgba(255,255,255,0.8);
+    padding: 2rem;
     text-align: center;
-    padding-bottom: 15px;
+}
+.search-form {
+    display: inline-grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+    justify-content: center;
+}
+.search-form details {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 6px;
+    padding: 1rem;
+}
+.search-form summary {
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.search-form input,
+.search-form select {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: width 0.3s ease;
+}
+.search-form input:focus,
+.search-form select:focus {
+    width: 100%;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.search-form .button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    background: #e74c3c;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.search-form .button:hover,
+.search-form .button:focus {
+    background: #c0392b;
 }
 
-.search-bar form {
-    margin-bottom: 0;
-}
 
-/* Detail Tables */
-table,
+/*==============================================================================
+=                             Detail Table Styles                              =
+==============================================================================*/
+
 .play-detail-set {
-    margin: auto;
+    margin: 2rem auto;
+    width: 80%;
     border-collapse: collapse;
     font-weight: lighter;
-}
-
-.play-detail-set {
     text-align: center;
-    margin: 0 12% 10%;
 }
-
+.play-detail-set th,
+.play-detail-set td {
+    padding: 0.75rem 1rem;
+}
 .play-detail-set tr:nth-child(odd) {
-    background-color: rgba(35, 50, 55, 0.1);
+    background: rgba(35,50,55,0.05);
 }
-
-.play-detail-set tr:nth-child(1) {
-    background-color: rgba(152, 75, 67, 0.5);
+.play-detail-set tr:first-child {
+    background: rgba(152,75,67,0.3);
 }
-
+.play-detail-set th.terse { width:  5%; }
+.play-detail-set th.detailed { width: auto; }
+.play-detail-set th.icon   { width:  3%; }
 .play-detail-set td,
 .play-detail-set th {
-    padding: 10px 6px;
+    vertical-align: middle;
 }
 
-/* Frontpage Styles */
-td.play-title,
-td.play-title-icon {
-    width: calc(var(--icon-size) + var(--icon-padding) * 2);
+/* Verified / Unverified Symbols */
+span.unverified-symbol {
+    color: rgba(182,75,67,1.0);
+    font-weight: bold;
+    font-size: 1.3em;
 }
-
-div.play-title {
-    padding: 4px 0 20px;
-    margin: 2px;
-}
-
-div.play-title-icon {
-    text-align: center;
-    margin: calc(var(--icon-padding) * 1.2) 0 calc(var(--icon-padding) * 1.5) 0;
-}
-
-/* outer circle */
-div.play-title-icon-border {
-    width: calc(var(--icon-size) + var(--icon-padding) * 2);
-    height: calc(var(--icon-size) + var(--icon-padding) * 2);
-    margin: 0 auto;
-    border-radius: 50%;
-    border: 1px solid;
-}
-
-/* inner image circle */
-img.play-title-icon,
-img.play-title-icon-generic {
-    width: var(--icon-size);
-    height: var(--icon-size);
-    margin: var(--icon-padding);
-    border-radius: 50%;
-}
-
-/* Caption and text */
-.play-title,
-.body-text {
-    font-family: inherit;
-    text-align: center;
-}
-
-.play-title {
-    display: inline-block;
-    margin-left: -8px;  /* nudge left under the icon */
-    font-size: 14px;
-}
-
-/* Additional global utility */
-.about {
-    font-size: 10px;
-}
-
-.hidden,
-.hidden-icon {
-    display: none;
-}
-
-/* Modal Styles */
-.modal-header {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-
-.modal-title {
-    font-weight: lighter;
-}
-
-/* Verified / Unverified icons */
-span.unverified-symbol,
 span.verified-symbol {
+    color: rgba(67,75,182,1.0);
     font-weight: bold;
     font-size: 1.3em;
 }
 
-span.unverified-symbol {
-    color: var(--accent-color);
-}
 
-span.verified-symbol {
-    color: rgba(67, 75, 182, 1.0);
-}
+/*==============================================================================
+=                     Frontpage Icon & Title Styles                           =
+==============================================================================*/
 
-/* Highlight boxes */
-.highlight-text {
-    background-color: rgba(152, 75, 67, 0.05);
-    padding: 0.75em;
-    margin: 1em auto;
-    border-radius: 4px;
-    width: 70%;
-    line-height: 1.5;
+td.play-title,
+td.play-title-icon {
+    width: calc( var(--icon-size, 120px) + var(--icon-padding, 10px) * 2 );
 }
-
-.highlight-number {
-    color: rgba(67, 75, 182, 1.0);
-    font-weight: bold;
-}
-
-/* === New Enhancements === */
-
-/* Header / Nav Enhancements */
-.site-header {
-    position: sticky;
-    top: 0;
-    background: var(--bg-light);
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.nav-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-}
-
-.site-title a {
-    font-size: 1.8em;
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-.main-nav a {
-    margin: 0 12px;
-    padding: 6px 8px;
-    font-size: 1em;
-    transition: background .2s ease;
-    color: var(--primary-color);
-    text-decoration: none;
-}
-.main-nav a:hover {
-    background: var(--accent-light);
-    border-radius: 4px;
-}
-
-/* Search Form Layout */
-.search-bar {
-    background: var(--bg-light);
-    z-index: 1100;
-    padding: 20px;
-    border-bottom: 1px solid var(--accent-light);
-    text-align: left;  /* align details summaries left */
-}
-.search-form {
-    max-width: 800px;
-    margin: 0 auto;
-    display: grid;
-    grid-gap: 10px;
-}
-.search-form details {
-    background: var(--bg-light);
-    border: 1px solid var(--accent-light);
-    border-radius: 4px;
-    padding: 10px 15px;
-}
-.search-form summary {
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 8px;
-}
-.search-form input {
-    width: 100%;
-    padding: 6px 8px;
-    font-size: 0.9em;
-    border: 1px solid var(--accent-light);
-    border-radius: 4px;
-}
-.search-form .button {
-    justify-self: start;
-    padding: 8px 16px;
-    background: var(--accent-color);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-}
-
-/* Results Display (Card/Grid) */
-.results-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    grid-gap: 20px;
-    padding: 20px;
-}
-.result-card {
-    background: var(--bg-light);
-    border: 1px solid var(--accent-light);
-    border-radius: 6px;
-    overflow: hidden;
-    transition: transform .2s ease, box-shadow .2s ease;
+div.play-title {
+    margin: 1rem 0;
     text-align: center;
 }
-.result-card:hover {
+div.play-title-icon {
+    margin: calc(var(--icon-padding,10px)*1.2) auto calc(var(--icon-padding,10px)*1.5) auto;
+}
+div.play-title-icon-border {
+    width: calc( var(--icon-size,120px) + var(--icon-padding,10px)*2 );
+    height: calc( var(--icon-size,120px) + var(--icon-padding,10px)*2 );
+    border-radius: 50%;
+    border: 2px solid;
+    margin: 0 auto;
+}
+img.play-title-icon,
+img.play-title-icon-generic {
+    width: var(--icon-size,120px);
+    height: var(--icon-size,120px);
+    margin: var(--icon-padding,10px);
+    border-radius: 50%;
+}
+.play-title {
+    display: inline-block;
+    margin-left: -8px;
+    font-size: 1rem;
+}
+
+
+/*==============================================================================
+=                       Data Display – Card Grid Styles                        =
+==============================================================================*/
+
+.results-grid,
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+}
+.result-card,
+.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+.result-card:hover,
+.card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 .card-icon img {
     width: 100%;
-    display: block;
+    border-radius: 5px;
+    margin-bottom: 1rem;
 }
-.card-title {
-    font-size: 1em;
-    margin: 8px;
+.card-title,
+.card h3 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
 }
-.card-meta {
-    font-size: 0.8em;
-    color: var(--accent-color);
-    margin-bottom: 8px;
+.card-meta,
+.card p {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
 }
 
-/* Pagination */
+
+/*==============================================================================
+=                             Pagination Styles                               =
+==============================================================================*/
+
 .pagination {
     text-align: center;
-    margin: 20px 0;
+    margin: 2rem 0;
 }
 .pagination a {
-    margin: 0 6px;
-    padding: 4px 8px;
-    border: 1px solid var(--accent-light);
+    display: inline-block;
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(0,0,0,0.1);
     border-radius: 4px;
+    color: #2c3e50;
     text-decoration: none;
-    color: var(--primary-color);
+    transition: background 0.3s;
 }
-.pagination a:hover {
-    background: var(--accent-light);
+.pagination a:hover,
+.pagination a:focus {
+    background: rgba(0,0,0,0.05);
 }
 
-/* Responsive Tweaks */
+
+/*==============================================================================
+=                       Animation for New Entries                              =
+==============================================================================*/
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);      opacity: 1; }
+}
+.result-card.new,
+.card.new {
+    animation: slideIn 0.5s ease;
+}
+
+
+/*==============================================================================
+=                        Modal & Miscellaneous Styles                          =
+==============================================================================*/
+
+.modal-header {
+    background-color: rgba(152, 75, 67, 0.3);
+}
+.modal-title {
+    font-weight: lighter;
+}
+
+/*==============================================================================
+=                         Responsive Tweaks                                    =
+==============================================================================*/
+
 @media (max-width: 768px) {
-    .nav-wrap {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .main-nav a {
+    nav.main-nav a {
         display: block;
-        width: 100%;
-        margin: 6px 0;
+        margin: 0.5rem 0;
     }
 }
 @media (max-width: 600px) {
-    .search-form {
-        grid-template-columns: 1fr;
+    .search-form input,
+    .search-form select,
+    .search-form .button {
+        width: 100%;
+        margin: 0.5rem 0;
     }
-    .results-grid {
+    .results-grid,
+    .card-grid {
         grid-template-columns: 1fr;
-        padding: 10px;
-    }
-    .result-card {
-        margin: 0 auto;
+        padding: 1rem;
     }
 }
