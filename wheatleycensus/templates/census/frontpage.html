@@ -2,27 +2,37 @@
 {% load static %}
 {% block content %}
 
-<div class="results-grid">
-  {% for row in titlerows %}
-    {% for title in row %}
-      <div class="result-card">
-        {% if title.first_issue %}
-          <a href="{% url 'copy_list' title.first_issue.id %}">
-        {% else %}
-          <a href="{% url 'issue_list' title.id %}">
-        {% endif %}
-            <div class="card-icon">
-              {% if title.image %}
-                <img src="{{ title.image.url }}" alt="{{ title.title }}">
-              {% else %}
-                <img src="{% static icon_path %}" alt="Generic icon for {{ title.title }}">
-              {% endif %}
+<table class="play-title-icon">
+    {% for row in titlerows %}
+    <tr class="play-title-icon">
+        {% for title in row %}
+        <td class="play-title-icon">
+            <div class="play-title-icon">
+                <div class="play-title-icon-border">
+                    <a href="{% url 'issue_list' title.id %}">
+                        {% if title.image %}
+                            <img class="play-title-icon" src="{{ title.image.url }}">
+                        {% else %}
+                            <img class="play-title-icon-generic" src="{% static icon_path %}">
+                        {% endif %}
+                    </a>
+		            </div>
             </div>
-            <h3 class="card-title">{{ title.title }}</h3>
-          </a>
-      </div>
+        </td>
+        {% endfor %}
+    </tr>
+    <tr class="play-title">
+        {% for title in row %}
+        <td class="play-title">
+            <div class="play-title">
+                <a class="linkbutton" href="{% url 'issue_list' title.id %}">
+                    {{ title.title }}
+                </a>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
     {% endfor %}
-  {% endfor %}
-</div>
+</table>
 
 {% endblock content %}
