@@ -8,6 +8,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Open Sans", AppleGothic, sans-serif;
+    font-weight: lighter;
 }
 
 html {
@@ -127,6 +128,13 @@ nav.main-nav a:focus {
     color: #e74c3c;
 }
 
+/* Center the footer nav */
+.footer-nav {
+    text-align: center;
+  }
+  .footer-nav span {
+    display: inline-block;
+  }
 
 /*==============================================================================
 =                            Search Form & Bar Styles                           =
@@ -242,6 +250,10 @@ div.play-title {
 div.play-title-icon {
     margin: calc(var(--icon-padding,10px)*1.2) auto calc(var(--icon-padding,10px)*1.5) auto;
 }
+:root {
+    --icon-size: 120px;      /* circle diameter minus padding */
+    --icon-padding: 10px;    /* space inside the border */
+  }
 div.play-title-icon-border {
     width: calc( var(--icon-size,120px) + var(--icon-padding,10px)*2 );
     height: calc( var(--icon-size,120px) + var(--icon-padding,10px)*2 );
@@ -258,8 +270,9 @@ img.play-title-icon-generic {
 }
 .play-title {
     display: inline-block;
-    margin-left: -8px;
-    font-size: 1rem;
+    margin-left: -8px;      /* nudge left so it lines up perfectly */
+    text-align: center;
+    font-size: 14px;
 }
 
 
