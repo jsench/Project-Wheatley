@@ -2,35 +2,13 @@
  * Global Styles
  */
 
-/* Tag-level styles */
-/* Sticky header */
-
+/* Root variables for icon sizing */
 :root {
     --icon-size: 80px;
     --icon-padding: 8px;
-  }
-.play-title-icon-border {
-    width: calc(var(--icon-size) + var(--icon-padding)*2);
-    height: calc(var(--icon-size) + var(--icon-padding)*2);
-    border: 2px solid #233237;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-  }
-  img.play-title-icon,
-  img.play-title-icon-generic {
-    width: var(--icon-size);
-    height: var(--icon-size);
-    padding: var(--icon-padding);
-    border-radius: 50%;
-  }
-  .play-title {
-    text-align: center;
-    font-size: .9rem;
-    margin-bottom: 2rem;
-  }
+}
+
+/* Sticky header */
 header.site-header {
     background: #2c3e50;
     color: #ecf0f1;
@@ -40,489 +18,196 @@ header.site-header {
     z-index: 1000;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-  header.site-header .tucked {
+}
+header.site-header .tucked {
     text-align: right;
     margin-bottom: .5rem;
-  }
-  .nav-wrap {
+}
+.nav-wrap {
     display: flex;
     justify-content: space-between;
     align-items: center;
     max-width: 1024px;
     margin: 0 auto;
-  }
-  .site-title a {
+}
+.site-title a {
     color: #ecf0f1;
     font-size: 2rem;
     text-decoration: none;
-  }
-  .main-nav a {
+}
+.main-nav a {
     margin: 0 1rem;
     color: #ecf0f1;
     text-decoration: none;
     transition: color .2s;
-  }
-  .main-nav a:hover {
+}
+.main-nav a:hover {
     color: #e74c3c;
-  }
-  
-  /* Collapsible search bar */
-  .search-bar {
+}
+
+/* Collapsible search bar */
+.search-bar {
     display: none;            /* hidden by default */
     background: rgba(255,255,255,0.9);
     padding: 1rem;
-  }
-  .search-bar.visible {
+}
+.search-bar.visible {
     display: block;
-  }
+}
+
+/* Reset and Base */
 html {
     margin-left: calc(100vw - 100%);
 }
 
 a {
-    text-decoration: none
-}
-
-a:link,
-a:visited,
-a:hover {
+    text-decoration: none;
     color: #233237;
+    transition: color 0.2s;
 }
-
-.guide-text a:link,
-.guide-text a:visited,
-.guide-text a:hover,
-.static-text a:link,
-.static-text a:visited,
-.static-text a:hover {
+a:hover,
+a:focus {
+    color: #e74c3c;
+}
+.guide-text a,
+.static-text a {
     color: rgba(152, 75, 67, 1.0);
     font-weight: bold;
 }
 
-a.linkbutton {
-    padding: 5px;
-}
-
 body {
-    font-family:"Open Sans", AppleGothic, sans-serif;
+    font-family: "Open Sans", AppleGothic, sans-serif;
     font-weight: lighter;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    color: #333;
+    line-height: 1.6;
 }
 
-table {
-    margin: auto;
-    border-collapse: collapse;
-    font-weight: lighter;
-}
-
-th {
-    font-weight: lighter;
-}
-
-ul {
-    list-style: none;
-}
-
-li {
-    margin: 3px;
-}
-
-/* Class-level styles */
-
-div.frame-container {
-    width: 100%;
-    height: auto;
-    margin: 0 auto;
-    position: relative;
-}
-
-div.outer-frame {
-    position: relative;
-    max-width: 1024px;
-    min-width: 526px;
-    margin: 0 auto;
-}
-
-div.middle-frame {
-    max-width: 896px;
-    margin: 0px 20% 0px 20%;
-}
-
-.play-detail-set {
-    text-align: center;
-}
-
-.play-detail-set tr:nth-child(odd) {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-
-.play-detail-set tr:nth-child(1) {
-    background-color: rgba(152, 75, 67, 0.5);
-}
-
-.play-detail-set tr {
-    border: none;
-}
-
-table.play-detail-set {
-    margin: 0% 12% 10% 12%;
-}
-
-span.unverified-symbol-small,
-span.unverified-symbol {
-    font-weight: bold;
-    color: rgba(182, 75, 67, 1.0);
-}
-
-span.unverified-symbol {
-    font-size: 130%;
-}
-
-span.verified-symbol-small,
-span.verified-symbol {
-    font-weight: bold;
-    color: rgba(67, 75, 182, 1.0);
-}
-
-span.verified-symbol-small {
-    font-size: 110%;
-}
-
-span.verified-symbol {
-    font-size: 170%;
-}
-
-.play-detail-set td,
-.play-detail-set th {
-    width: 100px;
-    padding: 10px 6px 10px 6px;
-}
-
-.play-detail-set th.detailed {
-    width: 2000px;
-}
-
-.play-detail-set th.terse {
-    width: 40px;
-}
-
-.play-detail-set th.icon {
-    width: 5px;
-}
-
-.play-detail-set th.even {
-    width: 300px;
-}
-
+/* Utility */
+ul { list-style: none; }
+li { margin: 3px; }
 .warning,
 .notice {
     padding: 10px;
     margin: 10px;
 }
+.notice { background-color: rgba(35, 50, 55, 0.1); }
+.warning { background-color: rgba(152, 75, 67, 0.3); }
+.note { font-size: 75%; margin: 0 10px; }
 
-.notice {
-    background-color: rgba(35, 50, 55, 0.1);
+.unicode-icon { font-family: FontAwesome, sans-serif; padding: 0 4px; }
+.fa, .fas { display: inline; }
+
+/* Layout Frames */
+div.frame-container { width: 100%; margin: 0 auto; position: relative; }
+div.outer-frame { max-width: 1024px; margin: 0 auto; position: relative; }
+div.middle-frame { max-width: 896px; margin: 0 20%; }
+
+/* Frontpage Icons & Titles */
+table.play-title-icon tr.play-title-icon,
+table.play-title-icon tr.play-title {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
 }
-
-.note {
-    font-size: 75%;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-.warning {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-
-p.static-text {
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
-  text-align: left;
-}
-
-p.error-text,
-p.guide-text,
-td p.static-text {
-  text-align: center;
-}
-
-p.error-text {
-  margin-top: 0px;
-  margin-bottom: 40px;
-}
-
-span.citation {
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 30px ;
-  text-indent: -24px ;
-  display: block;
-}
-
-.tucked {
-    text-align: right;
-}
-
-.unicode-icon {
-    font-family: FontAwesome;
-    padding-left: 4px;
-    padding-right: 4px;
-}
-
-.fa, .fas {
-    display: inline;
-}
-
-/* UI Styles (May be either class- or tag-level) */
-
-input,
-.button,
-.button-inline,
-.button-inline-selected,
-.button-inline-small {
-    cursor: pointer;
-    margin: 2px;
-    border: solid;
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: rgba(152, 75, 67, 0.4);
-    padding: 2px 6px 3px 6px;
-    font-family: inherit;
-    user-select: none;
-}
-
-input,
-.button {
-    height: 25px;
-    font-size: 80%;
-}
-
-.admin-submit input[type="text"] {
-    width: 100%;
-}
-
-.button-inline {
-    height: 18px;
-    font-size: 65%;
-    padding: 1px 6px 2px 6px;
-    margin: 2px 10px 3px 10px;
-}
-
-.button-inline-small {
-    height: 10px;
-    font-size: 50%;
-    padding: 1px 3px 1px 3px;
-    margin: 2px 10px 3px 10px;
-}
-
-input {
-    background-color: rgba(152, 75, 67, 0.1);
-}
-
-.ui-menu .ui-menu-item {
-    background-color: rgba(152, 75, 67, 0.1);
-    font-size: 75%;
-}
-
-.ui-menu .ui-menu-item,
-.ui-menu .ui-menu-item .ui-state-active {
-    font-weight: lighter;
-    font-family: "Open Sans", AppleGothic, sans-serif;
-}
-
-.button,
-.button-inline,
-.button-inline-small,
-input[type="submit"] {
-    background-color: rgba(152, 75, 67, 0.2);
-    font-weight: lighter;
-}
-
-.button-inline-selected {
-    background-color: rgba(152, 75, 67, 0.6);
-}
-
-body:focus {
-    outline-color: rgba(152, 75, 67, 0.6);
-}
-
-select {
-    -moz-appearance: none; /* Firefox */
-    -webkit-appearance: none; /* Safari and Chrome */
-    appearance: none;
-    background-color: rgba(152, 75, 67, 0.2);
-    padding: 3px 5px 3px 5px;
-    margin: 3px;
-    font-weight: lighter;
-    font-size: 80%;
-    font-family: "Open Sans", AppleGothic, sans-serif;
-}
-
-/*
- * Header and Footer Styles
- */
-
-table.title {
-    margin: 0% 20% 0% 20%;
-}
-
-.title th,
-.title td {
-    width: 170px;
-}
-
-.title th {
-    font-size: 10px;
-    height: 20px;
-    padding: 0px 6px 0px 6px;
-}
-
-.title td {
-    padding: 10px 6px 0px 6px;
-}
-
-.title {
-    font-family: "Open Sans", AppleGothic, sans-serif;
-    font-size: 25px;
-    text-align: center;
-    margin: 40px auto 20px auto;
-}
-
-table.footer-nav {
-    margin-bottom: 20px;
-    margin-top: 20px;
-    font-size: 80%;
-    border-top: 1px solid rgba(0, 0, 0, 0.65);
-}
-
-.footer-nav span {
-    padding: 0px 10px 0px 10px;
-}
-
-.footer-nav th,
-.footer-nav td {
-    padding: 10px 15px 10px 15px;
-}
-
-.header-title-nav th,
-.header-title-nav td {
-    padding: 10px;
-}
-
-.search-bar {
-    text-align: center;
-    height: 32px;
-    padding: 0px 0px 15px 0px;
-}
-
-.search-bar form {
-    margin-bottom: 0px;
-}
-
-/* Frontpage Styles */
-
-td.play-title,
 td.play-title-icon {
-    width: 150px;
-}
-
-div.play-title {
-    padding: 4px 0px 20px 0px;
-    margin: 2px;
-}
-
-div.play-title-icon {
-    text-align: center;
-    margin: 12px 0px 0px 0px;
+    width: auto !important;
+    padding: 0;
+    display: flex;
+    justify-content: center;
 }
 
 div.play-title-icon-border {
-    width: 100px;
-    height: 100px;
-    margin: 0px auto;
-    border-radius:100px;
-    border: 1px solid;
+    width: calc(var(--icon-size) + var(--icon-padding)*2);
+    height: calc(var(--icon-size) + var(--icon-padding)*2);
+    border: 2px solid #233237;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
-
-img.play-title-icon {
-    height:80px;
-    width:80px;
-    margin: 10px;
-    border-radius: 20px;
-}
-
+img.play-title-icon,
 img.play-title-icon-generic {
-    height:100px;
-    width:100px;
-    border-radius: 100px;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    padding: var(--icon-padding);
+    border-radius: 50%;
 }
-
-.play-title,
-.body-text {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
-    text-align: center;
-}
-
 .play-title {
-    font-size: 14px;
+    text-align: center;
+    font-size: .9rem;
+    margin-bottom: 2rem;
 }
 
-.about {
-    font-size: 10px;
-}
-
-.hidden {
-    display: none;
-}
-
-.hidden-icon {
-    display: none;
-    /* visibility: hidden; */
-    /* Using visibility: hidden instead of display: none keeps the
-     * words from subtly changing position when the icon appears.
-     * But it skews the headers slightly to one side, so it's not
-     * a perfect solution; still working on this problem. */
-}
-
-/* Detail Table Styles */
-
+/* Detail Table */
 .play-title-header {
     font-family: 'Open Sans', AppleGothic, sans-serif;
     font-size: 20px;
 }
+table.play-title-header { margin: 0px 10% 25px 10%; }
+td.play-title-header-icon { vertical-align: top; padding-right: 10px; }
+td.play-title-header { height: 50px; }
+.play-issue-header { font-size: 75%; }
+td.play-issue-header { vertical-align: top; }
+.play-issue-header span { display: inline-block; padding: 0px 10px 0px 0px; }
 
-table.play-title-header {
-    margin: 0px 10% 25px 10%;
+/* Full table of issue list */
+table.play-detail-set { margin: 0% 12% 10% 12%; border-collapse: collapse; width: auto; }
+.play-detail-set th,
+.play-detail-set td { padding: 10px 6px; }
+.play-detail-set tr:nth-child(odd) { background: rgba(35,50,55,0.05); }
+.play-detail-set tr:first-child { background: rgba(152,75,67,0.3); }
+.play-detail-set th.terse { width: 5%; }
+.play-detail-set th.detailed { width: auto; }
+.play-detail-set th.icon    { width: 3%; }
+
+span.unverified-symbol { color: rgba(182,75,67,1.0); font-weight: bold; font-size: 1.3em; }
+span.verified-symbol   { color: rgba(67,75,182,1.0); font-weight: bold; font-size: 1.3em; }
+
+/* Search Bar (Embedded Filters) */
+.search-bar { text-align: center; padding: 1rem; }
+.search-form { display: inline-grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; align-items: end; }
+.search-form details { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; padding: 1rem; }
+.search-form summary { cursor: pointer; font-weight: bold; margin-bottom: 0.5rem; }
+.search-form input,
+.search-form select { width: 100%; padding: 0.8rem; border: none; border-radius: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: width 0.3s ease; }
+.search-form input:focus,
+.search-form select:focus { outline: none; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.search-form .button { padding: 0.8rem 1.5rem; border: none; border-radius: 25px; background: #e74c3c; color: #fff; cursor: pointer; transition: background 0.3s; }
+.search-form .button:hover { background: #c0392b; }
+
+/* Cards/Grid (search results) */
+.card-grid,
+.results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.5rem; padding: 2rem; }
+.card,
+.result-card { background: #fff; border-radius: 8px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
+.card:hover,
+.result-card:hover { transform: translateY(-4px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+.card-title,
+.card h3 { color: #2c3e50; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.card-meta,
+.card p { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+/* Pagination */
+.pagination { text-align: center; margin: 2rem 0; }
+.pagination a { display: inline-block; margin: 0 0.5rem; padding: 0.5rem 1rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; color: #2f3; text-decoration: none; transition: background 0.3s; }
+.pagination a:hover { background: rgba(0,0,0,0.05); }
+
+/* Animation */
+@keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.card.new,
+.result-card.new { animation: slideIn 0.5s ease; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-nav a { display: block; margin: .5rem 0; }
 }
-
-td.play-title-header-icon {
-    vertical-align: top;
-    padding-right: 10px;
-}
-
-td.play-title-header {
-    height: 50px;
-}
-
-.play-issue-header {
-    font-size: 75%;
-}
-
-td.play-issue-header {
-    vertical-align: top;
-}
-
-.play-issue-header span {
-    display: inline-block;
-    padding: 0px 10px 0px 0px;
-}
-
-.modal-header {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-
-.modal-title {
-    font-weight: lighter;
+@media (max-width: 600px) {
+  .search-form input,
+  .search-form select,
+  .search-form .button { width: 100%; margin: .5rem 0; }
+  .card-grid,
+  .results-grid { grid-template-columns: 1fr; padding: 1rem; }
 }
