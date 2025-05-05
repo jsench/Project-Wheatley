@@ -10,34 +10,40 @@
     font-family: "Open Sans", AppleGothic, sans-serif;
     font-weight: lighter;
   }
+  
   html {
     margin-left: calc(100vw - 100%);
   }
+  
   body {
     background: #fff;
     color: #333;
     line-height: 1.6;
   }
   
-  /* 2) Links & static text */
+  /* Links */
   a {
     text-decoration: none;
     color: #233237;
-    transition: color .2s;
+    transition: color 0.2s;
   }
   a:hover,
   a:focus {
     color: #e74c3c;
   }
-  .guide-text a,
-  .static-text a {
-    color: rgba(152,75,67,1);
-    font-weight: bold;
-  }
   
-  /* 3) Lists & misc */
+  /* Utility lists */
   ul { list-style: none; }
   li { margin: 3px 0; }
+  
+  /* Hide helpers */
+  .hidden {
+    display: none !important;
+  }
+  .hidden-icon {
+    display: none !important;
+  }
+  
   
   /*==============================================================================
   =                             CSS Variables                                   =
@@ -131,41 +137,45 @@
   ==============================================================================*/
   
   input,
-  .button,
-  .button-inline,
-  .button-inline-selected,
-  .button-inline-small {
-    cursor: pointer;
-    margin: 2px;
-    border: 1px solid rgba(152,75,67,0.4);
-    border-radius: 4px;
-    padding: 2px 6px 3px 6px;
-    font-family: inherit;
-    user-select: none;
-  }
-  input,
-  .button {
-    height: 25px;
-    font-size: 80%;
-    background-color: rgba(152,75,67,0.1);
-  }
-  input[type="submit"],
-  .button {
-    background-color: rgba(152,75,67,0.2);
-  }
-  .button-inline-selected {
-    background-color: rgba(152,75,67,0.6);
-  }
-  select {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: rgba(152,75,67,0.2);
-    padding: 3px 5px;
-    margin: 3px;
-    font-size: 80%;
-    font-family: inherit;
-  }
+.button,
+.button-inline,
+.button-inline-selected,
+.button-inline-small {
+  cursor: pointer;
+  margin: 2px;
+  border: 1px solid rgba(152,75,67,0.4);
+  border-radius: 4px;
+  padding: 2px 6px 3px;
+  font-family: inherit;
+  user-select: none;
+}
+
+input,
+.button {
+  height: 25px;
+  font-size: 80%;
+  background-color: rgba(152,75,67,0.1);
+}
+
+input[type="submit"],
+.button {
+  background-color: rgba(152,75,67,0.2);
+}
+
+.button-inline-selected {
+  background-color: rgba(152,75,67,0.6);
+}
+
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: rgba(152,75,67,0.2);
+  padding: 3px 5px;
+  margin: 3px;
+  font-size: 80%;
+  font-family: inherit;
+}
   
   /*==============================================================================
   =                             Layout Frame Styles                             =
@@ -234,38 +244,46 @@
   ==============================================================================*/
   
   header.site-header {
+    position: relative;
     background: #2c3e50;
     color: #ecf0f1;
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    padding: 2rem 1rem 1rem;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
+  
+  /* “Sign in” / admin buttons in top right */
   header.site-header .tucked {
-    text-align: right;
-    margin-bottom: .5rem;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
   }
+  
+  /* Title + nav grouping */
   .nav-wrap {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    max-width: 1024px;
-    margin: 0 auto;
+    gap: 0.5rem;
+    margin-top: 1rem;
   }
+  
   .site-title a {
     color: #ecf0f1;
     font-size: 2rem;
   }
+  
+  .main-nav {
+    display: inline-flex;
+    gap: 1rem;
+  }
   .main-nav a {
-    margin: 0 1rem;
-    transition: color .2s;
+    color: #ecf0f1;
+    font-size: 1rem;
   }
   .main-nav a:hover {
     color: #e74c3c;
   }
-  
   /*==============================================================================
   =                          Collapsible Search Bar Styles                       =
   ==============================================================================*/
@@ -292,4 +310,65 @@
   .footer-nav span {
     padding: 0 10px;
   }
+  
+  /*==============================================================================
+=                            Issue Page: Title Header                          =
+==============================================================================*/
+
+/* 1) Center and space out the title+icon table */
+table.play-title-header {
+    margin: 2rem auto 1rem auto; /* top, sides, bottom */
+    width: 80%;                  /* or whatever % you prefer */
+    table-layout: fixed;         /* keep icon column from squashing */
+  }
+  
+  /* 2) Icon cell tweaks */
+  .play-title-header-icon {
+    vertical-align: top;
+    padding-right: 1rem;
+  }
+  
+  /* 3) Text cell tweaks */
+  .play-title-header .play-title-header {
+    vertical-align: middle;
+    line-height: 1.4;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  /*==============================================================================
+  =                          Issue Page: Detail‐Set Table                        =
+  ==============================================================================*/
+  
+  /* 4) Wrap & size */
+  table.play-detail-set {
+    margin: 2rem auto;     /* center & space above/below */
+    width: 80%;            /* match header width */
+    border-collapse: collapse;
+    text-align: left;      /* left align columns */
+  }
+  
+  /* 5) Header row */
+  .play-detail-set th {
+    background-color: rgba(152,75,67,0.3);
+    color: #333;
+    padding: 0.75rem 1rem;
+    font-weight: normal;
+  }
+  
+  /* 6) Body rows */
+  .play-detail-set td {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+  
+  /* 7) Zebra‐striping */
+  .play-detail-set tr:nth-child(even) td {
+    background-color: rgba(35,50,55,0.05);
+  }
+  
+  /* 8) Column widths (optional—tweak to taste) */
+  .play-detail-set th.terse  { width:  10%; } /* e.g. MC # */
+  .play-detail-set th.detailed{ width: 60%; } /* e.g. Location */
+  .play-detail-set th.icon   { width:  5%;  } /* verification checkmark */
   
