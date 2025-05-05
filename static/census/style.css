@@ -46,8 +46,8 @@
   
   /* tweak these to resize ALL frontpage circles & images */
   :root {
-    --icon-size: 80px;       /* inner image diameter */
-    --icon-padding: 10px;    /* space between image & border */
+    --icon-size: 120px;       /* inner image diameter */
+    --icon-padding: 20px;    /* space between image & border */
   }
   
   /*==============================================================================
