@@ -106,7 +106,7 @@ img.play-title-icon {
     width: 120px;
     height: 120px;
     /* spacing from the border */
-    margin: 10px;
+    margin: 0 auto;
     /* rounded corners (optional) */
     border-radius: 50px;
 }
