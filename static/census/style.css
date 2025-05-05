@@ -2,7 +2,7 @@
 =                                 Global Styles                                =
 ==============================================================================*/
 
-/* Tag-level resets */
+/* 1) Resets & tag-level defaults */
 * {
     margin: 0;
     padding: 0;
@@ -10,33 +10,32 @@
     font-family: "Open Sans", AppleGothic, sans-serif;
     font-weight: lighter;
   }
-  
   html {
     margin-left: calc(100vw - 100%);
   }
-  
   body {
     background: #fff;
     color: #333;
     line-height: 1.6;
   }
   
-  /* Static link colors */
+  /* 2) Links & static text */
   a {
     text-decoration: none;
     color: #233237;
     transition: color .2s;
   }
   a:hover,
-  a:focus { color: #e74c3c; }
-  
+  a:focus {
+    color: #e74c3c;
+  }
   .guide-text a,
   .static-text a {
     color: rgba(152,75,67,1);
     font-weight: bold;
   }
   
-  /* Utility list resets */
+  /* 3) Lists & misc */
   ul { list-style: none; }
   li { margin: 3px 0; }
   
@@ -44,8 +43,8 @@
   =                             CSS Variables                                   =
   ==============================================================================*/
   
-  /* tweak these to resize ALL frontpage circles & images */
   :root {
+    /* tweak these to resize ALL frontpage circles & images */
     --icon-size: 60px;       /* inner image diameter */
     --icon-padding: 12px;    /* space between image & border */
   }
@@ -54,110 +53,78 @@
   =                         Frontpage Icon & Title Styles                       =
   ==============================================================================*/
   
- /*────────────────────────────────────────────────────────────────────*/
-/* 1) Cell width for title text & icon column                         */
-/*────────────────────────────────────────────────────────────────────*/
-td.play-title,
-td.play-title-icon {
-    /* total width allotted per “cell” */
-    width: 144px;
-}
-
-/*────────────────────────────────────────────────────────────────────*/
-/* 2) Title text wrapper                                              */
-/*────────────────────────────────────────────────────────────────────*/
-div.play-title {
-    /* space above/below title text */
-    padding: 4px 0 20px 0;
-    /* small margin around each block */
-    margin: 2px;
+  /*── 1) Cell width for title text & icon column ──────────────────────────────*/
+  td.play-title,
+  td.play-title-icon {
+    width: 144px; /* total width allotted per “cell” */
+  }
+  
+  /*── 2) Title text wrapper ───────────────────────────────────────────────────*/
+  div.play-title {
+    padding: 4px 0 20px 0;  /* space above/below title text */
+    margin: 2px;           /* small margin around each block */
     text-align: center;
-}
-
-/*────────────────────────────────────────────────────────────────────*/
-/* 3) Icon container (outer)                                          */
-/*────────────────────────────────────────────────────────────────────*/
-div.play-title-icon {
-    /* center horizontally, add vertical gap */
+  }
+  
+  /*── 3) Icon container (outer) ───────────────────────────────────────────────*/
+  div.play-title-icon {
     text-align: center;
-    margin: 12px auto 0 auto;
-}
-
-/*────────────────────────────────────────────────────────────────────*/
-/* 4) Icon border circle                                              */
-/*────────────────────────────────────────────────────────────────────*/
-div.play-title-icon-border {
-    width: 80px;
-    height: 80px;
+    margin: 12px auto 0 auto; /* vertical gap, centered */
+  }
+  
+  /*── 4) Icon border circle ──────────────────────────────────────────────────*/
+  div.play-title-icon-border {
+    width: calc(var(--icon-size) + var(--icon-padding)*2);
+    height: calc(var(--icon-size) + var(--icon-padding)*2);
     border: 1px solid #233237;
     border-radius: 50%;
-    display: flex;
+    display: flex;               /* center inner image */
     align-items: center;
     justify-content: center;
   }
-/*────────────────────────────────────────────────────────────────────*/
-/* 5) “Real” title-specific images                                    */
-/*────────────────────────────────────────────────────────────────────*/
-img.play-title-icon {
-    width: 100px;
-    height: 100px;
+  
+  /*── 5) “Real” title-specific images ────────────────────────────────────────*/
+  img.play-title-icon {
+    width: var(--icon-size);
+    height: var(--icon-size);
     border-radius: 50%;
     object-fit: cover;
   }
-/*────────────────────────────────────────────────────────────────────*/
-/* 6) Generic fallback images                                         */
-/*────────────────────────────────────────────────────────────────────*/
-img.play-title-icon-generic {
-    /* fill a bit more of the circle */
-    width: 100px;
-    height: 100px;
-    /* fully round */
+  
+  /*── 6) Generic fallback images ─────────────────────────────────────────────*/
+  img.play-title-icon-generic {
+    width: var(--icon-size);
+    height: var(--icon-size);
     border-radius: 50%;
-}
-
-/*────────────────────────────────────────────────────────────────────*/
-/* 7) Title text styling                                              */
-/*────────────────────────────────────────────────────────────────────*/
-.play-title {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
+  }
+  
+  /*── 7) Title text styling ──────────────────────────────────────────────────*/
+  .play-title {
     font-size: 14px;
     text-align: center;
-}
-
-/*────────────────────────────────────────────────────────────────────*/
-/* 8) Body-level text (e.g. descriptions under icons)                 */
-/*────────────────────────────────────────────────────────────────────*/
-.body-text {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
+  }
+  
+  /*── 8) Body-level text (descriptions) ──────────────────────────────────────*/
+  .body-text {
     text-align: center;
-}
-
-/*────────────────────────────────────────────────────────────────────*/
-/* 9) Tiny “about” text link block                                    */
-/*────────────────────────────────────────────────────────────────────*/
-.about {
+  }
+  
+  /*── 9) Tiny “about” text link block ────────────────────────────────────────*/
+  .about {
     font-size: 10px;
     text-align: center;
     margin-bottom: 1.5rem;
-}
-
-/*────────────────────────────────────────────────────────────────────*/
-/* 10) Utility: fully hide any element                                 */
-/*────────────────────────────────────────────────────────────────────*/
-.hidden {
-    display: none !important;
-}
-
-/*────────────────────────────────────────────────────────────────────*/
-/* 11) Utility: hide only the icon (leave label space intact)         */
-/*────────────────────────────────────────────────────────────────────*/
-.hidden-icon {
-    display: none !important;
-    /* alternatively, use visibility:hidden if you want to reserve
-       the element’s layout space */
-    /* visibility: hidden; */
-}
+  }
   
+  /*── 10) Utility: fully hide any element ─────────────────────────────────────*/
+  .hidden {
+    display: none !important;
+  }
+  
+  /*── 11) Utility: hide only the icon ────────────────────────────────────────*/
+  .hidden-icon {
+    display: none !important;
+  }
   
   /*==============================================================================
   =                                UI Components                                 =
@@ -176,23 +143,19 @@ img.play-title-icon-generic {
     font-family: inherit;
     user-select: none;
   }
-  
   input,
   .button {
     height: 25px;
     font-size: 80%;
     background-color: rgba(152,75,67,0.1);
   }
-  
   input[type="submit"],
   .button {
     background-color: rgba(152,75,67,0.2);
   }
-  
   .button-inline-selected {
     background-color: rgba(152,75,67,0.6);
   }
-  
   select {
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -213,12 +176,10 @@ img.play-title-icon-generic {
     margin: 0 auto;
     position: relative;
   }
-  
   div.outer-frame {
     max-width: 1024px;
     margin: 0 auto;
   }
-  
   div.middle-frame {
     max-width: 896px;
     margin: 0 20%;
@@ -233,29 +194,24 @@ img.play-title-icon-generic {
     border-collapse: collapse;
     font-weight: lighter;
   }
-  
   th {
     font-weight: lighter;
   }
-  
   .play-detail-set {
     margin: 2rem auto;
     width: 80%;
     text-align: center;
   }
-  
   .play-detail-set tr:nth-child(odd) {
     background: rgba(35,50,55,0.05);
   }
   .play-detail-set tr:first-child {
     background: rgba(152,75,67,0.3);
   }
-  
   .play-detail-set th,
   .play-detail-set td {
     padding: 0.75rem 1rem;
   }
-  
   .play-detail-set th.terse { width: 5%; }
   .play-detail-set th.detailed { width: auto; }
   .play-detail-set th.icon   { width: 3%; }
@@ -287,12 +243,10 @@ img.play-title-icon-generic {
     text-align: center;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
-  
   header.site-header .tucked {
     text-align: right;
     margin-bottom: .5rem;
   }
-  
   .nav-wrap {
     display: flex;
     justify-content: space-between;
@@ -300,18 +254,17 @@ img.play-title-icon-generic {
     max-width: 1024px;
     margin: 0 auto;
   }
-  
   .site-title a {
     color: #ecf0f1;
     font-size: 2rem;
   }
-  
   .main-nav a {
     margin: 0 1rem;
-    color: #ecf0f1;
     transition: color .2s;
   }
-  .main-nav a:hover { color: #e74c3c; }
+  .main-nav a:hover {
+    color: #e74c3c;
+  }
   
   /*==============================================================================
   =                          Collapsible Search Bar Styles                       =
