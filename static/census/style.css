@@ -54,36 +54,116 @@
   =                         Frontpage Icon & Title Styles                       =
   ==============================================================================*/
   
-  /* Frontpage circle + image sizing */
+ /*────────────────────────────────────────────────────────────────────*/
+/* 1) Cell width for title text & icon column                         */
+/*────────────────────────────────────────────────────────────────────*/
+td.play-title,
 td.play-title-icon {
-    /* make the <td> just big enough to hold the border circle */
-    width: calc(var(--icon-size) + var(--icon-padding) * 2);
-  }
-  
-  div.play-title-icon {
+    /* total width allotted per “cell” */
+    width: 150px;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 2) Title text wrapper                                              */
+/*────────────────────────────────────────────────────────────────────*/
+div.play-title {
+    /* space above/below title text */
+    padding: 4px 0 20px 0;
+    /* small margin around each block */
+    margin: 2px;
     text-align: center;
-    margin: var(--icon-padding) auto var(--icon-padding) auto;
-  }
-  
-  div.play-title-icon-border {
-    /* outer circle = inner image + 2×padding */
-    width:  calc(var(--icon-size) + var(--icon-padding) * 2);
-    height: calc(var(--icon-size) + var(--icon-padding) * 2);
-    border: 2px solid #233237;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 3) Icon container (outer)                                          */
+/*────────────────────────────────────────────────────────────────────*/
+div.play-title-icon {
+    /* center horizontally, add vertical gap */
+    text-align: center;
+    margin: 12px auto 0 auto;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 4) Icon border circle                                              */
+/*────────────────────────────────────────────────────────────────────*/
+div.play-title-icon-border {
+    /* outer circle dimensions */
+    width: 100px;
+    height: 100px;
+    /* center inline */
     margin: 0 auto;
-  }
-  
-  img.play-title-icon,
-  img.play-title-icon-generic {
-    width: var(--icon-size);
-    height: var(--icon-size);
-    margin: var(--icon-padding);
+    /* perfect circle */
     border-radius: 50%;
-  }
+    /* border style */
+    border: 1px solid #233237;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 5) “Real” title-specific images                                    */
+/*────────────────────────────────────────────────────────────────────*/
+img.play-title-icon {
+    /* image size inside the circle */
+    width: 80px;
+    height: 80px;
+    /* spacing from the border */
+    margin: 10px;
+    /* rounded corners (optional) */
+    border-radius: 20px;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 6) Generic fallback images                                         */
+/*────────────────────────────────────────────────────────────────────*/
+img.play-title-icon-generic {
+    /* fill a bit more of the circle */
+    width: 100px;
+    height: 100px;
+    /* fully round */
+    border-radius: 50%;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 7) Title text styling                                              */
+/*────────────────────────────────────────────────────────────────────*/
+.play-title {
+    font-family: 'Open Sans', AppleGothic, sans-serif;
+    font-size: 14px;
+    text-align: center;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 8) Body-level text (e.g. descriptions under icons)                 */
+/*────────────────────────────────────────────────────────────────────*/
+.body-text {
+    font-family: 'Open Sans', AppleGothic, sans-serif;
+    text-align: center;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 9) Tiny “about” text link block                                    */
+/*────────────────────────────────────────────────────────────────────*/
+.about {
+    font-size: 10px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 10) Utility: fully hide any element                                 */
+/*────────────────────────────────────────────────────────────────────*/
+.hidden {
+    display: none !important;
+}
+
+/*────────────────────────────────────────────────────────────────────*/
+/* 11) Utility: hide only the icon (leave label space intact)         */
+/*────────────────────────────────────────────────────────────────────*/
+.hidden-icon {
+    display: none !important;
+    /* alternatively, use visibility:hidden if you want to reserve
+       the element’s layout space */
+    /* visibility: hidden; */
+}
   
   
   /*==============================================================================
