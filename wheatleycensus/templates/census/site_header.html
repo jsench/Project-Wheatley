@@ -35,12 +35,12 @@
     <select id="search-bar-form-field" name="field">
       <option disabled selected value>Search by…</option>
       <option value="keyword"{% if request.GET.field == 'keyword' %} selected{% endif %}>Keyword</option>
-      <option value="location"{% if request.GET.field =='location' %} selected{% endif %}>Location</option>
-      <option value="provenance_name"{% if request.GET.field =='provenance_name' %} selected{% endif %}>Provenance Name</option>
-      <option value="collection"{% if request.GET.field =='collection' %} selected{% endif %}>Specific Features</option>
-      <option value="year"{% if request.GET.field =='year' %} selected{% endif %}>Year</option>
-      <option value="stc"{% if request.GET.field =='stc' %} selected{% endif %}>STC / Wing #</option>
-      <option value="census_id"{% if request.GET.field =='census_id' %} selected{% endif %}>WC #</option>
+      <option value="location"{% if request.GET.field == 'location' %} selected{% endif %}>Location</option>
+      <option value="provenance_name"{% if request.GET.field == 'provenance_name' %} selected{% endif %}>Provenance Name</option>
+      <option value="collection"{% if request.GET.field == 'collection' %} selected{% endif %}>Specific Features</option>
+      <option value="year"{% if request.GET.field == 'year' %} selected{% endif %}>Year</option>
+      <option value="stc"{% if request.GET.field == 'stc' %} selected{% endif %}>STC / Wing #</option>
+      <option value="census_id"{% if request.GET.field == 'census_id' %} selected{% endif %}>WC #</option>
     </select>
 
     <input
