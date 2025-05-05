@@ -67,9 +67,9 @@
   $(function(){
     // map of field ⇒ endpoint
     var autofillMap = {
-      location: "{% url 'autofill_location' '' %}",          // ends with ''
-      provenance_name: "{% url 'autofill_provenance' '' %}",
-      collection: "{% url 'autofill_collection' '' %}"
+      location: "{% url 'autofill_location' %}",
+      provenance_name: "{% url 'autofill_provenance' %}",
+      collection: "{% url 'autofill_collection' %}"
     };
 
     function autofillResponse(field, term, callback){
