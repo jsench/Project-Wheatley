@@ -103,8 +103,8 @@ div.play-title-icon-border {
 /*────────────────────────────────────────────────────────────────────*/
 img.play-title-icon {
     /* image size inside the circle */
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     /* spacing from the border */
     margin: 10px;
     /* rounded corners (optional) */
