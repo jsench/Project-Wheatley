@@ -87,31 +87,23 @@ div.play-title-icon {
 /* 4) Icon border circle                                              */
 /*────────────────────────────────────────────────────────────────────*/
 div.play-title-icon-border {
-    /* outer circle dimensions: 120px image + 2×12px padding */
     width: 144px;
     height: 144px;
-
-    margin: 0 auto;             /* center in its <td> */
-    border-radius: 50%;
     border: 1px solid #233237;
-
-    display: flex;              /* make it a flexbox */
-    align-items: center;        /* vertical centering */
-    justify-content: center;    /* horizontal centering */
-}
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 /*────────────────────────────────────────────────────────────────────*/
 /* 5) “Real” title-specific images                                    */
 /*────────────────────────────────────────────────────────────────────*/
 img.play-title-icon {
-    /* image size inside the circle */
-    width: 120px;
-    height: 120px;
-    /* spacing from the border */
-    margin: 50%;
-    /* rounded corners (optional) */
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
     object-fit: cover;
-}
-
+  }
 /*────────────────────────────────────────────────────────────────────*/
 /* 6) Generic fallback images                                         */
 /*────────────────────────────────────────────────────────────────────*/
