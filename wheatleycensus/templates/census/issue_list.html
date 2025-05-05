@@ -1,6 +1,5 @@
 {% extends "census/base.html" %}
 {% load static %}
-{% load humanize %}
 {% block content %}
 
 {% if editions %}
@@ -53,11 +52,11 @@
     </tr>
     {% for issue in issues %}
     <tr>
-      {# Link edition → copy list by edition #}
+      {# Link edition → copy list by issue.id #}
       <td>
-        <a href="{% url 'copy_list_by_edition' issue.edition.id %}">
+        <a href="{% url 'copy_list' issue.id %}">
           {% if issue.edition.edition_number.isdigit %}
-            {{ issue.edition.edition_number|add:"0"|ordinal }}
+            {{ issue.edition.edition_number|add:"0" }}
           {% else %}
             {{ issue.edition.edition_number|capfirst }}
           {% endif %}
@@ -70,7 +69,7 @@
       </td>
 
       <td>
-        <a href="{% url 'copy_list_by_edition' issue.edition.id %}">
+        <a href="{% url 'copy_list' issue.id %}">
           {{ issue.year }}
         </a>
       </td>
@@ -80,7 +79,7 @@
       </td>
 
       <td>
-        <a href="{% url 'copy_list_by_edition' issue.edition.id %}">
+        <a href="{% url 'copy_list' issue.id %}">
           {{ issue.stc_wing }}
         </a>
         {% if user.is_staff %}
