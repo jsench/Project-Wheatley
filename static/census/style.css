@@ -46,8 +46,8 @@
   
   /* tweak these to resize ALL frontpage circles & images */
   :root {
-    --icon-size: 120px;       /* inner image diameter */
-    --icon-padding: 20px;    /* space between image & border */
+    --icon-size: 100px;       /* inner image diameter */
+    --icon-padding: 30px;    /* space between image & border */
   }
   
   /*==============================================================================
@@ -65,8 +65,8 @@
   }
   
   div.play-title-icon-border {
-    width: calc(var(--icon-size) + var(--icon-padding)*2);
-    height: calc(var(--icon-size) + var(--icon-padding)*2);
+    width: calc(var(--icon-size) + var(--icon-padding)*1.5);
+    height: calc(var(--icon-size) + var(--icon-padding)*1.5);
     border: 2px solid #233237;
     border-radius: 50%;
     display: flex;
