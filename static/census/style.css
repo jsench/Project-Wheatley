@@ -60,7 +60,7 @@
 td.play-title,
 td.play-title-icon {
     /* total width allotted per “cell” */
-    width: 150px;
+    width: 144px;
 }
 
 /*────────────────────────────────────────────────────────────────────*/
@@ -87,17 +87,18 @@ div.play-title-icon {
 /* 4) Icon border circle                                              */
 /*────────────────────────────────────────────────────────────────────*/
 div.play-title-icon-border {
-    /* outer circle dimensions */
-    width: 100px;
-    height: 100px;
-    /* center inline */
-    margin: 0 auto;
-    /* perfect circle */
-    border-radius: 50%;
-    /* border style */
-    border: 1px solid #233237;
-}
+    /* outer circle dimensions: 120px image + 2×12px padding */
+    width: 144px;
+    height: 144px;
 
+    margin: 0 auto;             /* center in its <td> */
+    border-radius: 50%;
+    border: 1px solid #233237;
+
+    display: flex;              /* make it a flexbox */
+    align-items: center;        /* vertical centering */
+    justify-content: center;    /* horizontal centering */
+}
 /*────────────────────────────────────────────────────────────────────*/
 /* 5) “Real” title-specific images                                    */
 /*────────────────────────────────────────────────────────────────────*/
@@ -106,9 +107,9 @@ img.play-title-icon {
     width: 120px;
     height: 120px;
     /* spacing from the border */
-    margin: 0 auto;
+    margin: 50%;
     /* rounded corners (optional) */
-    border-radius: 50px;
+    object-fit: cover;
 }
 
 /*────────────────────────────────────────────────────────────────────*/
