@@ -1,15 +1,19 @@
-/*
- * Global Styles
- */
+/*==============================================================================
+=                                Global Resets                                 =
+==============================================================================*/
 
 /* Tag-level styles */
-
 html {
     margin-left: calc(100vw - 100%);
 }
 
+body {
+    font-family: "Open Sans", AppleGothic, sans-serif;
+    font-weight: lighter;
+}
+
 a {
-    text-decoration: none
+    text-decoration: none;
 }
 
 a:link,
@@ -18,6 +22,7 @@ a:hover {
     color: #233237;
 }
 
+/* Utility text links */
 .guide-text a:link,
 .guide-text a:visited,
 .guide-text a:hover,
@@ -28,15 +33,16 @@ a:hover {
     font-weight: bold;
 }
 
-a.linkbutton {
-    padding: 5px;
+/* Lists */
+ul {
+    list-style: none;
 }
 
-body {
-    font-family:"Open Sans", AppleGothic, sans-serif;
-    font-weight: lighter;
+li {
+    margin: 3px;
 }
 
+/* Tables */
 table {
     margin: auto;
     border-collapse: collapse;
@@ -47,15 +53,9 @@ th {
     font-weight: lighter;
 }
 
-ul {
-    list-style: none;
-}
-
-li {
-    margin: 3px;
-}
-
-/* Class-level styles */
+/*==============================================================================
+=                            Layout Frame Styles                              =
+==============================================================================*/
 
 div.frame-container {
     width: 100%;
@@ -76,134 +76,9 @@ div.middle-frame {
     margin: 0px 20% 0px 20%;
 }
 
-.play-detail-set {
-    text-align: center;
-}
-
-.play-detail-set tr:nth-child(odd) {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-
-.play-detail-set tr:nth-child(1) {
-    background-color: rgba(152, 75, 67, 0.5);
-}
-
-.play-detail-set tr {
-    border: none;
-}
-
-table.play-detail-set {
-    margin: 0% 12% 10% 12%;
-}
-
-span.unverified-symbol-small,
-span.unverified-symbol {
-    font-weight: bold;
-    color: rgba(182, 75, 67, 1.0);
-}
-
-span.unverified-symbol {
-    font-size: 130%;
-}
-
-span.verified-symbol-small,
-span.verified-symbol {
-    font-weight: bold;
-    color: rgba(67, 75, 182, 1.0);
-}
-
-span.verified-symbol-small {
-    font-size: 110%;
-}
-
-span.verified-symbol {
-    font-size: 170%;
-}
-
-.play-detail-set td,
-.play-detail-set th {
-    width: 100px;
-    padding: 10px 6px 10px 6px;
-}
-
-.play-detail-set th.detailed {
-    width: 2000px;
-}
-
-.play-detail-set th.terse {
-    width: 40px;
-}
-
-.play-detail-set th.icon {
-    width: 5px;
-}
-
-.play-detail-set th.even {
-    width: 300px;
-}
-
-.warning,
-.notice {
-    padding: 10px;
-    margin: 10px;
-}
-
-.notice {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-
-.note {
-    font-size: 75%;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-.warning {
-    background-color: rgba(152, 75, 67, 0.3);
-}
-
-p.static-text {
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
-  text-align: left;
-}
-
-p.error-text,
-p.guide-text,
-td p.static-text {
-  text-align: center;
-}
-
-p.error-text {
-  margin-top: 0px;
-  margin-bottom: 40px;
-}
-
-span.citation {
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 30px ;
-  text-indent: -24px ;
-  display: block;
-}
-
-.tucked {
-    text-align: right;
-}
-
-.unicode-icon {
-    font-family: FontAwesome;
-    padding-left: 4px;
-    padding-right: 4px;
-}
-
-.fa, .fas {
-    display: inline;
-}
-
-/* UI Styles (May be either class- or tag-level) */
+/*==============================================================================
+=                              UI Component Styles                            =
+==============================================================================*/
 
 input,
 .button,
@@ -212,10 +87,8 @@ input,
 .button-inline-small {
     cursor: pointer;
     margin: 2px;
-    border: solid;
+    border: solid 1px rgba(152, 75, 67, 0.4);
     border-radius: 4px;
-    border-width: 1px;
-    border-color: rgba(152, 75, 67, 0.4);
     padding: 2px 6px 3px 6px;
     font-family: inherit;
     user-select: none;
@@ -261,24 +134,19 @@ input {
 }
 
 .button,
+.input[type="submit"],
 .button-inline,
-.button-inline-small,
-input[type="submit"] {
+.button-inline-small {
     background-color: rgba(152, 75, 67, 0.2);
-    font-weight: lighter;
 }
 
 .button-inline-selected {
     background-color: rgba(152, 75, 67, 0.6);
 }
 
-body:focus {
-    outline-color: rgba(152, 75, 67, 0.6);
-}
-
 select {
     -moz-appearance: none; /* Firefox */
-    -webkit-appearance: none; /* Safari and Chrome */
+    -webkit-appearance: none; /* Safari/Chrome */
     appearance: none;
     background-color: rgba(152, 75, 67, 0.2);
     padding: 3px 5px 3px 5px;
@@ -288,9 +156,74 @@ select {
     font-family: "Open Sans", AppleGothic, sans-serif;
 }
 
-/*
- * Header and Footer Styles
- */
+/*==============================================================================
+=                        Notification & Utility Styles                        =
+==============================================================================*/
+
+.warning,
+.notice {
+    padding: 10px;
+    margin: 10px;
+}
+
+.notice {
+    background-color: rgba(35, 50, 55, 0.1);
+}
+
+.warning {
+    background-color: rgba(152, 75, 67, 0.3);
+}
+
+.note {
+    font-size: 75%;
+    margin: 0 10px;
+}
+
+p.error-text,
+p.guide-text,
+td p.static-text {
+    text-align: center;
+}
+
+p.error-text {
+    margin: 0 0 40px;
+}
+
+/* Citation block */
+span.citation {
+    width: 90%;
+    margin: 0 auto;
+    padding-left: 30px;
+    text-indent: -24px;
+    display: block;
+}
+
+/* Hide helpers */
+.hidden {
+    display: none;
+}
+
+.hidden-icon {
+    display: none;
+}
+
+/* FontAwesome icon padding */
+.unicode-icon {
+    font-family: FontAwesome;
+    padding: 0 4px;
+}
+
+.fa, .fas {
+    display: inline;
+}
+
+/*==============================================================================
+=                          Header & Footer Navigation                          =
+==============================================================================*/
+
+.tucked {
+    text-align: right;
+}
 
 table.title {
     margin: 0% 20% 0% 20%;
@@ -304,34 +237,33 @@ table.title {
 .title th {
     font-size: 10px;
     height: 20px;
-    padding: 0px 6px 0px 6px;
+    padding: 0 6px;
 }
 
 .title td {
-    padding: 10px 6px 0px 6px;
+    padding: 10px 6px 0;
 }
 
 .title {
     font-family: "Open Sans", AppleGothic, sans-serif;
     font-size: 25px;
     text-align: center;
-    margin: 40px auto 20px auto;
+    margin: 40px auto 20px;
 }
 
 table.footer-nav {
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin: 20px auto;
     font-size: 80%;
     border-top: 1px solid rgba(0, 0, 0, 0.65);
 }
 
 .footer-nav span {
-    padding: 0px 10px 0px 10px;
+    padding: 0 10px;
 }
 
 .footer-nav th,
 .footer-nav td {
-    padding: 10px 15px 10px 15px;
+    padding: 10px 15px;
 }
 
 .header-title-nav th,
@@ -342,54 +274,62 @@ table.footer-nav {
 .search-bar {
     text-align: center;
     height: 32px;
-    padding: 0px 0px 15px 0px;
+    padding: 0 0 15px;
 }
 
 .search-bar form {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
-/* Frontpage Styles */
+/*==============================================================================
+=                         Frontpage Icon & Title Styles                        =
+==============================================================================*/
 
+/* Cell width for title text & icon column */
 td.play-title,
 td.play-title-icon {
     width: 150px;
 }
 
+/* Title text wrapper */
 div.play-title {
-    padding: 4px 0px 20px 0px;
+    padding: 4px 0 20px;
     margin: 2px;
 }
 
+/* Icon container (outer) */
 div.play-title-icon {
     text-align: center;
-    margin: 12px 0px 0px 0px;
+    margin: 12px 0 0;
 }
 
+/* Icon border circle */
 div.play-title-icon-border {
     width: 100px;
     height: 100px;
-    margin: 0px auto;
-    border-radius:100px;
+    margin: 0 auto;
+    border-radius: 100px;
     border: 1px solid;
 }
 
+/* Real title images */
 img.play-title-icon {
-    height:80px;
-    width:80px;
-    margin: 10px;
-    border-radius: 20px;
+    width: 90px;
+    height: 90px;
+    margin: 5px;
+    border-radius: 45px;
 }
 
+/* Generic fallback images */
 img.play-title-icon-generic {
-    height:100px;
-    width:100px;
+    width: 100px;
+    height: 100px;
     border-radius: 100px;
 }
 
+/* Title and body text under icons */
 .play-title,
 .body-text {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
     text-align: center;
 }
 
@@ -401,51 +341,84 @@ img.play-title-icon-generic {
     font-size: 10px;
 }
 
-.hidden {
-    display: none;
-}
+/*==============================================================================
+=                             Detail Table Styles                             =
+==============================================================================*/
 
-.hidden-icon {
-    display: none;
-    /* visibility: hidden; */
-    /* Using visibility: hidden instead of display: none keeps the
-     * words from subtly changing position when the icon appears.
-     * But it skews the headers slightly to one side, so it's not
-     * a perfect solution; still working on this problem. */
-}
-
-/* Detail Table Styles */
-
+/* Issue‐page title header */
 .play-title-header {
     font-family: 'Open Sans', AppleGothic, sans-serif;
     font-size: 20px;
 }
 
 table.play-title-header {
-    margin: 0px 10% 25px 10%;
+    margin: 0 10% 25px;
 }
 
-td.play-title-header-icon {
-    vertical-align: top;
-    padding-right: 10px;
+/* Issue‐page detail set */
+table.play-detail-set {
+    margin: 0% 12% 10% 12%;
+    text-align: center;
 }
 
-td.play-title-header {
-    height: 50px;
+.play-detail-set tr:nth-child(odd) {
+    background-color: rgba(35, 50, 55, 0.1);
 }
 
-.play-issue-header {
-    font-size: 75%;
+.play-detail-set tr:nth-child(1) {
+    background-color: rgba(152, 75, 67, 0.5);
 }
 
-td.play-issue-header {
-    vertical-align: top;
+.play-detail-set tr {
+    border: none;
 }
 
-.play-issue-header span {
-    display: inline-block;
-    padding: 0px 10px 0px 0px;
+/* Cells */
+.play-detail-set td,
+.play-detail-set th {
+    width: 100px;
+    padding: 10px 6px;
 }
+
+/* Column widths */
+.play-detail-set th.detailed {
+    width: 2000px;
+}
+.play-detail-set th.terse {
+    width: 40px;
+}
+.play-detail-set th.icon {
+    width: 5px;
+}
+.play-detail-set th.even {
+    width: 300px;
+}
+
+/* Verification symbols */
+span.unverified-symbol-small,
+span.unverified-symbol {
+    font-weight: bold;
+    color: rgba(182, 75, 67, 1.0);
+}
+span.unverified-symbol {
+    font-size: 130%;
+}
+
+span.verified-symbol-small,
+span.verified-symbol {
+    font-weight: bold;
+    color: rgba(67, 75, 182, 1.0);
+}
+span.verified-symbol-small {
+    font-size: 110%;
+}
+span.verified-symbol {
+    font-size: 170%;
+}
+
+/*==============================================================================
+=                             Modal & Misc Styles                              =
+==============================================================================*/
 
 .modal-header {
     background-color: rgba(152, 75, 67, 0.3);
