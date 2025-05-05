@@ -1,5 +1,6 @@
 # wheatleycensus/views.py
 
+
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
@@ -7,7 +8,7 @@ from django.template import loader
 from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator
-from .models import Copy, Issue, Title
+from .models import Copy, Issue, Title, Location, ProvenanceName, models  # adjust if your models module defines others
 from datetime import datetime
 import csv
 
@@ -84,7 +85,7 @@ def search(request, field=None, value=None, order=None):
 
     display_field, display_value = field, value
 
-    # Filtering
+    # Filtering...
     if (field == 'keyword' or (not field and value)) and value:
         display_field = 'Keyword Search'
         q = (
@@ -109,13 +110,17 @@ def search(request, field=None, value=None, order=None):
             result_list = qs.filter(issue__year__icontains=value)
     elif field == 'location' and value:
         display_field = 'Location'
-        result_list = qs.filter(location__name_of_library_collection__icontains=value)
+        result_list = qs.filter(
+            location__name_of_library_collection__icontains=value
+        )
     elif field == 'census_id' and value:
         display_field = 'WC'
         result_list = qs.filter(wc_number=value)
     elif field == 'provenance_name' and value:
         display_field = 'Provenance Name'
-        result_list = qs.filter(provenance_records__provenance_name__name__icontains=value)
+        result_list = qs.filter(
+            provenance_records__provenance_name__name__icontains=value
+        )
     elif field == 'unverified':
         display_field = 'Unverified'
         display_value = 'All'
@@ -127,9 +132,10 @@ def search(request, field=None, value=None, order=None):
     else:
         result_list = qs.none()
 
-    # Sorting
+    # Sorting...
     if not order:
         order = 'date'
+
     if order == 'date':
         result_list = sorted(
             result_list,
@@ -179,15 +185,19 @@ def search(request, field=None, value=None, order=None):
 
 def search_results(request):
     qs = Copy.objects.select_related('location', 'issue__edition').all()
+
     q = request.GET.get('q')
     if q:
         qs = qs.filter(issue__edition__title__icontains=q)
+
     year = request.GET.get('year')
     if year:
         qs = qs.filter(issue__year=year)
+
     provenance = request.GET.get('provenance')
     if provenance:
         qs = qs.filter(location__name_of_library_collection__icontains=provenance)
+
     author = request.GET.get('author')
     if author:
         qs = qs.filter(issue__edition__author__icontains=author)
@@ -233,7 +243,6 @@ def copy_page(request, wc_number):
 
 
 def cen_copy_modal(request, census_id):
-    # alias endpoint for modal
     return copy_data(request, census_id)
 
 
@@ -261,26 +270,30 @@ def issue_list(request, id):
         'title': title,
     })
 
+
 # ------------------------------------------------------------------------------
 # About / static pages
 # ------------------------------------------------------------------------------
 def about(request):
     base_q = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
-    copy_count = models.Copy.objects.filter(base_q, fragment=False).count()
-    facsimile_count = models.Copy.objects.exclude(
+
+    copy_count = Copy.objects.filter(base_q, fragment=False).count()
+    facsimile_count = Copy.objects.exclude(
         Q(digital_facsimile_url='') | Q(digital_facsimile_url=None)
     ).count()
     facsimile_percent = f"{round(100 * facsimile_count / copy_count)}%" if copy_count else "0%"
+
+    unverified_count = Copy.objects.filter(verification='U').count()
+
+    today = datetime.now().strftime("%d %B %Y")
 
     return render(request, 'census/about.html', {
         'copy_count': copy_count,
         'facsimile_count': facsimile_count,
         'facsimile_percent': facsimile_percent,
-        'unverified_count': models.Copy.objects.filter(verification='U').count(),
-        'today': datetime.now().strftime("%d %B %Y"),
+        'unverified_count': unverified_count,
+        'today': today,
     })
-
-
 # ------------------------------------------------------------------------------
 # CSV exports
 # ------------------------------------------------------------------------------
