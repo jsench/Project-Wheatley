@@ -1,112 +1,106 @@
 {% load static %}
 
 <div class="tucked">
-    {% if user.is_authenticated %}
+  {% if user.is_authenticated %}
     <a class="button" href="{% url 'logout_user' %}">Sign out</a>
-    <a class="button" href="{% url 'admin:index' %}">Site Administration</a>
-
-    {% else %}
+    <a class="button" href="{% url 'admin:index' %}">Admin</a>
+  {% else %}
     <a class="button" href="{% url 'login_user' %}">Sign in</a>
-
-    {% endif %}
-    <!-- A normally-styled non-breaking space is used to ensure consistent div height. -->
-        &nbsp;
+  {% endif %}
+  &nbsp;
 </div>
+
 <table class="title">
-    <tr>
-        <th>
-            &nbsp;
-        </th>
-        <th>
-            &nbsp;
-        </th>
-        <th>
-            &nbsp;
-        </th>
-        <th>
-            &nbsp;
-        </th>
-   </tr>
-    <tr>
-        <td colspan="4">
-          {% if request.path == '/homepage' %}
-            <a>Wheatley Census</a>
-          {% else %}
-            <a href="{% url 'homepage' %}">Wheatley Census</a><br/>
-          {% endif %}
-        </td>
-    </tr>
+  <tr><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>
+  <tr>
+    <td colspan="4">
+      {% if request.path == '/homepage' %}
+        <a>Wheatley Census</a>
+      {% else %}
+        <a href="{% url 'homepage' %}">Wheatley Census</a><br/>
+      {% endif %}
+    </td>
+  </tr>
 </table>
 
 <table class="header-title-nav">
-   <tr>
-     <th>
-       <a href="{% url 'about' %}">about</a>
-     </th>
-     <th>
-       <a href="#search" id="site-search-button">search</a>
-     </th>
-   </tr>
+  <tr>
+    <th><a href="{% url 'about' %}">About</a></th>
+    <th><a href="#" id="site-search-button">Search</a></th>
+  </tr>
 </table>
 
-<div class="search-bar">
-  <form id="search-bar-form" class="hidden" action="/search/" method="get">
+<div id="search-bar-form" class="search-bar hidden">
+  <form id="search-form" action="{% url 'search' %}" method="get" class="search-form">
     <select id="search-bar-form-field" name="field">
-      <option disabled selected value>Search by...</option>
-      <option value="keyword">Keyword</option>
-      <option value="location">Location</option>
-      <option value="provenance_name">Provenance Name</option>
-      <option value="collection">Specific Features</option>
-      <option value="year">Year</option>
-      <option value="stc">STC / Wing #</option>
-      <option value="census_id">WC #</option>
+      <option disabled selected value>Search by…</option>
+      <option value="keyword"{% if request.GET.field=='keyword' %} selected{% endif %}>Keyword</option>
+      <option value="location"{% if request.GET.field=='location' %} selected{% endif %}>Location</option>
+      <option value="provenance_name"{% if request.GET.field=='provenance_name' %} selected{% endif %}>Provenance Name</option>
+      <option value="collection"{% if request.GET.field=='collection' %} selected{% endif %}>Specific Features</option>
+      <option value="year"{% if request.GET.field=='year' %} selected{% endif %}>Year</option>
+      <option value="stc"{% if request.GET.field=='stc' %} selected{% endif %}>STC / Wing #</option>
+      <option value="census_id"{% if request.GET.field=='census_id' %} selected{% endif %}>WC #</option>
     </select>
-    <input id="search-bar-form-text" type="text" name="value" placeholder="Search..">
-    <input id="search-bar-form-submit" type="submit" value="Submit" >
+
+    <input
+      id="search-bar-form-text"
+      type="text"
+      name="value"
+      placeholder="Enter search term…"
+      value="{{ request.GET.value|default_if_none:'' }}"
+    />
+
+    <button id="search-bar-form-submit" type="submit" class="button">Go</button>
   </form>
 </div>
 
 <script>
-    utils.get.id('site-search-button').addEventListener('click', function () {
-        utils.togglehide.id('search-bar-form');
-    });
-    $(function() {
-        var autofillMap = {
-            location: '/autofill/location/',
-            provenance_name: '/autofill/provenance/',
-            collection: '/autofill/collection/'
-        };
+  // toggle the collapsible search bar
+  document.getElementById('site-search-button')
+    .addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('search-bar-form')
+              .classList.toggle('hidden');
+  });
 
-        var autofillResponse = function(field, query, response) {
-            fetch(autofillMap[field] + query + '/')
-                .then((matches) => {
-                    return matches.json()
-                })
-                .then((matches_json) => {
-                    return response(matches_json.matches);
-                });
-        };
+  $(function(){
+    // map of field ⇒ endpoint
+    var autofillMap = {
+      location: "{% url 'autofill_location' '' %}",          // ends with ''
+      provenance_name: "{% url 'autofill_provenance' '' %}",
+      collection: "{% url 'autofill_collection' '' %}"
+    };
 
-        $('#search-bar-form-text').autocomplete({
-            minLength: 3,
-            source: function(request, response) {
-                var field_el = utils.get.id('search-bar-form-field');
-                var field = field_el.options[field_el.selectedIndex].value;
-                if (autofillMap.hasOwnProperty(field)) {
-                    autofillResponse(field, request.term, response);
-                }
-            },
-            select: function(evt, ui) {
-                $('#search-bar-form-text').val(ui.item.value);
-                $('#search-bar-form').submit();
-            },
-        });
+    function autofillResponse(field, term, callback){
+      var url = autofillMap[field] + encodeURIComponent(term) + "/";
+      fetch(url)
+        .then(res=>res.json())
+        .then(json=>callback(json.matches));
+    }
 
-        $('#search-bar-form-field').change(function(evt) {
-            if ($('#search-bar-form-field option:selected').val() === 'collection') {
-                $('#search-bar-form-text').autocomplete('search', '   ');
-            }
-        });
+    // initialize jQuery UI Autocomplete
+    $('#search-bar-form-text').autocomplete({
+      minLength: 2,
+      delay: 200,
+      source: function(req, resp){
+        var fld = $('#search-bar-form-field').val();
+        if(autofillMap[fld]) {
+          autofillResponse(fld, req.term, resp);
+        }
+      },
+      select: function(evt, ui){
+        $('#search-bar-form-text').val(ui.item.value);
+        $('#search-form').submit();
+        return false;
+      }
     });
 
+    // when user changes to “collection”, force dropdown open
+    $('#search-bar-form-field').change(function(){
+      if(this.value==='collection'){
+        $('#search-bar-form-text').autocomplete('search','   ');
+      }
+    });
+  });
 </script>

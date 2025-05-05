@@ -8,6 +8,7 @@ from django.template import loader
 from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator
+from .constants import US_STATES, WORLD_COUNTRIES
 from .models import Copy, Issue, Title, Location, ProvenanceName, models  # adjust if your models module defines others
 from datetime import datetime
 import csv
@@ -74,113 +75,70 @@ def homepage(request):
     }, request))
 
 
-def search(request, field=None, value=None, order=None):
-    tpl = loader.get_template('census/search-results.html')
-    field = field or request.GET.get('field')
-    value = value or request.GET.get('value')
-    order = order or request.GET.get('order')
+def search(request):
+    """
+    Unified search endpoint.  Supports GET params:
+      - field:       one of ['location', 'keyword', 'provenance_name', 'gender', 'census_id']
+      - value:       search term
+      - page:        page number for pagination
+    """
+    field = request.GET.get('field', '').strip()
+    value = request.GET.get('value', '').strip()
 
-    base_q = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
-    qs = Copy.objects.filter(base_q)
+    # Base queryset: only “real” copies
+    qs = Copy.objects.filter(
+        Q(verification='U') |
+        Q(verification='V') |
+        Q(verification__isnull=True)
+    )
 
-    display_field, display_value = field, value
+    # Apply the chosen filter
+    if field == 'location' and value:
+        qs = qs.filter(location__name_of_library_collection__icontains=value)
 
-    # Filtering...
-    if (field == 'keyword' or (not field and value)) and value:
-        display_field = 'Keyword Search'
-        q = (
+    elif field == 'keyword' and value:
+        qs = qs.filter(
+            Q(issue__edition__title__icontains=value) |
             Q(marginalia__icontains=value) |
             Q(binding__icontains=value) |
-            Q(backend_notes__icontains=value) |
-            Q(prov_info__icontains=value) |
-            Q(bibliography__icontains=value) |
-            Q(provenance_records__provenance_name__name__icontains=value)
+            Q(backend_notes__icontains=value)
         )
-        result_list = qs.filter(q)
-    elif field == 'year' and value:
-        display_field = 'Year'
-        yr = convert_year_range(value)
-        if yr:
-            start, end = yr
-            result_list = qs.filter(
-                issue__start_date__lte=end,
-                issue__end_date__gte=start
-            )
-        else:
-            result_list = qs.filter(issue__year__icontains=value)
-    elif field == 'location' and value:
-        display_field = 'Location'
-        result_list = qs.filter(
-            location__name_of_library_collection__icontains=value
-        )
-    elif field == 'census_id' and value:
-        display_field = 'WC'
-        result_list = qs.filter(wc_number=value)
+
     elif field == 'provenance_name' and value:
-        display_field = 'Provenance Name'
-        result_list = qs.filter(
+        qs = qs.filter(
             provenance_records__provenance_name__name__icontains=value
         )
-    elif field == 'unverified':
-        display_field = 'Unverified'
-        display_value = 'All'
-        result_list = qs.filter(verification='U')
-    elif field == 'ghosts':
-        display_field = 'Ghosts'
-        display_value = 'All'
-        result_list = Copy.objects.filter(verification='F')
+
+    elif field == 'gender' and value:
+        # Expect value to be "M" or "F" (or "male"/"female")
+        gender_code = value[0].upper()
+        qs = qs.filter(
+            provenance_records__provenance_name__gender=gender_code
+        )
+
+    elif field == 'census_id' and value:
+        qs = qs.filter(wc_number__iexact=value)
+
     else:
-        result_list = qs.none()
+        # If no valid filter, return empty to avoid dumping everything
+        qs = qs.none()
 
-    # Sorting...
-    if not order:
-        order = 'date'
+    # Ordering — you can customize this as you like
+    qs = qs.order_by('issue__start_date', 'issue__edition__title')
 
-    if order == 'date':
-        result_list = sorted(
-            result_list,
-            key=lambda c: (
-                int(c.issue.start_date or 0),
-                strip_article(c.issue.edition.title).lower(),
-                strip_article(c.location.name_of_library_collection or '').lower()
-            )
-        )
-    elif order == 'title':
-        result_list = sorted(
-            result_list,
-            key=lambda c: (
-                strip_article(c.issue.edition.title).lower(),
-                int(c.issue.start_date or 0)
-            )
-        )
-    elif order == 'location':
-        result_list = sorted(
-            result_list,
-            key=lambda c: (
-                strip_article(c.location.name_of_library_collection or '').lower(),
-                int(c.issue.start_date or 0)
-            )
-        )
-    elif order == 'stc':
-        result_list = sorted(
-            result_list,
-            key=lambda c: (
-                c.issue.year or '',
-                strip_article(c.location.name_of_library_collection or '').lower()
-            )
-        )
-    elif order.upper() in ('WC', 'CENSUS_ID'):
-        result_list = sorted(result_list, key=copy_census_id_sort_key)
+    # Pagination
+    paginator = Paginator(qs, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    return HttpResponse(tpl.render({
-        'icon_path': 'census/images/generic-title-icon.png',
-        'result_list': result_list,
-        'copy_count': len(result_list),
-        'field': field,
-        'value': value,
-        'display_field': display_field,
-        'display_value': display_value,
-    }, request))
+    return render(request, 'census/search-results.html', {
+        'page_obj':      page_obj,
+        'copy_count':    qs.count(),
+        'field':         field,
+        'value':         value,
+        'display_field': field.replace('_', ' ').title(),
+        'display_value': value or 'All',
+    })
 
 
 def search_results(request):
@@ -246,6 +204,30 @@ def cen_copy_modal(request, census_id):
     return copy_data(request, census_id)
 
 
+def copy_list_by_edition(request, edition_id):
+    """
+    Show all copies whose Issue belongs to the given Edition.
+    """
+    # grab all copies whose issue’s edition matches
+    copies = Copy.objects.filter(issue__edition_id=edition_id)
+
+    # (if you still want to apply your canonical_query filter, include it here)
+    # copies = copies.filter(canonical_query)
+
+    # sort if needed
+    copies = sorted(copies, key=copy_sort_key)
+
+    # pick one of the issues just to grab title/edition info
+    issues = Issue.objects.filter(edition_id=edition_id)
+    title = issues.first().edition.title if issues.exists() else ''
+
+    return render(request, 'census/copy_list.html', {
+        'all_copies': copies,
+        'copy_count': len(copies),
+        'selected_issue': None,    # you don’t really need this now
+        'icon_path': 'census/images/generic-title-icon.png',
+        'title': title,
+    }, request)
 # ------------------------------------------------------------------------------
 # Issue list (per title)
 # ------------------------------------------------------------------------------
@@ -412,3 +394,24 @@ def logout_user(request):
     tpl = loader.get_template('census/logout.html')
     logout(request)
     return HttpResponse(tpl.render({}, request))
+
+
+# --------- constants ---------------#
+
+def autofill_location(request, query=None):
+    query = query or ""
+    # 1) DB matches
+    db_matches = Location.objects.filter(
+        name_of_library_collection__icontains=query
+    ).values_list('name_of_library_collection', flat=True)
+
+    # 2) Static matches (states + countries)
+    static_pool = US_STATES + WORLD_COUNTRIES
+    static_matches = [
+        name for name in static_pool
+        if query.lower() in name.lower() and name not in db_matches
+    ]
+
+    # 3) Return combined, capped at e.g. 50 suggestions
+    suggestions = list(db_matches) + static_matches
+    return JsonResponse({'matches': suggestions[:50]})

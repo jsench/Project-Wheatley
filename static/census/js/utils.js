@@ -67,3 +67,28 @@ var utils = (function (scope) {
 
     return scope;
 })(utils || {});
+
+
+// ────────────────────────────────────────────────────────────────────────────
+// Autocomplete for “location” field
+// ────────────────────────────────────────────────────────────────────────────
+$(function() {
+    $("#location-input").autocomplete({
+      minLength: 2,    // start suggesting after 2 chars
+      delay: 200,      // wait 200ms
+      source: function(request, response) {
+        $.getJSON(
+          "{% url 'autofill_location' %}" + encodeURIComponent(request.term) + "/",
+          function(data) {
+            response(data.matches);
+          }
+        );
+      },
+      select: function(event, ui) {
+        // on select, fill input (and optionally submit)
+        $("#location-input").val(ui.item.value);
+        // $("#search-bar-form form").submit(); // uncomment to auto-submit
+        return false;
+      }
+    });
+  });

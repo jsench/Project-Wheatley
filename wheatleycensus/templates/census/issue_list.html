@@ -4,69 +4,99 @@
 
 {% if editions %}
 <div class="wrapper">
-    <table class="play-title-header">
-        <tr>
-            <td rowspan="3" class="play-title-header-icon">
-                <div class="play-title-icon-border">
-                    {% if title.image %}
-                        <img class="play-title-icon" src="{{ title.image.url }}">
-                    {% else %}
-                        <img class="play-title-icon-generic" src="{% static icon_path %}">
-                    {% endif %}
-                </div>
-            </td>
-            <td class="play-title-header">
-                {{ title.title }}
-                {% if user.is_staff %}
-                    <span class="note">[<a href="{% url 'admin:wheatleycensus_title_change' title.id %}">Edit title</a>]</span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td class="play-issue-header">
-                <span>All editions</span>
-            </td>
-        </tr>
-        <tr>
-            <td class="play-issue-header">
-                <span>Extant copies: {{ copy_count }} </span>
-            </td>
-        </tr>
-    </table>
-    <table class="play-detail-set">
-        <tr>
-            <th class="even"> Edition </th>
-            <th class="even"> Year </th>
-            <th class="even"> Bibliographic Data </th>
-        </tr>
-        {% for issue in issues %}
-        <tr>
-            <td>
-                <a href="{% url 'copy_list' issue.id %}">
-                    {% if issue.edition.edition_number.isdigit %}
-                        {{ issue.edition.edition_number }}
-                    {% else %}
-                        {{ issue.edition.edition_number.capitalize }}
-                    {% endif %}
-                </a>
-                {% if user.is_staff %}
-                    <span class="note">[<a href="{% url 'admin:wheatleycensus_edition_change' issue.edition.id %}">Edit edition</a>]</span>
-                {% endif %}
-            </td>
-            <td><a href="{% url 'copy_list' issue.id %}">{{ issue.year }}</a></td>
-            <td>{{ issue.bibliographic_data }}</td>
-            <td>
-                <a href="{% url 'copy_list' issue.id %}">{{ issue.estc }}</a>
-                {% if user.is_staff %}
-                    <span class="note">[<a href="{% url 'admin:wheatleycensus_issue_change' issue.id %}">Edit issue</a>]</span>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+
+  {# ———————————————————————————————————————————————— #}
+  {# Play‐title header (icon, title, totals)              #}
+  {# ———————————————————————————————————————————————— #}
+  <table class="play-title-header">
+    <tr>
+      <td rowspan="3" class="play-title-header-icon">
+        <div class="play-title-icon-border">
+          {% if title.image %}
+            <img class="play-title-icon" src="{{ title.image.url }}" alt="{{ title.title }}">
+          {% else %}
+            <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Generic icon">
+          {% endif %}
+        </div>
+      </td>
+      <td class="play-title-header">
+        {{ title.title }}
+        {% if user.is_staff %}
+          <span class="note">
+            [<a href="{% url 'admin:wheatleycensus_title_change' title.id %}">Edit title</a>]
+          </span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td class="play-issue-header">
+        <span>All editions</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="play-issue-header">
+        <span>Extant copies: {{ copy_count }}</span>
+      </td>
+    </tr>
+  </table>
+
+  {# ———————————————————————————————————————————————— #}
+  {# Editions table                                      #}
+  {# ———————————————————————————————————————————————— #}
+  <table class="play-detail-set">
+    <tr>
+      <th class="even">Edition</th>
+      <th class="even">Year</th>
+      <th class="detailed">Bibliographic Data</th>
+      <th class="terse">STC / Wing</th>
+    </tr>
+    {% for issue in issues %}
+    <tr>
+      {# Link edition → copy list by edition #}
+      <td>
+        <a href="{% url 'copy_list_by_edition' issue.edition.id %}">
+          {% if issue.edition.edition_number.isdigit %}
+            {{ issue.edition.edition_number|add:"0"|ordinal }}
+          {% else %}
+            {{ issue.edition.edition_number|capfirst }}
+          {% endif %}
+        </a>
+        {% if user.is_staff %}
+          <span class="note">
+            [<a href="{% url 'admin:wheatleycensus_edition_change' issue.edition.id %}">Edit edition</a>]
+          </span>
+        {% endif %}
+      </td>
+
+      <td>
+        <a href="{% url 'copy_list_by_edition' issue.edition.id %}">
+          {{ issue.year }}
+        </a>
+      </td>
+
+      <td>
+        {{ issue.bibliographic_data }}
+      </td>
+
+      <td>
+        <a href="{% url 'copy_list_by_edition' issue.edition.id %}">
+          {{ issue.stc_wing }}
+        </a>
+        {% if user.is_staff %}
+          <span class="note">
+            [<a href="{% url 'admin:wheatleycensus_issue_change' issue.id %}">Edit issue</a>]
+          </span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
 </div>
+
 {% else %}
-<p class="sansserif" align="center">Oh no! No editions are available.</p>
+<p class="sansserif" align="center">
+  Oh no! No editions are available.
+</p>
 {% endif %}
 
 {% endblock content %}
