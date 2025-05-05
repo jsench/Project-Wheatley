@@ -46,27 +46,29 @@
   
   /* tweak these to resize ALL frontpage circles & images */
   :root {
-    --icon-size: 100px;       /* inner image diameter */
-    --icon-padding: 30px;    /* space between image & border */
+    --icon-size: 80px;       /* inner image diameter */
+    --icon-padding: 6px;    /* space between image & border */
   }
   
   /*==============================================================================
   =                         Frontpage Icon & Title Styles                       =
   ==============================================================================*/
   
-  td.play-title-icon {
-    width: calc(var(--icon-size) + var(--icon-padding)*2 + 20px);
-    /* +20px to allow for extra margin around circle */
+  /* Frontpage circle + image sizing */
+td.play-title-icon {
+    /* make the <td> just big enough to hold the border circle */
+    width: calc(var(--icon-size) + var(--icon-padding) * 2);
   }
   
   div.play-title-icon {
-    margin: calc(var(--icon-padding)*1.2) auto calc(var(--icon-padding)*1.5) auto;
     text-align: center;
+    margin: var(--icon-padding) auto var(--icon-padding) auto;
   }
   
   div.play-title-icon-border {
-    width: calc(var(--icon-size) + var(--icon-padding)*1.5);
-    height: calc(var(--icon-size) + var(--icon-padding)*1.5);
+    /* outer circle = inner image + 2×padding */
+    width:  calc(var(--icon-size) + var(--icon-padding) * 2);
+    height: calc(var(--icon-size) + var(--icon-padding) * 2);
     border: 2px solid #233237;
     border-radius: 50%;
     display: flex;
@@ -83,11 +85,6 @@
     border-radius: 50%;
   }
   
-  .play-title {
-    font-size: 0.9rem;
-    text-align: center;
-    margin-top: 8px;
-  }
   
   /*==============================================================================
   =                                UI Components                                 =
