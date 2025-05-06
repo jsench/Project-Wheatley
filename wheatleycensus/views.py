@@ -138,6 +138,7 @@ def search(request):
         'value':         value,
         'display_field': field.replace('_', ' ').title(),
         'display_value': value or 'All',
+        'icon_path': 'census/images/generic-title-icon.png',
     })
 
 

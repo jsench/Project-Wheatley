@@ -62,18 +62,23 @@
     <tr>
       <td rowspan="3" class="play-title-header-icon">
         <div class="play-title-icon-border">
+          {# If you have a generic icon, use icon_path from view #}
           <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Icon">
         </div>
       </td>
-      <td class="play-title-header">Search Results</td>
-    </tr>
-    <tr>
-      <td class="play-issue-header">
-        {{ display_field }}{% if display_value and display_value != 'All' %}: {{ display_value }}{% endif %}
+      <td class="play-title-header">
+        Search Results
       </td>
     </tr>
     <tr>
-      <td class="play-issue-header">Extant copies: {{ copy_count }}</td>
+      <td class="play-issue-header">
+        {{ display_field }}{% if display_value and display_value != "All" %}: {{ display_value }}{% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td class="play-issue-header">
+        Extant copies: {{ copy_count }}
+      </td>
     </tr>
   </table>
 
@@ -98,19 +103,25 @@
       {% endfor %}
     </table>
 
-    {# — Pagination controls — #}
-    <div class="pagination" style="text-align:center; margin:2rem 0;">
-      {% if page_obj.has_previous %}
-        <a href="?field={{ field }}&value={{ value }}&page={{ page_obj.previous_page_number }}">« Prev</a>
-      {% endif %}
-      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-      {% if page_obj.has_next %}
-        <a href="?field={{ field }}&value={{ value }}&page={{ page_obj.next_page_number }}">Next »</a>
-      {% endif %}
-    </div>
-  {% else %}
-    <p style="text-align:center; margin:3rem 0;">No copies found.</p>
-  {% endif %}
+
+    {# ————————————————————————————————————————————————
+       Pagination controls
+      ———————————————————————————————————————————————— #}
+   <div class="pagination">
+     {% if page_obj.has_previous %}
+       <a href="?field={{ field }}&value={{ value }}&page={{ page_obj.previous_page_number }}">« Prev</a>
+     {% endif %}
+
+     <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+     {% if page_obj.has_next %}
+       <a href="?field={{ field }}&value={{ value }}&page={{ page_obj.next_page_number }}">Next »</a>
+     {% endif %}
+   </div>
+
+ {% else %}
+   <p class="no-results">No copies found.</p>
+ {% endif %}
 
   {# ———————————————————————————————————————————————— #}
   {# Footer nav                                               #}

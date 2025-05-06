@@ -157,6 +157,42 @@ select {
 }
 
 /*==============================================================================
+=                            Page & Table Layout Overrides                   =
+==============================================================================*/
+
+.wrapper {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  table.play-title-header,
+  table.play-detail-set {
+    width: 100%;
+    margin: 2rem auto;
+  }
+  
+  .pagination {
+    text-align: center;
+    margin: 2rem 0;
+  }
+  
+  .no-results {
+    text-align: center;
+    margin: 3rem 0;
+  }
+  
+  .footer-nav {
+    text-align: center;
+    margin: 3rem auto;
+    font-size: 0.9rem;
+  }
+  
+  .footer-nav span {
+    margin: 0 1rem;
+  }
+  
+/*==============================================================================
 =                        Notification & Utility Styles                        =
 ==============================================================================*/
 
