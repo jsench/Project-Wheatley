@@ -1,103 +1,125 @@
 {% extends "census/base.html" %}
 {% load static %}
-{% load humanize %}
 {% block content %}
 
-<div class = "wrapper">
-    <div>
-        <script type="text/javascript" src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-        <script type="text/javascript" src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
-        <link rel="stylesheet" type="text/css" href="{% static 'census/css/modal.css' %}" />
+<div class="wrapper">
+  {# ———————————————————————————————————————————————— #}
+  {# Sign-in / Sign-out & Admin links                       #}
+  {# ———————————————————————————————————————————————— #}
+  <div class="tucked">
+    {% if user.is_authenticated %}
+      <a class="button" href="{% url 'logout_user' %}">Sign out</a>
+      <a class="button" href="{% url 'admin:index' %}">Site Administration</a>
+    {% else %}
+      <a class="button" href="{% url 'login_user' %}">Sign in</a>
+    {% endif %}
+    &nbsp;
+  </div>
 
-        <div id="copyModal" class="modal fade" role="dialog"></div>
-    </div>
-    <table class="play-title-header">
-        <tr>
-            <td rowspan="3" class="play-title-header-icon">
-                <div class="play-title-icon-border">
-                <img class="play-title-icon-generic" src="{% static icon_path %}">
-                </div>
-            </td>
-            <td class="play-title-header">
-                Search Results
-            </td>
-        </tr>
-        <tr>
-            <td class="play-issue-header">
-		{% if field == "ghosts" %}
-                    ESTC Ghosts
-        {% elif display_value == "All" %}
-                    {{ display_field }}
-		{% else %}
-                    {{ display_field }}: {{ display_value }}
-		{% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td class="play-issue-header">
-		{% if field == "ghosts" %}
-                    <span>{{ copy_count }} Records</span>
-		{% else %}
-                    <span>Extant copies: {{ copy_count }} </span>
-		{% endif %}
-            </td>
-        </tr>
-    </table>
+  {# ———————————————————————————————————————————————— #}
+  {# Site title & nav                                         #}
+  {# ———————————————————————————————————————————————— #}
+  <table class="title">
+    <tr><td colspan="4"><a href="{% url 'homepage' %}">Wheatley Census</a></td></tr>
+  </table>
+  <table class="header-title-nav">
+    <tr>
+      <th><a href="{% url 'about' %}">About</a></th>
+      <th><a href="#search" id="site-search-button">Search</a></th>
+    </tr>
+  </table>
 
+  {# ———————————————————————————————————————————————— #}
+  {# Collapsible search bar                                  #}
+  {# ———————————————————————————————————————————————— #}
+  <div class="search-bar">
+    <form id="search-bar-form" class="hidden" action="{% url 'search' %}" method="get">
+      <select name="field" id="search-bar-form-field">
+        <option disabled selected value>Search by…</option>
+        <option value="keyword">Keyword</option>
+        <option value="location">Location</option>
+        <option value="provenance_name">Provenance Name</option>
+        <option value="gender">Gender</option>
+        <option value="census_id">WC #</option>
+      </select>
+      <input type="text" name="value" id="search-bar-form-text" placeholder="Enter search term…">
+      <input type="submit" value="Go">
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('site-search-button')
+      .addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('search-bar-form').classList.toggle('hidden');
+      });
+  </script>
+
+  {# ———————————————————————————————————————————————— #}
+  {# Search results header                                    #}
+  {# ———————————————————————————————————————————————— #}
+  <table class="play-title-header">
+    <tr>
+      <td rowspan="3" class="play-title-header-icon">
+        <div class="play-title-icon-border">
+          <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Icon">
+        </div>
+      </td>
+      <td class="play-title-header">Search Results</td>
+    </tr>
+    <tr>
+      <td class="play-issue-header">
+        {{ display_field }}{% if display_value and display_value != 'All' %}: {{ display_value }}{% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td class="play-issue-header">Extant copies: {{ copy_count }}</td>
+    </tr>
+  </table>
+
+  {# ———————————————————————————————————————————————— #}
+  {# Results table                                            #}
+  {# ———————————————————————————————————————————————— #}
+  {% if page_obj and page_obj.object_list %}
     <table class="play-detail-set">
-
-        {% if result_list %}
-        <tr>
-	    <th class="terse">
-		    <a href="{% url 'search' %}?field={{field}}&value={{value}}&order=census_id">MC&nbsp;#</a>&nbsp;<i class="fas fa-caret-down {% if request.GET.order != 'census_id' %}hidden-icon{% endif %}"></i> </th>
-	    <th>
-		<a href="{% url 'search' %}?field={{field}}&value={{value}}&order=date">Year</a>&nbsp;<i class="fas fa-caret-down {% if request.GET.order != 'date' %}hidden-icon{% endif %}"></i> </th>
-            <th class="detailed">
-		<a href="{% url 'search' %}?field={{field}}&value={{value}}&order=title">Title</a>&nbsp;<i class="fas fa-caret-down {% if request.GET.order != 'title' %}hidden-icon{% endif %}"></i> </th>
-	    <th class="detailed">
-		<a href="{% url 'search' %}?field={{field}}&value={{value}}&order=location">Location</a>&nbsp;<i class="fas fa-caret-down {% if request.GET.order != 'location' %}hidden-icon{% endif %}"></i> </th>
-            <th class="terse">
-		<a href="{% url 'search' %}?field={{field}}&value={{value}}&order=stc">STC&nbsp;/&nbsp;Wing</a>&nbsp;<i class="fas fa-caret-down {% if request.GET.order != 'stc' %}hidden-icon{% endif %}"></i> </th>
-        </tr>
-        {% for copy in result_list %}
-        <tr>
-            <td>
-                {% if copy.census_id and copy.census_id != '0' %}
-                    <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                        {{ copy.census_id }}
-                    </a>
-                {% else %}
-                    &nbsp;
-                {% endif %}
-                {% if user.is_staff %}
-                    <span class="note">[<a href="{% url 'admin:marlowecensus_copy_change' copy.id %}">Edit&nbsp;copy</a>]</span>
-                {% endif %}
-            </td>
-            <td>
-                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                    {{ copy.issue.year }}
-                </a>
-            </td>
-            <td>
-                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                    {{ copy.issue.edition.title }}
-                </a>
-            </td>
-            <td>
-                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                    {{copy.location.name}}
-                </a>
-            </td>
-            <td>
-                <a href="{% url 'copy_list' copy.issue.id %}" target="_blank" title="Go to Edition">{{ copy.issue.stc_wing }}&nbsp;&nbsp;&nbsp;<i class="fas fa-external-link-alt"></i></a>
-            </td>
-        </tr>
-        {% endfor %}
-        {% else %}
-        <p class="sansserif" align="center">No copies found.</p>
-        {% endif %}
+      <tr>
+        <th class="terse">WC #</th>
+        <th>Location</th>
+        <th>Shelfmark</th>
+        <th class="icon">✔</th>
+      </tr>
+      {% for copy in page_obj %}
+      <tr>
+        <td>{{ copy.wc_number }}</td>
+        <td>{{ copy.location.name_of_library_collection }}</td>
+        <td>{{ copy.shelfmark }}</td>
+        <td>{% if copy.verification == 'V' %}✔{% endif %}</td>
+      </tr>
+      {% endfor %}
     </table>
 
+    {# — Pagination controls — #}
+    <div class="pagination" style="text-align:center; margin:2rem 0;">
+      {% if page_obj.has_previous %}
+        <a href="?field={{ field }}&value={{ value }}&page={{ page_obj.previous_page_number }}">« Prev</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?field={{ field }}&value={{ value }}&page={{ page_obj.next_page_number }}">Next »</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <p style="text-align:center; margin:3rem 0;">No copies found.</p>
+  {% endif %}
+
+  {# ———————————————————————————————————————————————— #}
+  {# Footer nav                                               #}
+  {# ———————————————————————————————————————————————— #}
+  <div class="footer-nav">
+    <span><a href="{% url 'about' %}">advisory board</a></span>
+    <span><a href="{% url 'references' %}">references</a></span>
+    <span><a href="{% url 'contact' %}">contact</a></span>
+  </div>
 </div>
 
-{% endblock content %}
+{% endblock %}
