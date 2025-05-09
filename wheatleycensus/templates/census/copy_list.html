@@ -16,6 +16,7 @@
 
   <!-- Copies Table -->
   <table class="play-detail-set">
+    {% if all_copies %}
     <thead>
       <tr>
         <th class="terse">WC&nbsp;#</th>
@@ -28,56 +29,56 @@
     </thead>
     <tbody>
       {% for copy in all_copies %}
-        <tr>
-          <td>
-            {% if copy.wc_number and copy.wc_number != '0' %}
-              <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
-                {{ copy.wc_number }}
-              </a>
-            {% endif %}
-            {% if user.is_staff %}
-              <span class="note">
-                [<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit</a>]
-              </span>
-            {% endif %}
-          </td>
-          <td>
-            <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
-              {{ copy.location.name_of_library_collection }}
+      <tr>
+        <td>
+          {% if copy.wc_number and copy.wc_number != '0' %}
+            <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+              {{ copy.wc_number }}
             </a>
-          </td>
-          <td>
-            {% if copy.shelfmark and copy.shelfmark != '[Shelfmark not available]' %}
-              <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}">
-                {{ copy.shelfmark }}
-              </a>
-            {% endif %}
-          </td>
-          <td>
-            {% if copy.verification == 'U' %}
-              <span class="unverified-symbol">⃠</span>
-            {% elif copy.verification == 'V' %}
-              <span class="verified-symbol">✓</span>
-            {% endif %}
-          </td>
-          <td>
-            {% if copy.fragment %}
-              <i class="fas fa-industry unicode-icon" title="Fragment"></i>
-            {% endif %}
-          </td>
-          <td>
-            {% if copy.digital_facsimile_url %}
-              <a href="{{ copy.digital_facsimile_url }}" target="_blank" title="Digital facsimile">
-                <i class="fas fa-camera-retro unicode-icon"></i>
-              </a>
-            {% endif %}
-          </td>
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="6" class="no-results">No copies available.</td>
-        </tr>
+          {% endif %}
+          {% if user.is_staff %}
+            <span class="note">[<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit copy</a>]</span>
+          {% endif %}
+        </td>
+        <td>
+          <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+            {{ copy.location.name_of_library_collection }}
+          </a>
+        </td>
+        <td>
+          {% if copy.shelfmark and copy.shelfmark != '[Shelfmark not available]' %}
+            <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+              {{ copy.shelfmark }}
+            </a>
+          {% endif %}
+        </td>
+        <td>
+          {% if copy.verification == 'U' %}
+            <span title="Unverified" class="unverified-symbol">⃠</span>
+          {% elif copy.verification == 'V' %}
+            <span title="Verified" class="verified-symbol">✓</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if copy.fragment %}
+            <span title="Fragment" class="unicode-icon"><i class="fas fa-industry"></i></span>
+          {% endif %}
+        </td>
+        <td>
+          {% if copy.digital_facsimile_url %}
+            <span title="Digital facsimile" class="unicode-icon">
+              <a href="{{ copy.digital_facsimile_url }}" target="_blank"><i class="fas fa-camera-retro"></i></a>
+            </span>
+          {% endif %}
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
+    {% else %}
+      <tr>
+        <td colspan="6" style="text-align:center; padding:20px;">No copies available.</td>
+      </tr>
+    {% endif %}
   </table>
-  
+</div>
+{% endblock content %}
