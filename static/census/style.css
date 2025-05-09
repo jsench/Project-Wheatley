@@ -191,7 +191,7 @@ select {
   .footer-nav span {
     margin: 0 1rem;
   }
-  
+
 /*==============================================================================
 =                        Notification & Utility Styles                        =
 ==============================================================================*/
@@ -387,24 +387,28 @@ img.play-title-icon-generic {
     font-size: 20px;
 }
 
+/* Center the title header table */
 table.play-title-header {
-    margin: 0 10% 25px;
+    width: 80%;              /* or whatever max width you prefer */
+    margin: 0 auto 2rem;     /* top-bottom and auto left/right */
 }
 
 /* Issue‐page detail set */
 table.play-detail-set {
-    margin: 0% 12% 10% 12%;
+    width: 80%;              /* match the header width */
+    margin: 0 auto 2rem;     /* center it */
     text-align: center;
 }
 
+/* Alternating and first-row backgrounds */
 .play-detail-set tr:nth-child(odd) {
     background-color: rgba(35, 50, 55, 0.1);
 }
-
-.play-detail-set tr:nth-child(1) {
+.play-detail-set tr:first-child {
     background-color: rgba(152, 75, 67, 0.5);
 }
 
+/* Remove default borders on rows */
 .play-detail-set tr {
     border: none;
 }
@@ -412,23 +416,14 @@ table.play-detail-set {
 /* Cells */
 .play-detail-set td,
 .play-detail-set th {
-    width: 100px;
     padding: 10px 6px;
 }
 
 /* Column widths */
-.play-detail-set th.detailed {
-    width: 2000px;
-}
-.play-detail-set th.terse {
-    width: 40px;
-}
-.play-detail-set th.icon {
-    width: 5px;
-}
-.play-detail-set th.even {
-    width: 300px;
-}
+.play-detail-set th.detailed { width: auto; }
+.play-detail-set th.terse    { width: 40px; }
+.play-detail-set th.icon     { width: 5%; }
+.play-detail-set th.even     { width: 30%; }
 
 /* Verification symbols */
 span.unverified-symbol-small,
@@ -436,21 +431,15 @@ span.unverified-symbol {
     font-weight: bold;
     color: rgba(182, 75, 67, 1.0);
 }
-span.unverified-symbol {
-    font-size: 130%;
-}
+span.unverified-symbol { font-size: 1.3em; }
 
 span.verified-symbol-small,
 span.verified-symbol {
     font-weight: bold;
     color: rgba(67, 75, 182, 1.0);
 }
-span.verified-symbol-small {
-    font-size: 110%;
-}
-span.verified-symbol {
-    font-size: 170%;
-}
+span.verified-symbol-small { font-size: 1.1em; }
+span.verified-symbol       { font-size: 1.7em; }
 
 /*==============================================================================
 =                             Modal & Misc Styles                              =
