@@ -381,73 +381,53 @@ img.play-title-icon-generic {
 =                             Detail Table Styles                             =
 ==============================================================================*/
 
-/* Issue-page title header */
-.play-title-header {
-    font-family: 'Open Sans', AppleGothic, sans-serif;
-    font-size: 20px;
-}
-
-/* Center the title-header table */
-table.play-title-header {
-    width: 80%;           /* match your design’s max width */
-    margin: 0 auto 2rem;  /* top:0, sides:auto (centers), bottom:2rem */
-}
-
-/* Issue-page detail set */
+/* Center the two tables */
+table.play-title-header,
 table.play-detail-set {
-    width: 80%;           /* same width as the header */
-    margin: 0 auto 2rem;  /* center horizontally + 2rem bottom gap */
-    text-align: center;
-    border-collapse: collapse;
+  width: 80%;
+  margin: 0 auto 1.5rem;  /* smaller bottom gap */
 }
 
-/* Alternating-row backgrounds */
-.play-detail-set tr:nth-child(odd) {
-    background-color: rgba(35, 50, 55, 0.1);
-}
-/* First-row highlight */
+/* Header row highlight */
 .play-detail-set tr:first-child {
-    background-color: rgba(152, 75, 67, 0.5);
+  background-color: rgba(152,75,67,0.5);
 }
 
-/* Remove default row borders */
+/* Alternating row */
+.play-detail-set tr:nth-child(odd):not(:first-child) {
+  background-color: rgba(35,50,55,0.1);
+}
+
+/* Remove borders on rows */
 .play-detail-set tr {
-    border: none;
+  border: none;
 }
 
-/* Cell padding (no fixed width!) */
-.play-detail-set td,
-.play-detail-set th {
-    padding: 10px 6px;
+/* ── TIGHTER CELLS ── */
+.play-detail-set th,
+.play-detail-set td {
+  padding: 6px 8px;       /* vertical 6px, horizontal 8px */
+  line-height: 1.3;       /* a bit tighter */
+  vertical-align: middle; /* center the text/icons in each cell */
+  /* remove any old fixed widths here if you have them! */
 }
 
-/* Column widths */
-.play-detail-set th.detailed { width: auto; }
-.play-detail-set th.terse    { width: 40px; }
-.play-detail-set th.icon     { width: 5%; }
-.play-detail-set th.even     { width: 30%; }
+/* Column widths (if you still need them) */
+.play-detail-set th.terse { width: 40px; }
+.play-detail-set th.icon  { width: 5%; }
+.play-detail-set th.even  { width: 30%; }
+.play-detail-set th.detailed {
+  /* let this one flex — no hard width */
+  width: auto;  
+}
 
-/* Verification symbols */
-span.unverified-symbol-small,
-span.unverified-symbol {
-    font-weight: bold;
-    color: rgba(182, 75, 67, 1.0);
-}
-span.unverified-symbol {
-    font-size: 130%;
-}
-span.verified-symbol-small,
+/*── Verification symbols remain unchanged ──*/
+span.unverified-symbol,
 span.verified-symbol {
-    font-weight: bold;
-    color: rgba(67, 75, 182, 1.0);
+  font-weight: bold;
 }
-span.verified-symbol-small {
-    font-size: 110%;
-}
-span.verified-symbol {
-    font-size: 170%;
-}
-
+span.unverified-symbol { color: rgba(182,75,67,1); font-size: 1.3em; }
+span.verified-symbol   { color: rgba( 67,75,182,1); font-size: 1.7em; }
 /*==============================================================================
 =                             Modal & Misc Styles                              =
 ==============================================================================*/
