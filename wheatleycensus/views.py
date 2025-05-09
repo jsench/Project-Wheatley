@@ -90,6 +90,7 @@ def search(request):
         Q(verification='U') |
         Q(verification='V') |
         Q(verification__isnull=True)
+        
     )
 
     # Apply the chosen filter
@@ -172,7 +173,10 @@ def search_results(request):
         'copy_count': qs.count(),
     })
 
-
+canonical_query   = Q(verification='U') | Q(verification='V')
+unverified_query  = Q(verification='U')
+verified_query    = Q(verification='V')
+false_query       = Q(verification='F')    # ← add this line
 # ------------------------------------------------------------------------------
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
@@ -208,13 +212,17 @@ def copy_list(request, id):
 
 
 def copy_data(request, copy_id):
-    """
-    AJAX endpoint to render the copy_modal.html for one Copy.
-    """
-    copy = get_object_or_404(Copy, pk=copy_id)
-    return render(request, 'census/copy_modal.html', {
-        'copy': copy
-    })
+    template = loader.get_template('census/copy_modal.html')
+    selected_copy = models.Copy.objects.filter(pk=copy_id)
+    if not selected_copy:
+        selected_copy = models.Copy.objects.filter(false_query).filter(pk=copy_id)
+
+    if selected_copy:
+        selected_copy = selected_copy[0]
+    else:
+        raise Http404('Selected copy does not exist')
+    context={"copy": selected_copy}
+    return HttpResponse(template.render(context, request))
 
 
 def copy_page(request, wc_number):
