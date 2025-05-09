@@ -1,17 +1,17 @@
 {% extends "census/base.html" %}
-{% load static %}
-{% load humanize %}
+{% load static humanize %}
 
 {% block content %}
-<div class="wrapper">
-  <div>
-    <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-    <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
-    <div id="copyModal" class="modal fade" role="dialog"></div>
-  </div>
+<div class="outer-frame">
 
-  {% include "census/play-title-header.html"
+  {# — modal scripts — #}
+  <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
+  <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
+  <div id="copyModal" class="modal fade" role="dialog"></div>
+
+  {# — play-title header include —#}
+  {% include 'census/play-title-header.html'
        with selected_issue=selected_issue
             icon_path=icon_path
             title=title
@@ -29,28 +29,18 @@
       </tr>
       {% for copy in all_copies %}
       <tr>
-        {# Census ID #}
         <td>
-          {% if copy.census_id and copy.census_id != '0' %}
+          {% if copy.wc_number and copy.wc_number != '0' %}
             <a class="copy_data"
                href="#"
                data-form="{% url 'copy_data' copy.id %}"
                title="Details">
-              {{ copy.census_id }}
+              {{ copy.wc_number }}
             </a>
           {% else %}
             &nbsp;
           {% endif %}
-          {% if user.is_staff %}
-            <span class="note">
-              [<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">
-                Edit copy
-              </a>]
-            </span>
-          {% endif %}
         </td>
-
-        {# Location #}
         <td>
           <a class="copy_data"
              href="#"
@@ -59,8 +49,6 @@
             {{ copy.location.name_of_library_collection }}
           </a>
         </td>
-
-        {# Shelfmark – NOTE: single‐line if so Django sees the block #}
         <td>
           {% if copy.shelfmark and copy.shelfmark != '[Shelfmark not available]' %}
             <a class="copy_data"
@@ -73,33 +61,27 @@
             &nbsp;
           {% endif %}
         </td>
-
-        {# Verification icon #}
         <td>
           {% if copy.verification == 'U' %}
-            <span title="Not verified" class="unverified-symbol">⃠</span>
+            <span class="unverified-symbol" title="Not verified">⃠</span>
           {% elif copy.verification == 'V' %}
-            <span title="Verified" class="verified-symbol">✓</span>
+            <span class="verified-symbol"   title="Verified">✓</span>
           {% else %}
             &nbsp;
           {% endif %}
         </td>
-
-        {# Fragment icon #}
         <td>
           {% if copy.fragment %}
-            <span title="Fragment" class="unicode-icon">
+            <span class="unicode-icon" title="Fragment">
               <i class="fas fa-industry"></i>
             </span>
           {% else %}
             &nbsp;
           {% endif %}
         </td>
-
-        {# Facsimile icon #}
         <td>
           {% if copy.digital_facsimile_url %}
-            <span title="Digital facsimile" class="unicode-icon">
+            <span class="unicode-icon" title="Digital facsimile">
               <a href="{{ copy.digital_facsimile_url }}" target="_blank">
                 <i class="fas fa-camera-retro"></i>
               </a>
