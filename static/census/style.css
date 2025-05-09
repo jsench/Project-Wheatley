@@ -377,70 +377,57 @@ img.play-title-icon-generic {
     font-size: 10px;
 }
 
-/*==============================================================================
-=                             Detail Table Styles                             =
-==============================================================================*/
 
 /*==============================================================================
 =                             Detail Table Styles                             =
 ==============================================================================*/
 
-/* (1) Layout frames — unchanged from before */
-div.frame-container {
-    width: 100%;
-    height: auto;
-    margin: 0 auto;
-    position: relative;
-}
-
-div.outer-frame {
-    position: relative;
-    max-width: 1024px;
-    min-width: 526px;
-    margin: 0 auto;
-}
-
-div.middle-frame {
-    max-width: 896px;
-    margin: 0px 20% 0px 20%;
-}
-
-/* (2) Issue-page title header — unchanged font, but now we center its table below */
+/* Issue‐page title header */
 .play-title-header {
     font-family: 'Open Sans', AppleGothic, sans-serif;
     font-size: 20px;
 }
 
-/* (3) Center the title-header table */
-/* — was margin: 0% 12% 10% 12%; now: auto left/right + a clear bottom gap */
+/* Center the title‐header table */
 table.play-title-header {
-    width: 80%;           /* you can tweak this % or use a px max-width */
-    margin: 0 auto 2rem;  /* top:0, bottom:2rem, left/right:auto */
+    width: 80%;           /* you can tweak this to match your design */
+    margin: 0 auto 2rem;  /* top:0, horizontal:auto (centers), bottom:2rem */
 }
 
-/* (4) Issue-page detail set — center and match header width */
+/* Issue‐page detail set */
 table.play-detail-set {
-    width: 80%;           /* match your header width */
+    width: 80%;           /* same as header, keeps them aligned */
     margin: 0 auto 2rem;  /* center + bottom gap */
-    text-align: center;   /* as before */
+    text-align: center;   /* your existing rule */
 }
 
-/* (5) Row backgrounds */
-/* — odd rows */
+/* Alternating‐row backgrounds */
 .play-detail-set tr:nth-child(odd) {
     background-color: rgba(35, 50, 55, 0.1);
 }
-/* — first row (was nth-child(1)) */
+/* First‐row highlight */
 .play-detail-set tr:first-child {
     background-color: rgba(152, 75, 67, 0.5);
 }
 
-/* (6) Remove default borders on every row (unchanged) */
+/* Remove default row borders */
 .play-detail-set tr {
     border: none;
 }
 
-/* (7) Verification symbols (exactly as before) */
+/* Cell padding */
+.play-detail-set td,
+.play-detail-set th {
+    padding: 10px 6px;
+}
+
+/* Column widths */
+.play-detail-set th.detailed { width: auto; }   /* let the main column flex */
+.play-detail-set th.terse    { width: 40px; }   /* fixed narrow */
+.play-detail-set th.icon     { width: 5%; }     /* tiny percent */
+.play-detail-set th.even     { width: 30%; }    /* fluid percent */
+
+/* Verification symbols (unchanged) */
 span.unverified-symbol-small,
 span.unverified-symbol {
     font-weight: bold;
@@ -460,20 +447,6 @@ span.verified-symbol-small {
 span.verified-symbol {
     font-size: 170%;
 }
-
-/* (8) Cell padding — drop the old fixed 100px width for fluidity */
-.play-detail-set td,
-.play-detail-set th {
-    /* width: 100px;  ← removed */
-    padding: 10px 6px;
-}
-
-/* (9) Column‐specific widths — converted from rigid px to flexible values */
-/*    was: detailed=2000px; terse=40px; icon=5px; even=300px */
-.play-detail-set th.detailed { width: auto; }  /* fill remaining space */
-.play-detail-set th.terse    { width: 40px; }  /* narrow columns stay fixed */
-.play-detail-set th.icon     { width: 5%; }    /* tiny columns get a % */
-.play-detail-set th.even     { width: 30%; }   /* “even” gets a fluid 30% */
 
 
 /*==============================================================================
