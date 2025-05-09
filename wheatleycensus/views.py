@@ -177,31 +177,60 @@ def search_results(request):
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
 def copy_list(request, id):
+    """
+    Show all copies for a given Issue (id).
+    """
+    # Only “real” copies (U = unverified, V = verified, or no flag)
     canonical_query = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
+
+    # Look up the Issue (and 404 if not found)
     selected_issue = get_object_or_404(Issue, pk=id)
+
+    # Filter copies by that issue + canonical status
     qs = Copy.objects.filter(canonical_query, issue=id)
+
+    # Order first by location name, then shelfmark
     qs = qs.order_by('location__name_of_library_collection', 'shelfmark')
-    all_copies = sorted(qs, key=copy_sort_key)
+
+    # If you have a custom sort key, you can still apply it:
+    all_copies = sorted(qs, key=lambda c: (
+        c.location.name_of_library_collection or '',
+        c.shelfmark or ''
+    ))
+
     return render(request, 'census/copy_list.html', {
-        'all_copies': all_copies,
-        'copy_count': len(all_copies),
-        'selected_issue': selected_issue,
-        'icon_path': 'census/images/generic-title-icon.png',
-        'title': selected_issue.edition.title,
+        'all_copies':      all_copies,
+        'copy_count':      len(all_copies),
+        'selected_issue':  selected_issue,
+        'icon_path':       'census/images/generic-title-icon.png',
+        'title':           selected_issue.edition.title,
     })
 
 
 def copy_data(request, copy_id):
+    """
+    AJAX endpoint to render the copy_modal.html for one Copy.
+    """
     copy = get_object_or_404(Copy, pk=copy_id)
-    return render(request, 'census/copy_modal.html', {'copy': copy})
+    return render(request, 'census/copy_modal.html', {
+        'copy': copy
+    })
 
 
 def copy_page(request, wc_number):
+    """
+    Stand‐alone page for a copy, looked up by WC number.
+    """
     copy = get_object_or_404(Copy, wc_number=wc_number)
-    return render(request, 'census/copy_page.html', {'copy': copy})
+    return render(request, 'census/copy_page.html', {
+        'copy': copy
+    })
 
 
 def cen_copy_modal(request, census_id):
+    """
+    Alias for copy_data (for backwards compatibility on some links).
+    """
     return copy_data(request, census_id)
 
 
@@ -209,26 +238,29 @@ def copy_list_by_edition(request, edition_id):
     """
     Show all copies whose Issue belongs to the given Edition.
     """
-    # grab all copies whose issue’s edition matches
+    # Grab all copies for any issue in that edition
     copies = Copy.objects.filter(issue__edition_id=edition_id)
 
-    # (if you still want to apply your canonical_query filter, include it here)
+    # (Optionally re‐apply your canonical_query here if you like)
     # copies = copies.filter(canonical_query)
 
-    # sort if needed
-    copies = sorted(copies, key=copy_sort_key)
+    # Sort them however you need
+    all_copies = sorted(copies, key=lambda c: (
+        c.location.name_of_library_collection or '',
+        c.shelfmark or ''
+    ))
 
-    # pick one of the issues just to grab title/edition info
-    issues = Issue.objects.filter(edition_id=edition_id)
-    title = issues.first().edition.title if issues.exists() else ''
+    # For the header, we just need the Title
+    first_issue = copies.first().issue if copies.exists() else None
+    title = first_issue.edition.title if first_issue else None
 
     return render(request, 'census/copy_list.html', {
-        'all_copies': copies,
-        'copy_count': len(copies),
-        'selected_issue': None,    # you don’t really need this now
-        'icon_path': 'census/images/generic-title-icon.png',
-        'title': title,
-    }, request)
+        'all_copies':     all_copies,
+        'copy_count':     len(all_copies),
+        'selected_issue': None,   # not an Issue view
+        'icon_path':      'census/images/generic-title-icon.png',
+        'title':          title,
+    })
 # ------------------------------------------------------------------------------
 # Issue list (per title)
 # ------------------------------------------------------------------------------
