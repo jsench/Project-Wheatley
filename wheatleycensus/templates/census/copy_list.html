@@ -1,49 +1,43 @@
 {% extends "census/base.html" %}
-{% load static humanize %}
+{% load static %}
+{% load humanize %}
 
 {% block content %}
-<div class="outer-frame">
-  {# ————————————————————————————————————————————————————————————— #}
-  {# Modal scripts (bootstrapped once per page)                      #}
-  {# ————————————————————————————————————————————————————————————— #}
-  <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-  <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
-  <link   href="{% static 'census/css/modal.css' %}" rel="stylesheet" />
-  <div id="copyModal" class="modal fade" role="dialog"></div>
+<div class="wrapper">
+  <div>
+    <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
+    <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
+    <div id="copyModal" class="modal fade" role="dialog"></div>
+  </div>
 
-  {# ————————————————————————————————————————————————————————————— #}
-  {# Play-title header partial (icon, title, edition info)             #}
-  {# ————————————————————————————————————————————————————————————— #}
   {% include "census/play-title-header.html"
        with selected_issue=selected_issue
             icon_path=icon_path
             title=title
             copy_count=copy_count %}
 
-  {# ————————————————————————————————————————————————————————————— #}
-  {# Copies table                                                     #}
-  {# ————————————————————————————————————————————————————————————— #}
   <table class="play-detail-set">
-    <thead>
+    {% if all_copies %}
       <tr>
-        <th class="terse">MC #</th>
+        <th class="terse">WC&nbsp;#</th>
         <th class="detailed">Location</th>
         <th class="even">Shelfmark</th>
-        <th class="icon"></th>
-        <th class="icon"></th>
-        <th class="icon"></th>
+        <th class="icon">&nbsp;</th>
+        <th class="icon">&nbsp;</th>
+        <th class="icon">&nbsp;</th>
       </tr>
-    </thead>
-    <tbody>
       {% for copy in all_copies %}
       <tr>
-        {# MC # #}
+        {# Census ID #}
         <td>
           {% if copy.census_id and copy.census_id != '0' %}
             <a class="copy_data"
                href="#"
                data-form="{% url 'copy_data' copy.id %}"
-               title="Details">{{ copy.census_id }}</a>
+               title="Details">
+              {{ copy.census_id }}
+            </a>
           {% else %}
             &nbsp;
           {% endif %}
@@ -66,10 +60,9 @@
           </a>
         </td>
 
-        {# Shelfmark #}
+        {# Shelfmark – NOTE: single‐line if so Django sees the block #}
         <td>
-          {% if copy.shelfmark 
-                and copy.shelfmark != '[Shelfmark not available]' %}
+          {% if copy.shelfmark and copy.shelfmark != '[Shelfmark not available]' %}
             <a class="copy_data"
                href="#"
                data-form="{% url 'copy_data' copy.id %}"
@@ -81,43 +74,49 @@
           {% endif %}
         </td>
 
-        {# Verified / Unverified #}
+        {# Verification icon #}
         <td>
           {% if copy.verification == 'U' %}
-            <span title="Not verified" class="unverified-symbol">&#x20E0;</span>
+            <span title="Not verified" class="unverified-symbol">⃠</span>
           {% elif copy.verification == 'V' %}
-            <span title="Verified" class="verified-symbol">&#x2713;</span>
+            <span title="Verified" class="verified-symbol">✓</span>
+          {% else %}
+            &nbsp;
           {% endif %}
         </td>
 
         {# Fragment icon #}
         <td>
           {% if copy.fragment %}
-            <span class="unicode-icon" title="Fragment">
+            <span title="Fragment" class="unicode-icon">
               <i class="fas fa-industry"></i>
             </span>
+          {% else %}
+            &nbsp;
           {% endif %}
         </td>
 
-        {# Digital facsimile icon #}
+        {# Facsimile icon #}
         <td>
           {% if copy.digital_facsimile_url %}
-            <span class="unicode-icon" title="Digital facsimile">
+            <span title="Digital facsimile" class="unicode-icon">
               <a href="{{ copy.digital_facsimile_url }}" target="_blank">
                 <i class="fas fa-camera-retro"></i>
               </a>
             </span>
+          {% else %}
+            &nbsp;
           {% endif %}
         </td>
       </tr>
-      {% empty %}
+      {% endfor %}
+    {% else %}
       <tr>
-        <td colspan="6" style="text-align:center; padding:2rem;">
-          No copies available.
+        <td colspan="6" style="text-align:center; padding:20px;">
+          No copies are available.
         </td>
       </tr>
-      {% endfor %}
-    </tbody>
+    {% endif %}
   </table>
 </div>
 {% endblock content %}
