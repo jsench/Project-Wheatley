@@ -377,35 +377,35 @@ img.play-title-icon-generic {
     font-size: 10px;
 }
 
-
 /*==============================================================================
 =                             Detail Table Styles                             =
 ==============================================================================*/
 
-/* Issue‐page title header */
+/* Issue-page title header */
 .play-title-header {
     font-family: 'Open Sans', AppleGothic, sans-serif;
     font-size: 20px;
 }
 
-/* Center the title‐header table */
+/* Center the title-header table */
 table.play-title-header {
-    width: 80%;           /* you can tweak this to match your design */
-    margin: 0 auto 2rem;  /* top:0, horizontal:auto (centers), bottom:2rem */
+    width: 80%;           /* match your design’s max width */
+    margin: 0 auto 2rem;  /* top:0, sides:auto (centers), bottom:2rem */
 }
 
-/* Issue‐page detail set */
+/* Issue-page detail set */
 table.play-detail-set {
-    width: 80%;           /* same as header, keeps them aligned */
-    margin: 0 auto 2rem;  /* center + bottom gap */
-    text-align: center;   /* your existing rule */
+    width: 80%;           /* same width as the header */
+    margin: 0 auto 2rem;  /* center horizontally + 2rem bottom gap */
+    text-align: center;
+    border-collapse: collapse;
 }
 
-/* Alternating‐row backgrounds */
+/* Alternating-row backgrounds */
 .play-detail-set tr:nth-child(odd) {
     background-color: rgba(35, 50, 55, 0.1);
 }
-/* First‐row highlight */
+/* First-row highlight */
 .play-detail-set tr:first-child {
     background-color: rgba(152, 75, 67, 0.5);
 }
@@ -415,19 +415,19 @@ table.play-detail-set {
     border: none;
 }
 
-/* Cell padding */
+/* Cell padding (no fixed width!) */
 .play-detail-set td,
 .play-detail-set th {
     padding: 10px 6px;
 }
 
 /* Column widths */
-.play-detail-set th.detailed { width: auto; }   /* let the main column flex */
-.play-detail-set th.terse    { width: 40px; }   /* fixed narrow */
-.play-detail-set th.icon     { width: 5%; }     /* tiny percent */
-.play-detail-set th.even     { width: 30%; }    /* fluid percent */
+.play-detail-set th.detailed { width: auto; }
+.play-detail-set th.terse    { width: 40px; }
+.play-detail-set th.icon     { width: 5%; }
+.play-detail-set th.even     { width: 30%; }
 
-/* Verification symbols (unchanged) */
+/* Verification symbols */
 span.unverified-symbol-small,
 span.unverified-symbol {
     font-weight: bold;
@@ -447,7 +447,6 @@ span.verified-symbol-small {
 span.verified-symbol {
     font-size: 170%;
 }
-
 
 /*==============================================================================
 =                             Modal & Misc Styles                              =
