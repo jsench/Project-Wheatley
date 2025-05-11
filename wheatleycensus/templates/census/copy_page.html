@@ -12,9 +12,11 @@
   </div>
 
   <script>
-    // When the page loads, immediately show the modal
     document.addEventListener('DOMContentLoaded', function() {
-      $('#copyModal').modal('show');
+      var url = window.location.pathname.replace(/^\/wc\//, '/copydata/').replace(/\/$/, '/');
+      $('#copyModal').load(url, function() {
+        $('#copyModal').modal('show');
+      });
     });
   </script>
 {% endblock %}
