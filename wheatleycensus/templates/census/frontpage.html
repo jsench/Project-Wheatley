@@ -9,14 +9,24 @@
         <td class="play-title-icon">
             <div class="play-title-icon">
                 <div class="play-title-icon-border">
-                    <a href="{% url 'copy_list' title.edition_set.first.issue_set.first.id %}">
-                        {% if title.image %}
-                            <img class="play-title-icon" src="{{ title.image.url }}">
+                    {% with edition=title.edition_set.first %}
+                        {% if edition and edition.issue_set.first %}
+                            <a href="{% url 'copy_list' edition.issue_set.first.id %}">
+                                {% if title.image %}
+                                    <img class="play-title-icon" src="{{ title.image.url }}">
+                                {% else %}
+                                    <img class="play-title-icon-generic" src="{% static icon_path %}">
+                                {% endif %}
+                            </a>
                         {% else %}
-                            <img class="play-title-icon-generic" src="{% static icon_path %}">
+                            {% if title.image %}
+                                <img class="play-title-icon" src="{{ title.image.url }}">
+                            {% else %}
+                                <img class="play-title-icon-generic" src="{% static icon_path %}">
+                            {% endif %}
                         {% endif %}
-                    </a>
-		            </div>
+                    {% endwith %}
+                </div>
             </div>
         </td>
         {% endfor %}
@@ -25,9 +35,15 @@
         {% for title in row %}
         <td class="play-title">
             <div class="play-title">
-                <a class="linkbutton" href="{% url 'copy_list' title.edition_set.first.issue_set.first.id %}">
-                    {{ title.title }}
-                </a>
+                {% with edition=title.edition_set.first %}
+                    {% if edition and edition.issue_set.first %}
+                        <a class="linkbutton" href="{% url 'copy_list' edition.issue_set.first.id %}">
+                            {{ title.title }}
+                        </a>
+                    {% else %}
+                        {{ title.title }}
+                    {% endif %}
+                {% endwith %}
             </div>
         </td>
         {% endfor %}
