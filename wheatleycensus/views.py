@@ -209,17 +209,8 @@ def copy_list(request, id):
 
 
 def copy_data(request, copy_id):
-    template = loader.get_template('census/copy_modal.html')
-    selected_copy = models.Copy.objects.filter(pk=copy_id)
-    if not selected_copy:
-        selected_copy = models.Copy.objects.filter(false_query).filter(pk=copy_id)
-
-    if selected_copy:
-        selected_copy = selected_copy[0]
-    else:
-        raise Http404('Selected copy does not exist')
-    context={"copy": selected_copy}
-    return HttpResponse(template.render(context, request))
+    copy = get_object_or_404(Copy, pk=copy_id)
+    return render(request, 'census/copy_modal.html', {'copy': copy})
 
 
 def copy_page(request, wc_number):

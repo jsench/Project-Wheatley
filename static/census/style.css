@@ -392,14 +392,15 @@ table.play-detail-set {
   margin: 0 auto 1.5rem;  /* smaller bottom gap */
 }
 
-/* Header row highlight */
-.play-detail-set tr:first-child {
-  background-color: rgba(152,75,67,0.5);
+/* Table row coloring for copy lists: header and copies */
+.play-detail-set tr:nth-child(1) {
+  background-color: rgba(152, 75, 67, 0.5); /* header color */
 }
-
-/* Alternating row */
-.play-detail-set tr:nth-child(odd):not(:first-child) {
-  background-color: rgba(35,50,55,0.1);
+.play-detail-set tr:nth-child(n+2):nth-child(odd) {
+  background-color: rgba(35, 50, 55, 0.1); /* odd copy rows */
+}
+.play-detail-set tr:nth-child(n+2):nth-child(even) {
+  background-color: #fff; /* even copy rows */
 }
 
 /* Remove borders on rows */
