@@ -90,7 +90,6 @@ def search(request):
         Q(verification='U') |
         Q(verification='V') |
         Q(verification__isnull=True)
-        
     )
 
     # Apply the chosen filter
@@ -119,6 +118,10 @@ def search(request):
 
     elif field == 'census_id' and value:
         qs = qs.filter(wc_number__iexact=value)
+        # If exactly one result, redirect to the copy modal page
+        if qs.count() == 1:
+            copy = qs.first()
+            return HttpResponseRedirect(f"/wc/{copy.wc_number}/")
 
     else:
         # If no valid filter, return empty to avoid dumping everything
@@ -304,13 +307,22 @@ def about(request):
 
     today = datetime.now().strftime("%d %B %Y")
 
-    return render(request, 'census/about.html', {
-        'copy_count': copy_count,
-        'facsimile_count': facsimile_count,
-        'facsimile_percent': facsimile_percent,
-        'unverified_count': unverified_count,
-        'today': today,
-    })
+    # Determine which static page to render
+    if request.path.endswith('advisoryboard/'):
+        return render(request, 'census/advisoryboard.html', {})
+    elif request.path.endswith('references/'):
+        return render(request, 'census/references.html', {})
+    elif request.path.endswith('contact/'):
+        return render(request, 'census/contact.html', {})
+    else:
+        return render(request, 'census/about.html', {
+            'copy_count': copy_count,
+            'facsimile_count': facsimile_count,
+            'facsimile_percent': facsimile_percent,
+            'unverified_count': unverified_count,
+            'today': today,
+        })
+
 # ------------------------------------------------------------------------------
 # CSV exports
 # ------------------------------------------------------------------------------
