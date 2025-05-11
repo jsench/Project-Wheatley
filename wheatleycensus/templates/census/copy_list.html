@@ -4,13 +4,6 @@
 
 {% block content %}
 <div class="wrapper">
-  <div>
-    <script src="{% static 'census/js/bootstrap-modal.js' %}"></script>
-    <script src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'census/css/modal.css' %}" />
-    <div id="copyModal" class="modal fade" role="dialog"></div>
-  </div>
-
   {% include "census/play-title-header.html" with selected_issue=selected_issue icon_path=icon_path title=title copy_count=copy_count %}
 
 
