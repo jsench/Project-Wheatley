@@ -5,8 +5,10 @@
       <h3 align="left" class="modal-title">
         Copy Details for {{ copy.issue.edition.title.title }} ({{ copy.issue.year }})
         {% if copy.digital_facsimile_url %}
-          <span class="unicode-icon" title="Digital facsimile">
-            <a href="{{ copy.digital_facsimile_url }}" target="_blank"><i class="fas fa-camera-retro"></i></a>
+          <span class="unicode-icon" title="Link to digital facsimile of this copy">
+            <a href="{{ copy.digital_facsimile_url }}" target="_blank">
+              <i class="fas fa-camera-retro"></i>
+            </a>
           </span>
         {% endif %}
       </h3>
@@ -14,8 +16,8 @@
 
     <div class="modal-body">
       <p align="left"><strong>WC#</strong>: {{ copy.wc_number }}</p>
-      <p align="left"><strong>Location</strong>: {{ copy.location.name_of_library_collection }}</p>
-      <p align="left"><strong>Shelfmark</strong>: {{ copy.shelfmark }}</p>
+      <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name_of_library_collection }}{% endif %}</p>
+      <p align="left"><strong>Shelfmark</strong>: {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}{{ copy.shelfmark }}{% endif %}</p>
       {% if copy.catalogue_url %}
         <p align="left"><strong>Catalogue URL</strong>: <a href="{{ copy.catalogue_url }}" target="_blank">{{ copy.catalogue_url }}</a></p>
       {% endif %}
@@ -45,11 +47,15 @@
         <p align="left"><strong>Provenance</strong>:
         {% for record in copy.provenance_records.all|dictsort:"provenance_name.name" %}
           {{ record.provenance_name.name }}
-          <a href="https://viaf.org/viaf/{{ record.provenance_name.viaf }}"
-             title="VIAF record" target="_blank"><i class="fas fa-book"></i></a>
+          {% if record.provenance_name.viaf %}
+            <a href="https://viaf.org/viaf/{{ record.provenance_name.viaf }}" target="_blank" title="VIAF">
+              <i class="fas fa-book"></i>
+            </a>
+          {% endif %}
           {% if record.provenance_name.bio %}
-            <a href="{{ record.provenance_name.bio }}"
-               title="Biography" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+            <a href="{{ record.provenance_name.bio }}" target="_blank" title="Biography">
+              <i class="fas fa-external-link-alt"></i>
+            </a>
           {% endif %}
           {% if not forloop.last %}; {% endif %}
         {% endfor %}
