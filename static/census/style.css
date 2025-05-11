@@ -392,12 +392,12 @@ table.play-detail-set {
   margin: 0 auto 1.5rem;  /* smaller bottom gap */
 }
 
-/* Table row coloring for copy lists: header and copies */
+/* Table row coloring for copy lists: header and copies (force override) */
 .play-detail-set tr:nth-child(1) {
-  background-color: rgba(152, 75, 67, 0.5); /* header color */
+  background-color: rgba(152, 75, 67, 0.5) !important;
 }
 .play-detail-set tr:nth-child(n+2) {
-  background-color: #e9e9e9; /* all copy rows same light gray */
+  background-color: #e9e9e9 !important;
 }
 
 /* Remove borders on rows */
