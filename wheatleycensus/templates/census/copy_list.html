@@ -37,16 +37,12 @@
       {% for copy in all_copies %}
       <tr>
         <td>
-          {% if copy.census_id and copy.census_id != '0' %}
-            <a class="copy_data"
-               href="#"
-               data-form="{% url 'copy_data' copy.id %}"
-               title="Details">
-              {{ copy.census_id }}
-            </a>
-          {% else %}
-            &nbsp;
-          {% endif %}
+          <a class="copy_data"
+             href="#"
+             data-form="{% url 'copy_data' copy.id %}"
+             title="Details">
+            {{ copy.wc_number }}
+          </a>
           {% if user.is_staff %}
             <span class="note">
               [<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">

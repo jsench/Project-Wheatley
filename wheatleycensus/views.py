@@ -85,7 +85,7 @@ def search(request):
     field = request.GET.get('field', '').strip()
     value = request.GET.get('value', '').strip()
 
-    # Base queryset: only “real” copies
+    # Base queryset: only "real" copies
     qs = Copy.objects.filter(
         Q(verification='U') |
         Q(verification='V') |
@@ -125,7 +125,7 @@ def search(request):
         qs = qs.none()
 
     # Ordering — you can customize this as you like
-    qs = qs.order_by('issue__start_date', 'issue__edition__title')
+    qs = qs.order_by('wc_number')
 
     # Pagination
     paginator = Paginator(qs, 20)
@@ -184,7 +184,7 @@ def copy_list(request, id):
     """
     Show all copies for a given Issue (id).
     """
-    # Only “real” copies (U = unverified, V = verified, or no flag)
+    # Only "real" copies (U = unverified, V = verified, or no flag)
     canonical_query = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
 
     # Look up the Issue (and 404 if not found)
@@ -193,14 +193,8 @@ def copy_list(request, id):
     # Filter copies by that issue + canonical status
     qs = Copy.objects.filter(canonical_query, issue=id)
 
-    # Order first by location name, then shelfmark
-    qs = qs.order_by('location__name_of_library_collection', 'shelfmark')
-
-    # If you have a custom sort key, you can still apply it:
-    all_copies = sorted(qs, key=lambda c: (
-        c.location.name_of_library_collection or '',
-        c.shelfmark or ''
-    ))
+    # Order by WC number (numeric sort)
+    all_copies = sorted(qs, key=copy_census_id_sort_key)
 
     return render(request, 'census/copy_list.html', {
         'all_copies':      all_copies,
@@ -365,8 +359,22 @@ def export(request, groupby, column, aggregate):
 # Autocomplete endpoints
 # ------------------------------------------------------------------------------
 def autofill_location(request, query=None):
-    matches = models.Location.objects.filter(name_of_library_collection__icontains=query) if query else []
-    return JsonResponse({'matches': [m.name_of_library_collection for m in matches]})
+    query = query or ""
+    # 1) DB matches
+    db_matches = Location.objects.filter(
+        name_of_library_collection__icontains=query
+    ).values_list('name_of_library_collection', flat=True)
+
+    # 2) Static matches (states + countries)
+    static_pool = US_STATES + WORLD_COUNTRIES
+    static_matches = [
+        name for name in static_pool
+        if query.lower() in name.lower() and name not in db_matches
+    ]
+
+    # 3) Return combined, capped at e.g. 50 suggestions
+    suggestions = list(db_matches) + static_matches
+    return JsonResponse({'matches': suggestions[:50]})
 
 
 def autofill_provenance(request, query=None):
@@ -435,24 +443,3 @@ def logout_user(request):
     tpl = loader.get_template('census/logout.html')
     logout(request)
     return HttpResponse(tpl.render({}, request))
-
-
-# --------- constants ---------------#
-
-def autofill_location(request, query=None):
-    query = query or ""
-    # 1) DB matches
-    db_matches = Location.objects.filter(
-        name_of_library_collection__icontains=query
-    ).values_list('name_of_library_collection', flat=True)
-
-    # 2) Static matches (states + countries)
-    static_pool = US_STATES + WORLD_COUNTRIES
-    static_matches = [
-        name for name in static_pool
-        if query.lower() in name.lower() and name not in db_matches
-    ]
-
-    # 3) Return combined, capped at e.g. 50 suggestions
-    suggestions = list(db_matches) + static_matches
-    return JsonResponse({'matches': suggestions[:50]})

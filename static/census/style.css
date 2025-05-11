@@ -353,14 +353,18 @@ img.play-title-icon {
     width: 90px;
     height: 90px;
     margin: 5px;
-    border-radius: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
 }
 
 /* Generic fallback images */
 img.play-title-icon-generic {
     width: 100px;
     height: 100px;
-    border-radius: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
 }
 
 /* Title and body text under icons */

@@ -9,7 +9,7 @@
         <td class="play-title-icon">
             <div class="play-title-icon">
                 <div class="play-title-icon-border">
-                    <a href="{% url 'issue_list' title.id %}">
+                    <a href="{% url 'copy_list' title.edition_set.first.issue_set.first.id %}">
                         {% if title.image %}
                             <img class="play-title-icon" src="{{ title.image.url }}">
                         {% else %}
@@ -25,7 +25,7 @@
         {% for title in row %}
         <td class="play-title">
             <div class="play-title">
-                <a class="linkbutton" href="{% url 'issue_list' title.id %}">
+                <a class="linkbutton" href="{% url 'copy_list' title.edition_set.first.issue_set.first.id %}">
                     {{ title.title }}
                 </a>
             </div>
