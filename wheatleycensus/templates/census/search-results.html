@@ -113,7 +113,9 @@
       {% endfor %}
       </tbody>
     </table>
-
+  {% else %}
+    <p class="no-results">No copies found.</p>
+  {% endif %}
 
   {# ———————————————————————————————————————————————— #}
   {# Footer nav                                               #}
