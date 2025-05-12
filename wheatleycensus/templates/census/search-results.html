@@ -3,128 +3,80 @@
 {% block content %}
 
 <div class="wrapper">
-  {# ———————————————————————————————————————————————— #}
-  {# Sign-in / Sign-out & Admin links                       #}
-  {# ———————————————————————————————————————————————— #}
-  <div class="tucked">
-    {% if user.is_authenticated %}
-      <a class="button" href="{% url 'logout_user' %}">Sign out</a>
-      <a class="button" href="{% url 'admin:index' %}">Site Administration</a>
-    {% else %}
-      <a class="button" href="{% url 'login_user' %}">Sign in</a>
-    {% endif %}
-    &nbsp;
-  </div>
-
-  {# ———————————————————————————————————————————————— #}
-  {# Site title & nav                                         #}
-  {# ———————————————————————————————————————————————— #}
-  <table class="title">
-    <tr><td colspan="4"><a href="{% url 'homepage' %}">Wheatley Census</a></td></tr>
-  </table>
-  <table class="header-title-nav">
-    <tr>
-      <th><a href="{% url 'about' %}">About</a></th>
-      <th><a href="#search" id="site-search-button">Search</a></th>
-    </tr>
-  </table>
-
-  {# ———————————————————————————————————————————————— #}
-  {# Collapsible search bar                                  #}
-  {# ———————————————————————————————————————————————— #}
-  <div class="search-bar">
-    <form id="search-bar-form" class="hidden" action="{% url 'search' %}" method="get">
-      <select name="field" id="search-bar-form-field">
-        <option disabled selected value>Search by…</option>
-        <option value="keyword">Keyword</option>
-        <option value="location">Location</option>
-        <option value="provenance_name">Provenance Name</option>
-        <option value="gender">Gender</option>
-        <option value="census_id">WC #</option>
-      </select>
-      <input type="text" name="value" id="search-bar-form-text" placeholder="Enter search term…">
-      <input type="submit" value="Go">
-    </form>
-  </div>
-
-  <script>
-    document.getElementById('site-search-button')
-      .addEventListener('click', e => {
-        e.preventDefault();
-        document.getElementById('search-bar-form').classList.toggle('hidden');
-      });
-  </script>
-
-  {# ———————————————————————————————————————————————— #}
-  {# Search results header                                    #}
-  {# ———————————————————————————————————————————————— #}
-  <table class="play-title-header">
-    <tr>
-      <td rowspan="3" class="play-title-header-icon">
-        <div class="play-title-icon-border">
-          {# If you have a generic icon, use icon_path from view #}
-          <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Icon">
-        </div>
-      </td>
-      <td class="play-title-header">
-        Search Results
-      </td>
-    </tr>
-    <tr>
-      <td class="play-issue-header">
-        {{ display_field }}{% if display_value and display_value != "All" %}: {{ display_value }}{% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td class="play-issue-header">
-        Extant copies: {{ copy_count }}
-      </td>
-    </tr>
-  </table>
-
-  {# ———————————————————————————————————————————————— #}
-  {# Results table                                            #}
-  {# ———————————————————————————————————————————————— #}
-  {% if page_obj and page_obj.object_list %}
-    <table class="play-detail-set">
-      <thead>
+    <table class="play-title-header">
         <tr>
-          <th class="terse">WC #</th>
-          <th>Location</th>
-          <th>Shelfmark</th>
-          <th class="icon">✔</th>
+            <td rowspan="3" class="play-title-header-icon">
+                <div class="play-title-icon-border">
+                    <img class="play-title-icon-generic" src="{% static icon_path %}">
+                </div>
+            </td>
+            <td class="play-title-header">
+                Search Results
+            </td>
         </tr>
-      </thead>
-      <tbody>
-      {% for copy in page_obj %}
-      <tr>
-        <td>
-          <a class="copy_data"
-             href="#"
-             data-form="{% url 'copy_data' copy.id %}"
-             title="Details">
-            {{ copy.wc_number }}
-          </a>
-        </td>
-        <td>{{ copy.location.name_of_library_collection }}</td>
-        <td>{{ copy.shelfmark }}</td>
-        <td>{% if copy.verification == 'V' %}✔{% endif %}</td>
-      </tr>
-      {% endfor %}
-      </tbody>
+        <tr>
+            <td class="play-issue-header">
+                {% if display_value == "All" %}
+                    {{ display_field }}
+                {% else %}
+                    {{ display_field }}: {{ display_value }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="play-issue-header">
+                <span>Extant copies: {{ copy_count }}</span>
+            </td>
+        </tr>
     </table>
-  {% else %}
-    <p class="no-results">No copies found.</p>
-  {% endif %}
 
-  {# ———————————————————————————————————————————————— #}
-  {# Footer nav                                               #}
-  {# ———————————————————————————————————————————————— #}
-  <div class="footer-nav">
-    <span><a href="{% url 'about' %}">advisory board</a></span>
-    <span><a href="{% url 'references' %}">references</a></span>
-    <span><a href="{% url 'contact' %}">contact</a></span>
-  </div>
+    <table class="play-detail-set">
+        {% if page_obj and page_obj.object_list %}
+        <thead>
+            <tr>
+                <th class="terse">WC #</th>
+                <th>Year</th>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Shelfmark</th>
+                <th class="icon">✔</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for copy in page_obj.object_list %}
+        <tr>
+            <td>
+                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                    {{ copy.wc_number }}
+                </a>
+            </td>
+            <td>
+                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                    {{ copy.issue.year }}
+                </a>
+            </td>
+            <td>
+                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                    {{ copy.issue.edition.title.title }}
+                </a>
+            </td>
+            <td>
+                <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                    {{ copy.location.name_of_library_collection }}
+                </a>
+            </td>
+            <td>
+                {{ copy.shelfmark }}
+            </td>
+            <td>
+                {% if copy.verification == 'V' %}✔{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        {% else %}
+        <p class="sansserif" align="center">No copies found.</p>
+        {% endif %}
+    </table>
 </div>
-
 {% endblock %}
