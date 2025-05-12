@@ -392,12 +392,12 @@ table.play-detail-set {
   margin: 0 auto 1.5rem;  /* smaller bottom gap */
 }
 
-/* Table row coloring for copy lists: header and copies (Marlowe style) */
-.play-detail-set tr:nth-child(odd) {
-  background-color: rgba(35, 50, 55, 0.1);
-}
-.play-detail-set tr:nth-child(1) {
+/* Table row coloring for copy lists: header and copies (Marlowe style, fixed for thead/tbody) */
+.play-detail-set thead tr {
   background-color: rgba(152, 75, 67, 0.5);
+}
+.play-detail-set tbody tr:nth-child(odd) {
+  background-color: rgba(35, 50, 55, 0.1);
 }
 
 /* Remove borders on rows */

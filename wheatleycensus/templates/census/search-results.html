@@ -87,12 +87,15 @@
   {# ———————————————————————————————————————————————— #}
   {% if page_obj and page_obj.object_list %}
     <table class="play-detail-set">
-      <tr>
-        <th class="terse">WC #</th>
-        <th>Location</th>
-        <th>Shelfmark</th>
-        <th class="icon">✔</th>
-      </tr>
+      <thead>
+        <tr>
+          <th class="terse">WC #</th>
+          <th>Location</th>
+          <th>Shelfmark</th>
+          <th class="icon">✔</th>
+        </tr>
+      </thead>
+      <tbody>
       {% for copy in page_obj %}
       <tr>
         <td>
@@ -108,6 +111,7 @@
         <td>{% if copy.verification == 'V' %}✔{% endif %}</td>
       </tr>
       {% endfor %}
+      </tbody>
     </table>
 
 
