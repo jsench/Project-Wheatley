@@ -7,6 +7,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http40
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator
 from .constants import US_STATES, WORLD_COUNTRIES
