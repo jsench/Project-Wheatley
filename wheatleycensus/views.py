@@ -171,7 +171,7 @@ def search(request, field=None, value=None, order=None):
         result_list = copy_list.filter(issue__stc_wing__icontains=value)
     elif field == 'census_id' and value:
         display_field = 'MC'
-        result_list = copy_list.filter(census_id=value)
+        result_list = copy_list.filter(wc_number=value)
     elif field == 'year' and value:
         display_field = 'Year'
         year_range = convert_year_range(value)

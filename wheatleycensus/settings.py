@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # DEBUG should be False in production for security.
 # ALLOWED_HOSTS lists the domains/hosts this app can serve.
 SECRET_KEY = 'django-insecure-sBNuHEEDpd9VZXWQI1AqOzWbet6kMCTjeV_G13UQiGySCJb5s4i8TYOGbKEuf2xFi_o'
-DEBUG = True  # Keep True for now to serve static files
+DEBUG = False  # Keep True for now to serve static files
 ALLOWED_HOSTS = ['127.0.0.1','www.wheatleycensus.org', 'wheatleycensus.org', 'senchyne.pythonanywhere.com']
 
 # --- Installed Apps ---
