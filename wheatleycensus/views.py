@@ -31,17 +31,16 @@ def get_icon_path(title_id):
 # ------------------------------------------------------------------------------
 # Utility functions for string manipulation, sorting, and year range parsing.
 def strip_article(s):
-    if isinstance(s, Title):
-        s = s.title or ''
-    if not isinstance(s, str):
-        return ''
-    for a in ('a ', 'A ', 'an ', 'An ', 'the ', 'The '):
+    """Remove leading articles from a string."""
+    articles = ['a ', 'A ', 'an ', 'An ', 'the ', 'The ']
+    for a in articles:
         if s.startswith(a):
-            return s[len(a):]
+            return s.replace(a, '', 1)
     return s
 
 
 def convert_year_range(year):
+    """Convert a year range string to start and end years."""
     if '-' in year:
         start, end = [n.strip() for n in year.split('-', 1)]
         if len(start) == 4 and start.isdigit() and len(end) == 4 and end.isdigit():
@@ -51,20 +50,53 @@ def convert_year_range(year):
     return False
 
 
-def copy_census_id_sort_key(c):
-    try:
-        parts = (c.wc_number or "0").split('.', 1)
-        a = int(parts[0])
-        b = int(parts[1]) if len(parts) > 1 else 0
-    except (ValueError, TypeError):
-        a, b = 0, 0
-    return (a, b)
+def title_sort_key(title_object):
+    """Sort key for titles, handling numeric prefixes."""
+    title = title_object.title
+    if title and title[0].isdigit():
+        title = title.split()
+        return strip_article(' '.join(title[1:] + [title[0]]))
+    return strip_article(title)
 
 
 def copy_sort_key(c):
-    key_loc = strip_article(c.location.name_of_library_collection or '').lower()
-    key_shelf = c.shelfmark or ''
-    return (key_loc, key_shelf)
+    """Sort key for copies based on location and shelfmark."""
+    census_id_a, census_id_b = copy_census_id_sort_key(c)
+    return (copy_location_sort_key(c),
+            copy_shelfmark_sort_key(c),
+            census_id_a,
+            census_id_b)
+
+
+def copy_census_id_sort_key(c):
+    """Sort key for census IDs, handling numeric and alphanumeric formats."""
+    census_id = c.census_id if c.census_id is not None else ''
+    census_id_a = 0
+    census_id_b = 0
+    try:
+        if '.' in census_id:
+            census_id_a, census_id_b = census_id.split('.')
+            census_id_a, census_id_b = int(census_id_a), int(census_id_b)
+        else:
+            census_id_a = int(census_id)
+    except ValueError:
+        pass
+    return (census_id_a, census_id_b)
+
+
+def copy_location_sort_key(c):
+    """Sort key for copy locations."""
+    if c.location is not None:
+        name = c.location.name
+    else:
+        name = ''
+    return strip_article(name if name else '')
+
+
+def copy_shelfmark_sort_key(c):
+    """Sort key for copy shelfmarks."""
+    sm = c.shelfmark
+    return sm if sm else ''
 
 
 # ------------------------------------------------------------------------------
@@ -72,92 +104,126 @@ def copy_sort_key(c):
 # ------------------------------------------------------------------------------
 # homepage: Renders the front page with a grid of titles.
 def homepage(request):
-    tpl = loader.get_template('census/frontpage.html')
-    titles = list(Title.objects.all())
-
-    def extract_year(t):
-        import re
-        m = re.search(r'\b(\d{4})\b', t.title or '')
-        return int(m.group(1)) if m else 9999
-
-    titles.sort(key=lambda t: (extract_year(t), strip_article(t).lower()))
-    rows = [titles[i:i+5] for i in range(0, len(titles), 5)]
-
-    return HttpResponse(tpl.render({
-        'titlerows': rows,
+    """Display the homepage with a grid of titles."""
+    gridwidth = 5
+    titlelist = Title.objects.select_related('edition_set').all()
+    titlelist = sorted(titlelist, key=title_sort_key)
+    titlerows = [titlelist[i: i + gridwidth]
+                 for i in range(0, len(titlelist), gridwidth)]
+    return render(request, 'census/frontpage.html', {
+        'frontpage': True,
+        'titlelist': titlelist,
+        'titlerows': titlerows,
         'icon_path': 'census/images/generic-title-icon.png'
-    }, request))
+    })
 
 
 # search: Unified search endpoint for filtering copies by location, keyword, provenance, gender, or census ID.
-def search(request):
-    """
-    Unified search endpoint.  Supports GET params:
-      - field:       one of ['location', 'keyword', 'provenance_name', 'gender', 'census_id']
-      - value:       search term
-      - page:        page number for pagination
-    """
-    field = request.GET.get('field', '').strip()
-    value = request.GET.get('value', '').strip()
-
-    # Base queryset: only "real" copies
-    qs = Copy.objects.filter(
-        Q(verification='U') |
-        Q(verification='V') |
-        Q(verification__isnull=True)
-    )
-
-    # Apply the chosen filter
-    if field == 'location' and value:
-        qs = qs.filter(location__name_of_library_collection__icontains=value)
-
-    elif field == 'keyword' and value:
-        qs = qs.filter(
-            Q(issue__edition__title__icontains=value) |
-            Q(marginalia__icontains=value) |
-            Q(binding__icontains=value) |
-            Q(backend_notes__icontains=value)
-        )
-
-    elif field == 'provenance_name' and value:
-        qs = qs.filter(
-            provenance_records__provenance_name__name__icontains=value
-        )
-
-    elif field == 'gender' and value:
-        # Expect value to be "M" or "F" (or "male"/"female")
-        gender_code = value[0].upper()
-        qs = qs.filter(
-            provenance_records__provenance_name__gender=gender_code
-        )
-
+def search(request, field=None, value=None, order=None):
+    """Search for copies based on various criteria."""
+    field = field or request.GET.get('field')
+    value = value or request.GET.get('value')
+    order = order or request.GET.get('order')
+    
+    copy_list = Copy.objects.select_related(
+        'location', 'issue__edition__title'
+    ).filter(canonical_query)
+    
+    display_field = field
+    display_value = value
+    
+    if field == 'keyword' or field is None and value:
+        field = 'keyword'
+        display_field = 'Keyword Search'
+        query = (Q(marginalia__icontains=value) |
+                 Q(binding__icontains=value) |
+                 Q(local_notes__icontains=value) |
+                 Q(prov_info__icontains=value) |
+                 Q(bibliography__icontains=value) |
+                 Q(provenance_search_names__name__icontains=value))
+        result_list = copy_list.filter(query)
+    elif field == 'stc' and value:
+        display_field = 'STC / Wing'
+        result_list = copy_list.filter(issue__stc_wing__icontains=value)
     elif field == 'census_id' and value:
-        qs = qs.filter(wc_number__iexact=value)
-        # If exactly one result, redirect to the copy modal page
-        if qs.count() == 1:
-            copy = qs.first()
-            return HttpResponseRedirect(f"/wc/{copy.wc_number}/")
-
+        display_field = 'MC'
+        result_list = copy_list.filter(census_id=value)
+    elif field == 'year' and value:
+        display_field = 'Year'
+        year_range = convert_year_range(value)
+        if year_range:
+            start, end = year_range
+            result_list = copy_list.filter(issue__start_date__lte=end, issue__end_date__gte=start)
+        else:
+            result_list = copy_list.filter(issue__year__icontains=value)
+    elif field == 'location' and value:
+        display_field = 'Location'
+        result_list = copy_list.filter(location__name__icontains=value)
+    elif field == 'provenance_name' and value:
+        display_field = 'Provenance Name'
+        result_list = copy_list.filter(provenance_search_names__name__icontains=value)
+    elif field == 'unverified':
+        display_field = 'Unverified'
+        display_value = 'All'
+        result_list = copy_list.filter(unverified_query)
+        if order is None:
+            order = 'location'
+    elif field == 'ghosts':
+        display_field = 'Ghosts'
+        display_value = 'All'
+        result_list = Copy.objects.filter(false_query)
+    elif field == 'collection':
+        result_list, display_field = get_collection(copy_list, value)
+        display_value = 'All'
     else:
-        # If no valid filter, return empty to avoid dumping everything
-        qs = qs.none()
+        result_list = Copy.objects.none()
 
-    # Ordering — you can customize this as you like
-    qs = qs.order_by('wc_number')
+    result_list = result_list.distinct()
+    
+    # Apply sorting
+    if order == 'date':
+        result_list = sorted(result_list, key=lambda c: (
+            int(c.issue.start_date),
+            title_sort_key(c.issue.edition.title),
+            copy_location_sort_key(c)
+        ))
+    elif order == 'title':
+        result_list = sorted(result_list, key=lambda c: (
+            title_sort_key(c.issue.edition.title),
+            int(c.issue.start_date),
+            copy_location_sort_key(c)
+        ))
+    elif order == 'location':
+        result_list = sorted(result_list, key=lambda c: (
+            copy_location_sort_key(c),
+            int(c.issue.start_date),
+            title_sort_key(c.issue.edition.title)
+        ))
+    elif order == 'stc':
+        result_list = sorted(result_list, key=lambda c: (
+            c.issue.stc_wing,
+            copy_location_sort_key(c)
+        ))
+    else:  # Default to date sorting
+        result_list = sorted(result_list, key=lambda c: (
+            int(c.issue.start_date),
+            title_sort_key(c.issue.edition.title),
+            copy_location_sort_key(c)
+        ))
 
     # Pagination
-    paginator = Paginator(qs, 20)
+    paginator = Paginator(result_list, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'census/search-results.html', {
-        'page_obj':      page_obj,
-        'copy_count':    qs.count(),
-        'field':         field,
-        'value':         value,
-        'display_field': field.replace('_', ' ').title(),
-        'display_value': value or 'All',
         'icon_path': 'census/images/generic-title-icon.png',
+        'value': value,
+        'field': field,
+        'display_value': display_value,
+        'display_field': display_field,
+        'page_obj': page_obj,
+        'copy_count': len(result_list)
     })
 
 
@@ -201,29 +267,30 @@ false_query       = Q(verification='F')    # ← add this line
 # ------------------------------------------------------------------------------
 # copy_list: Shows all copies for a given Issue.
 def copy_list(request, id):
-    """
-    Show all copies for a given Issue (id).
-    """
-    canonical_query = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
+    """Display all copies for a given issue."""
     selected_issue = get_object_or_404(Issue, pk=id)
-    qs = Copy.objects.filter(canonical_query, issue=id)
-    all_copies = sorted(qs, key=copy_census_id_sort_key)
-    context = {
+    all_copies = Copy.objects.select_related(
+        'location', 'issue__edition__title'
+    ).filter(canonical_query & Q(issue=id))
+    
+    all_copies = sorted(all_copies, key=copy_sort_key)
+    
+    return render(request, 'census/copy_list.html', {
         'all_copies': all_copies,
         'copy_count': len(all_copies),
         'selected_issue': selected_issue,
-        'icon_path': get_icon_path(selected_issue.edition.title.id),
-        'title': selected_issue.edition.title,
-    }
-    return render(request, 'census/copy_list.html', context)
+        'icon_path': 'census/images/generic-title-icon.png',
+        'title': selected_issue.edition.title
+    })
 
 
 # copy_data: Renders modal with details for a single copy.
 def copy_data(request, copy_id):
-    copy = get_object_or_404(Copy, pk=copy_id)
+    """Display detailed information for a single copy."""
+    selected_copy = get_object_or_404(Copy, pk=copy_id)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return render(request, 'census/copy_modal.html', {'copy': copy})
-    return render(request, 'census/copy_detail.html', {'copy': copy})
+        return render(request, 'census/copy_modal.html', {'copy': selected_copy})
+    return render(request, 'census/copy_detail.html', {'copy': selected_copy})
 
 
 # copy_page: Standalone page for a copy, looked up by WC number.
@@ -234,10 +301,18 @@ def copy_page(request, wc_number):
 
 # cen_copy_modal: Alias for copy_data for backwards compatibility.
 def cen_copy_modal(request, census_id):
-    """
-    Alias for copy_data (for backwards compatibility on some links).
-    """
-    return copy_data(request, census_id)
+    """Display copy modal for a given census ID."""
+    selected_copy = get_object_or_404(Copy, census_id=census_id)
+    selected_issue = selected_copy.issue
+    all_copies = [selected_copy]
+    
+    return render(request, 'census/copy.html', {
+        'all_copies': all_copies,
+        'copy_count': 0,
+        'selected_issue': selected_issue,
+        'icon_path': 'census/images/generic-title-icon.png',
+        'title': selected_issue.edition.title
+    })
 
 
 # ------------------------------------------------------------------------------
@@ -245,24 +320,28 @@ def cen_copy_modal(request, census_id):
 # ------------------------------------------------------------------------------
 # issue_list: Shows all issues for a given title, with edition and copy counts.
 def issue_list(request, id):
-    title = get_object_or_404(Title, pk=id)
-    editions = title.edition_set.all()
-    issues = [iss for ed in editions for iss in ed.issue_set.all()]
+    """Display all issues for a given title."""
+    selected_title = get_object_or_404(Title, pk=id)
+    editions = selected_title.edition_set.all()
+    issues = [issue for ed in editions for issue in ed.issue_set.all()]
     issues.sort(key=lambda i: (
         int(i.edition.edition_number) if i.edition.edition_number.isdigit() else float('inf'),
-        i.start_date, i.end_date
+        i.start_date,
+        i.end_date,
+        i.stc_wing
     ))
+    
     copy_count = Copy.objects.filter(
-        Q(verification='U') | Q(verification='V') | Q(verification__isnull=True),
-        issue__in=issues
+        canonical_query,
+        issue__id__in=[i.id for i in issues]
     ).count()
-
+    
     return render(request, 'census/issue_list.html', {
+        'icon_path': 'census/images/generic-title-icon.png',
         'editions': editions,
         'issues': issues,
+        'title': selected_title,
         'copy_count': copy_count,
-        'icon_path': 'census/images/generic-title-icon.png',
-        'title': title,
     })
 
 
@@ -271,47 +350,31 @@ def issue_list(request, id):
 # ------------------------------------------------------------------------------
 # about: Renders the about page and other static pages, pulling content from the StaticPageText model and replacing placeholders with dynamic values.
 def about(request, viewname='about'):
-    base_q = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
-
-    copy_count = Copy.objects.filter(base_q, fragment=False).count()
-    facsimile_count = Copy.objects.exclude(
-        Q(digital_facsimile_url='') | Q(digital_facsimile_url=None)
+    """Display the about page with census statistics."""
+    copy_count = Copy.objects.filter(canonical_query & Q(fragment=False)).count()
+    fragment_copy_count = Copy.objects.filter(fragment=True).count()
+    facsimile_copy_count = Copy.objects.filter(
+        ~Q(digital_facsimile_url=None) & ~Q(digital_facsimile_url='')
     ).count()
-    facsimile_percent = f"{round(100 * facsimile_count / copy_count)}%" if copy_count else "0%"
-
-    unverified_count = Copy.objects.filter(verification='U').count()
-    today = datetime.now().strftime("%d %B %Y")
-
-    search_url = reverse('search') + '?field=unverified'
-    csv_url = reverse('location_copy_count_csv_export')
-
-    content = [
-        s.content.replace('{copy_count}', str(copy_count))
-                 .replace('{facsimile_count}', str(facsimile_count))
-                 .replace('{facsimile_percent}', str(facsimile_percent))
-                 .replace('{unverified_count}', str(unverified_count))
-                 .replace('{today}', today)
-                 .replace('{search_url}', search_url)
-                 .replace('{csv_url}', csv_url)
-        for s in StaticPageText.objects.filter(viewname='about')
-    ]
-
-    # Determine which static page to render
-    if request.path.endswith('advisoryboard/'):
-        return render(request, 'census/advisoryboard.html', {})
-    elif request.path.endswith('references/'):
-        return render(request, 'census/references.html', {})
-    elif request.path.endswith('contact/'):
-        return render(request, 'census/contact.html', {})
-    else:
-        return render(request, 'census/about.html', {
-            'content': content,
-            'copy_count': copy_count,
-            'facsimile_count': facsimile_count,
-            'facsimile_percent': facsimile_percent,
-            'unverified_count': unverified_count,
-            'today': today,
-        })
+    
+    facsimile_copy_percent = round(100 * facsimile_copy_count / copy_count) if copy_count > 0 else 0
+    
+    pre_render_context = {
+        'copy_count': str(copy_count),
+        'verified_copy_count': str(Copy.objects.filter(verified_query).count()),
+        'unverified_copy_count': str(Copy.objects.filter(unverified_query).count()),
+        'current_date': '{d:%d %B %Y}'.format(d=datetime.now()),
+        'fragment_copy_count': str(fragment_copy_count),
+        'facsimile_copy_count': str(facsimile_copy_count),
+        'facsimile_copy_percent': '{}%'.format(facsimile_copy_percent),
+        'estc_copy_count': str(Copy.objects.filter(from_estc=True).count()),
+        'non_estc_copy_count': str(Copy.objects.filter(from_estc=False).count()),
+    }
+    
+    content = [s.content.format(**pre_render_context)
+               for s in StaticPageText.objects.filter(viewname=viewname)]
+    
+    return render(request, 'census/about.html', {'content': content})
 
 # ------------------------------------------------------------------------------
 # CSV exports
@@ -365,71 +428,62 @@ def export(request, groupby, column, aggregate):
 # ------------------------------------------------------------------------------
 # autofill_location: Returns location suggestions for autocomplete.
 def autofill_location(request, query=None):
-    query = query or ""
-    # 1) DB matches
-    db_matches = Location.objects.filter(
-        name_of_library_collection__icontains=query
-    ).values_list('name_of_library_collection', flat=True)
-
-    # 2) Static matches (states + countries)
-    static_pool = US_STATES + WORLD_COUNTRIES
-    static_matches = [
-        name for name in static_pool
-        if query.lower() in name.lower() and name not in db_matches
-    ]
-
-    # 3) Return combined, capped at e.g. 50 suggestions
-    suggestions = list(db_matches) + static_matches
-    return JsonResponse({'matches': suggestions[:50]})
+    """Autocomplete endpoint for locations."""
+    if query is not None:
+        location_matches = Location.objects.filter(name__icontains=query)
+        match_object = {'matches': [m.name for m in location_matches]}
+    else:
+        match_object = {'matches': []}
+    return JsonResponse(match_object)
 
 
 # autofill_provenance: Returns provenance name suggestions for autocomplete.
 def autofill_provenance(request, query=None):
-    matches = ProvenanceName.objects.filter(name__icontains=query) if query else []
-    return JsonResponse({'matches': [m.name for m in matches]})
+    """Autocomplete endpoint for provenance names."""
+    if query is not None:
+        prov_matches = ProvenanceName.objects.filter(name__icontains=query)
+        match_object = {'matches': [m.name for m in prov_matches]}
+    else:
+        match_object = {'matches': []}
+    return JsonResponse(match_object)
 
 
 # autofill_collection: Returns static collection choices for autocomplete.
 def autofill_collection(request, query=None):
-    choices = [
+    """Autocomplete endpoint for collections."""
+    collection = [
         {'label': 'With known early provenance (before 1700)', 'value': 'earlyprovenance'},
         {'label': 'With a known woman owner', 'value': 'womanowner'},
         {'label': 'With a known woman owner before 1800', 'value': 'earlywomanowner'},
         {'label': 'Includes marginalia', 'value': 'marginalia'},
-        {'label': 'In an early sammelband', 'value': 'earlysammelband'},
+        {'label': 'In an early sammelband', 'value': 'earlysammelband'}
     ]
-    return JsonResponse({'matches': choices})
+    return JsonResponse({'matches': collection})
 
 
 # get_collection: Helper to filter queryset by collection type.
-def get_collection(qs, name):
-    if name == 'earlyprovenance':
-        return (
-            qs.filter(provenance_records__provenance_name__start_century='17'),
-            'Copies with known early provenance (before 1700)'
+def get_collection(copy_list, coll_name):
+    """Get a filtered collection of copies based on collection name."""
+    if coll_name == 'earlyprovenance':
+        results = copy_list.filter(provenance_search_names__start_century='17')
+        display = 'Copies with known early provenance (before 1700)'
+    elif coll_name == 'womanowner':
+        results = copy_list.filter(provenance_search_names__gender='F')
+        display = 'Copies with a known woman owner'
+    elif coll_name == 'earlywomanowner':
+        results = copy_list.filter(
+            Q(provenance_search_names__gender='F') &
+            (Q(provenance_search_names__start_century='17') |
+             Q(provenance_search_names__start_century='18'))
         )
-    if name == 'womanowner':
-        return (
-            qs.filter(provenance_records__provenance_name__gender='F'),
-            'Copies with a known woman owner'
-        )
-    if name == 'earlywomanowner':
-        return (
-            qs.filter(provenance_records__provenance_name__gender='F')
-              .filter(Q(provenance_records__provenance_name__start_century__in=['17','18'])),
-            'Copies with a known woman owner before 1800'
-        )
-    if name == 'marginalia':
-        return (
-            qs.exclude(Q(marginalia='') | Q(marginalia=None)),
-            'Copies that include marginalia'
-        )
-    if name == 'earlysammelband':
-        return (
-            qs.filter(in_early_sammelband=True),
-            'Copies in an early sammelband'
-        )
-    return (qs.none(), 'Unknown collection')
+        display = 'Copies with a known woman owner before 1800'
+    elif coll_name == 'marginalia':
+        results = copy_list.exclude(Q(marginalia='') | Q(marginalia=None))
+        display = 'Copies that include marginalia'
+    elif coll_name == 'earlysammelband':
+        results = copy_list.filter(in_early_sammelband=True)
+        display = 'Copies in an early sammelband'
+    return results, display
 
 
 # ------------------------------------------------------------------------------
@@ -437,23 +491,24 @@ def get_collection(qs, name):
 # ------------------------------------------------------------------------------
 # login_user: Handles user login.
 def login_user(request):
-    tpl = loader.get_template('census/login.html')
+    """Handle user login."""
     if request.method == 'POST':
-        u = request.POST.get('username', '')
-        p = request.POST.get('password', '')
-        user = authenticate(username=u, password=p)
-        if user:
-            login(request, user)
-            return HttpResponseRedirect(request.GET.get('next', '/admin/'))
-        return HttpResponse(tpl.render({'failed': True}, request))
-    return HttpResponse(tpl.render({'next': request.GET.get('next', '')}, request))
+        username = request.POST['username']
+        password = request.POST['password']
+        user_account = authenticate(username=username, password=password)
+        if user_account is not None:
+            login(request, user_account)
+            next_url = request.GET.get('next', '/admin/')
+            return HttpResponseRedirect(next_url)
+        return render(request, 'census/login.html', {'failed': True})
+    return render(request, 'census/login.html', {'next': request.GET.get('next', '')})
 
 
 # logout_user: Handles user logout.
 def logout_user(request):
-    tpl = loader.get_template('census/logout.html')
+    """Handle user logout."""
     logout(request)
-    return HttpResponse(tpl.render({}, request))
+    return render(request, 'census/logout.html')
 
 def detail(request, id):
     selected_title = get_object_or_404(Title, pk=id)
