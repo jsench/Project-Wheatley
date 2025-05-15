@@ -106,7 +106,7 @@ def copy_shelfmark_sort_key(c):
 def homepage(request):
     """Display the homepage with a grid of titles."""
     gridwidth = 5
-    titlelist = Title.objects.select_related('edition_set').all()
+    titlelist = Title.objects.all()
     titlelist = sorted(titlelist, key=title_sort_key)
     titlerows = [titlelist[i: i + gridwidth]
                  for i in range(0, len(titlelist), gridwidth)]
