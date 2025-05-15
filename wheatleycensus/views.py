@@ -125,13 +125,16 @@ def search(request, field=None, value=None, order=None):
     value = value or request.GET.get('value')
     order = order or request.GET.get('order')
     
+    # Base queryset with select_related to optimize database queries
     copy_list = Copy.objects.select_related(
-        'location', 'issue__edition__title'
+        'location', 
+        'issue__edition__title'
     ).filter(canonical_query)
     
     display_field = field
     display_value = value
     
+    # Handle different search types
     if field == 'keyword' or field is None and value:
         field = 'keyword'
         display_field = 'Keyword Search'
@@ -178,6 +181,7 @@ def search(request, field=None, value=None, order=None):
     else:
         result_list = Copy.objects.none()
 
+    # Remove duplicates
     result_list = result_list.distinct()
     
     # Apply sorting
@@ -227,41 +231,6 @@ def search(request, field=None, value=None, order=None):
     })
 
 
-# search_results: (Legacy) Search endpoint for filtering by query params.
-def search_results(request):
-    qs = Copy.objects.select_related('location', 'issue__edition').all()
-
-    q = request.GET.get('q')
-    if q:
-        qs = qs.filter(issue__edition__title__icontains=q)
-
-    year = request.GET.get('year')
-    if year:
-        qs = qs.filter(issue__year=year)
-
-    provenance = request.GET.get('provenance')
-    if provenance:
-        qs = qs.filter(location__name_of_library_collection__icontains=provenance)
-
-    author = request.GET.get('author')
-    if author:
-        qs = qs.filter(issue__edition__author__icontains=author)
-
-    paginator = Paginator(qs, 20)
-    page_obj = paginator.get_page(request.GET.get('page'))
-
-    return render(request, 'census/search-results.html', {
-        'page_obj': page_obj,
-        'field': request.GET.get('field', ''),
-        'display_field': request.GET.get('field', '').capitalize(),
-        'display_value': request.GET.get('value', 'All'),
-        'copy_count': qs.count(),
-    })
-
-canonical_query   = Q(verification='U') | Q(verification='V')
-unverified_query  = Q(verification='U')
-verified_query    = Q(verification='V')
-false_query       = Q(verification='F')    # ← add this line
 # ------------------------------------------------------------------------------
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
