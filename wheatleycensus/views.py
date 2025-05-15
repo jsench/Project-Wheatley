@@ -23,7 +23,6 @@ from django.db.models import ObjectDoesNotExist
 # Utility function for icon path
 # ------------------------------------------------------------------------------
 def get_icon_path(title_id):
-    # Returns a generic icon path for all titles (customize as needed)
     return 'census/images/generic-title-icon.png'
 
 
