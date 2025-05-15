@@ -577,12 +577,13 @@ def all_copies_list(request):
     """Display all copies across all issues, sorted by year, location, shelfmark."""
     all_copies = Copy.objects.select_related('location', 'issue__edition__title').all()
     def sort_key(c):
-        year = getattr(c.issue, 'start_date', 0)
+        year = getattr(c.issue, 'start_date', None)
+        if year is None:
+            year = 9999  # Put missing years at the end
         loc = getattr(c.location, 'name_of_library_collection', '') if c.location else ''
         shelf = c.shelfmark or ''
         return (year, loc.lower(), shelf.lower())
     all_copies = sorted(all_copies, key=sort_key)
-    all_copies = list(reversed(all_copies))
     return render(request, 'census/all_copies_list.html', {
         'all_copies': all_copies,
         'copy_count': len(all_copies),
