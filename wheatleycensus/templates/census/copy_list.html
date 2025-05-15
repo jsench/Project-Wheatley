@@ -1,108 +1,102 @@
-{% extends "census/base.html" %}
+{% extends "base.html" %}
 {% load static %}
 {% load humanize %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/copy_list.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="wrapper">
-  {% include "census/play-title-header.html" with selected_issue=selected_issue icon_path=icon_path title=title copy_count=copy_count %}
+<div class="container mt-4">
+  <h2>{{ title }}</h2>
+  <p>Found {{ copy_count }} copy{{ copy_count|pluralize }}</p>
 
-
-  <table class="play-detail-set">
-
-    {# ——————————————————————————————————————— #}
-    {# Header in a <thead>                             #}
-    {# ——————————————————————————————————————— #}
-    <thead>
-      <tr>
-        <th class="terse">WC&nbsp;#</th>
-        <th class="detailed">Location</th>
-        <th class="even">Shelfmark</th>
-        <th class="icon">&nbsp;</th>
-        <th class="icon">&nbsp;</th>
-        <th class="icon">&nbsp;</th>
-      </tr>
-    </thead>
-
-    {# ——————————————————————————————————————— #}
-    {# Body with for…empty…endfor                     #}
-    {# ——————————————————————————————————————— #}
-    <tbody>
-      {% for copy in all_copies %}
-      <tr>
-        <td>
-          <a class="copy_data"
-             href="#"
-             data-form="{% url 'copy_data' copy.id %}"
-             title="Details">
-            {{ copy.wc_number }}
-          </a>
-          {% if user.is_staff %}
-            <span class="note">
-              [<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">
-                 Edit copy
-               </a>]
-            </span>
-          {% endif %}
-        </td>
-        <td>
-          <a class="copy_data"
-             href="#"
-             data-form="{% url 'copy_data' copy.id %}"
-             title="Details">
-            {{ copy.location.name_of_library_collection }}
-          </a>
-        </td>
-        <td>
-          {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}
-            <a class="copy_data"
-               href="#"
-               data-form="{% url 'copy_data' copy.id %}"
-               title="Details">
-              {{ copy.shelfmark }}
-            </a>
-          {% else %}
-            &nbsp;
-          {% endif %}
-        </td>
-        <td>
-          {% if copy.from_estc and copy.verification == "U" %}
-            <span title="Unverified (via ESTC)"
-                  class="unverified-symbol">&#x20E0;</span>
-          {% elif copy.verification == "U" %}
-            <span title="Unverified (admin entered)"
-                  class="unverified-symbol">&#x20E0;</span>
-          {% elif copy.verification == "V" %}
-            <span title="Verified" class="verified-symbol">&#x2713;</span>
-          {% endif %}
-        </td>
-        <td>
-          {% if copy.fragment %}
-            <span class="unicode-icon" title="Fragment copy">
-              <i class="fas fa-industry"></i>
-            </span>
-          {% endif %}
-        </td>
-        <td>
-          {% if copy.digital_facsimile_url %}
-            <span class="unicode-icon" title="Digital facsimile">
-              <a href="{{ copy.digital_facsimile_url }}"
-                 target="_blank">
-                <i class="fas fa-camera-retro"></i>
-              </a>
-            </span>
-          {% endif %}
-        </td>
-      </tr>
-
-      {# This replaces your invalid `{% else %}` inside a loop #}
-      {% empty %}
-      <tr>
-        <td colspan="6" style="text-align:center; padding:20px;">
-          No copies are available.
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>WC#</th>
+              <th>Location</th>
+              <th>Shelfmark</th>
+              <th>Digital Facsimile</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for copy in copies %}
+            <tr>
+              <td>{{ copy.wc_number }}</td>
+              <td>{{ copy.location.name_of_library_collection }}</td>
+              <td>{{ copy.shelfmark }}</td>
+              <td>
+                {% if copy.digital_facsimile_url %}
+                <a href="{{ copy.digital_facsimile_url }}" target="_blank">
+                  <i class="fas fa-camera-retro"></i>
+                </a>
+                {% endif %}
+              </td>
+              <td>
+                <button type="button" class="btn btn-info btn-sm" 
+                        data-toggle="modal" 
+                        data-target="#copyModal"
+                        data-copy-id="{{ copy.id }}">
+                  View Details
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
-{% endblock content %}
+
+<!-- Modal -->
+<div class="modal fade" id="copyModal" tabindex="-1" role="dialog" aria-labelledby="copyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="copyModalLabel">Loading...</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  $('#copyModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    var copyId = button.data('copy-id');
+    var modal = $(this);
+    
+    modal.find('.modal-body').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
+    
+    $.ajax({
+      url: '/copy/' + copyId + '/data/',
+      method: 'GET',
+      success: function(response) {
+        modal.find('.modal-body').html(response);
+      },
+      error: function() {
+        modal.find('.modal-body').html('<div class="alert alert-danger">Error loading copy details. Please try again.</div>');
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

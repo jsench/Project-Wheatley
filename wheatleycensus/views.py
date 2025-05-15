@@ -201,27 +201,39 @@ def copy_list(request, id):
     canonical_query = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
 
     # Look up the Issue (and 404 if not found)
-    selected_issue = get_object_or_404(Issue, pk=id)
+    selected_issue = get_object_or_404(models.Issue, pk=id)
 
     # Filter copies by that issue + canonical status
-    qs = Copy.objects.filter(canonical_query, issue=id)
+    qs = models.CanonicalCopy.objects.filter(canonical_query, issue=id)
 
     # Order by WC number (numeric sort)
     all_copies = sorted(qs, key=copy_census_id_sort_key)
 
-    return render(request, 'census/copy_list.html', {
-        'all_copies':      all_copies,
-        'copy_count':      len(all_copies),
-        'selected_issue':  selected_issue,
-        'icon_path':       'census/images/generic-title-icon.png',
-        'title':           selected_issue.edition.title,
-    })
+    context = {
+        'all_copies': all_copies,
+        'copy_count': len(all_copies),
+        'selected_issue': selected_issue,
+        'icon_path': get_icon_path(selected_issue.edition.title.id),
+        'title': selected_issue.edition.title,
+    }
+
+    return render(request, 'census/copy_list.html', context)
 
 
 # copy_data: Renders modal with details for a single copy.
 def copy_data(request, copy_id):
+    """
+    View function to display copy details in a modal.
+    Handles both direct access and AJAX requests.
+    """
     copy = get_object_or_404(models.CanonicalCopy, pk=copy_id)
-    return render(request, 'census/copy_modal.html', {'copy': copy})
+    
+    # If it's an AJAX request, return just the modal content
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render(request, 'census/copy_modal.html', {'copy': copy})
+    
+    # For direct access, return the full page
+    return render(request, 'census/copy_detail.html', {'copy': copy})
 
 
 # copy_page: Standalone page for a copy, looked up by WC number.
