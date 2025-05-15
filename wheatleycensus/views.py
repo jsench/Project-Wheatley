@@ -333,32 +333,51 @@ def issue_list(request, id):
 # about: Renders the about page and other static pages, pulling content from the StaticPageText model and replacing placeholders with dynamic values.
 def about(request, viewname='about'):
     """Display the about page with census statistics."""
-    copy_count = Copy.objects.filter(canonical_query & Q(fragment=False)).count()
-    fragment_copy_count = Copy.objects.filter(fragment=True).count()
-    facsimile_copy_count = Copy.objects.filter(
+    from django.urls import reverse
+    from . import models  # ensure models is imported if not already
+
+    template = loader.get_template('census/about.html')
+    copy_count = models.Copy.objects.filter(canonical_query & Q(fragment=False)).count()
+    fragment_copy_count = models.Copy.objects.filter(fragment=True).count()
+    facsimile_copy_count = models.Copy.objects.filter(
         ~Q(digital_facsimile_url=None) & ~Q(digital_facsimile_url='')
     ).count()
-    
-    facsimile_copy_percent = round(100 * facsimile_copy_count / copy_count) if copy_count > 0 else 0
-    
+    if copy_count > 0:
+        facsimile_copy_percent = round(100 * facsimile_copy_count / copy_count)
+    else:
+        facsimile_copy_percent = 0
+
+    # Robust context for all likely-used placeholders in StaticPageText/about
     pre_render_context = {
         'copy_count': str(copy_count),
-        'verified_copy_count': str(Copy.objects.filter(verified_query).count()),
-        'unverified_copy_count': str(Copy.objects.filter(unverified_query).count()),
-        'today': '{d:%d %B %Y}'.format(d=datetime.now()),  # alias for template compatibility
+        'verified_copy_count': str(models.Copy.objects.filter(verified_query).count()),
+        'unverified_copy_count': str(models.Copy.objects.filter(unverified_query).count()),
+        'current_date': '{d:%d %B %Y}'.format(d=datetime.now()),
+        'today': '{d:%d %B %Y}'.format(d=datetime.now()),  # alias for {today}
         'fragment_copy_count': str(fragment_copy_count),
-        'facsimile_count': str(facsimile_copy_count),
+        'facsimile_copy_count': str(facsimile_copy_count),
+        'facsimile_count': str(facsimile_copy_count),  # alias for {facsimile_count}
         'facsimile_copy_percent': '{}%'.format(facsimile_copy_percent),
-        'facsimile_percent': '{}%'.format(facsimile_copy_percent),  # alias for template compatibility
-        'estc_copy_count': str(Copy.objects.filter(from_estc=True).count()),
-        'non_estc_copy_count': str(Copy.objects.filter(from_estc=False).count()),
-        'search_url': reverse('search'),  # for template compatibility
+        'facsimile_percent': '{}%'.format(facsimile_copy_percent),  # alias for {facsimile_percent}
+        'estc_copy_count': str(models.Copy.objects.filter(from_estc=True).count()),
+        'non_estc_copy_count': str(models.Copy.objects.filter(from_estc=False).count()),
+        'search_url': reverse('search'),
+        'csv_url': reverse('location_copy_count_csv_export'),
+        'homepage_url': reverse('homepage'),
+        'about_url': reverse('about'),
+        'contact_url': reverse('contact'),
+        'blog_url': 'https://blog.wheatleycensus.org/',
+        'advisoryboard_url': reverse('advisoryboard'),
+        'references_url': reverse('references'),
+        # Add more keys here as needed for future static text placeholders
     }
-    
+
     content = [s.content.format(**pre_render_context)
-               for s in StaticPageText.objects.filter(viewname=viewname)]
-    
-    return render(request, 'census/about.html', {'content': content})
+               for s in models.StaticPageText.objects.filter(viewname=viewname)]
+    context = {
+        'content': content,
+    }
+    return HttpResponse(template.render(context, request))
 
 # ------------------------------------------------------------------------------
 # CSV exports
