@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-1">400</h1>
+            <h2 class="mb-4">Bad Request</h2>
+            <p class="lead mb-4">The server couldn't understand your request. Please check your input and try again.</p>
+            <div class="mt-4">
+                <a href="{% url 'homepage' %}" class="btn btn-primary me-2">Go to Homepage</a>
+                <a href="{% url 'contact' %}" class="btn btn-outline-primary">Contact Support</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

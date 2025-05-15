@@ -11,6 +11,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from . import views
 
+# Add error handlers
+handler404 = 'wheatleycensus.views.handler404'
+handler500 = 'wheatleycensus.views.handler500'
+handler403 = 'wheatleycensus.views.handler403'
+handler400 = 'wheatleycensus.views.handler400'
+
 urlpatterns = [
     # --- Main Site URLs ---
     # These URLs handle the main navigation and core features of the site.
