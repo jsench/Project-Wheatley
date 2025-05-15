@@ -250,11 +250,9 @@ def copy_list(request, id):
     ).filter(canonical_query & Q(issue=id))
 
     def sort_key(c):
-        # Sort by issue.start_date, then location name, then shelfmark
-        date = getattr(c.issue, 'start_date', 0)
         loc = getattr(c.location, 'name_of_library_collection', '') if c.location else ''
         shelf = c.shelfmark or ''
-        return (date, loc.lower(), shelf.lower())
+        return (loc.lower(), shelf.lower())
 
     all_copies = sorted(all_copies, key=sort_key)
 
