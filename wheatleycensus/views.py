@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator
 from .constants import US_STATES, WORLD_COUNTRIES
-from .models import Copy, Issue, Title, Location, ProvenanceName, CanonicalCopy, StaticPageText  # adjust if your models module defines others
+from .models import Copy, Issue, Title, Location, ProvenanceName, StaticPageText  # CanonicalCopy removed
 from datetime import datetime
 import csv
 from django.urls import reverse
@@ -199,7 +199,7 @@ def copy_list(request, id):
     """
     canonical_query = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
     selected_issue = get_object_or_404(Issue, pk=id)
-    qs = CanonicalCopy.objects.filter(canonical_query, issue=id)
+    qs = Copy.objects.filter(canonical_query, issue=id)
     all_copies = sorted(qs, key=copy_census_id_sort_key)
     context = {
         'all_copies': all_copies,
@@ -213,7 +213,7 @@ def copy_list(request, id):
 
 # copy_data: Renders modal with details for a single copy.
 def copy_data(request, copy_id):
-    copy = get_object_or_404(CanonicalCopy, pk=copy_id)
+    copy = get_object_or_404(Copy, pk=copy_id)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return render(request, 'census/copy_modal.html', {'copy': copy})
     return render(request, 'census/copy_detail.html', {'copy': copy})
@@ -221,7 +221,7 @@ def copy_data(request, copy_id):
 
 # copy_page: Standalone page for a copy, looked up by WC number.
 def copy_page(request, wc_number):
-    copy = get_object_or_404(CanonicalCopy, wc_number=wc_number)
+    copy = get_object_or_404(Copy, wc_number=wc_number)
     return render(request, 'census/copy_page.html', {'copy': copy})
 
 
@@ -233,33 +233,6 @@ def cen_copy_modal(request, census_id):
     return copy_data(request, census_id)
 
 
-# def copy_list_by_edition(request, edition_id):
-#     """
-#     Show all copies whose Issue belongs to the given Edition.
-#     """
-#     # Grab all copies for any issue in that edition
-#     copies = Copy.objects.filter(issue__edition_id=edition_id)
-
-#     # (Optionally re‐apply your canonical_query here if you like)
-#     # copies = copies.filter(canonical_query)
-
-#     # Sort them however you need
-#     all_copies = sorted(copies, key=lambda c: (
-#         c.location.name_of_library_collection or '',
-#         c.shelfmark or ''
-#     ))
-
-#     # For the header, we just need the Title
-#     first_issue = copies.first().issue if copies.exists() else None
-#     title = first_issue.edition.title if first_issue else None
-
-#     return render(request, 'census/copy_list.html', {
-#         'all_copies':     all_copies,
-#         'copy_count':     len(all_copies),
-#         'selected_issue': None,   # not an Issue view
-#         'icon_path':      'census/images/generic-title-icon.png',
-#         'title':          title,
-#     })
 # ------------------------------------------------------------------------------
 # Issue list (per title)
 # ------------------------------------------------------------------------------
@@ -351,7 +324,7 @@ def location_copy_count_csv_export(request):
 
 # year_issue_copy_count_csv_export: Exports a CSV of issues and their copy counts.
 def year_issue_copy_count_csv_export(request):
-    qs = CanonicalCopy.objects.values('issue').annotate(total=Count('issue'))
+    qs = Copy.objects.values('issue').annotate(total=Count('issue'))
     resp = HttpResponse(content_type='text/csv')
     resp['Content-Disposition'] = 'attachment; filename="census_year_issue_copy_count.csv"'
     w = csv.writer(resp)
@@ -367,7 +340,7 @@ def year_issue_copy_count_csv_export(request):
 def export(request, groupby, column, aggregate):
     agg = Sum if aggregate == 'sum' else Count
     try:
-        qs = CanonicalCopy.objects.values(groupby).annotate(agg=agg(column)).order_by(groupby)
+        qs = Copy.objects.values(groupby).annotate(agg=agg(column)).order_by(groupby)
     except Exception:
         raise Http404("Invalid groupby or aggregate")
     fn = f"census_{aggregate}_of_{column}_for_each_{groupby}.csv"
@@ -486,7 +459,7 @@ def detail(request, id):
         editions = list(selected_title.edition_set.all())
     issues = [issue for ed in editions for issue in ed.issue_set.all()]
     issues.sort(key=issue_sort_key)
-    copy_count = CanonicalCopy.objects.filter(issue__id__in=[i.id for i in issues]).count()
+    copy_count = Copy.objects.filter(issue__id__in=[i.id for i in issues]).count()
     context = {
         'icon_path': get_icon_path(id),
         'editions': editions,
@@ -498,7 +471,7 @@ def detail(request, id):
 
 def copy(request, id):
     selected_issue = get_object_or_404(Issue, pk=id)
-    all_copies = CanonicalCopy.objects.filter(issue__id=id).order_by('location__name', 'Shelfmark')
+    all_copies = Copy.objects.filter(issue__id=id).order_by('location__name', 'Shelfmark')
     all_copies = sorted(all_copies, key=copy_sort_key)
     context = {
         'all_copies': all_copies,
@@ -510,17 +483,17 @@ def copy(request, id):
 
 def draft_copy_data(request, copy_id):
     template = loader.get_template('census/copy_modal.html')
-    selected_copy = CanonicalCopy.objects.filter(pk=copy_id)
+    selected_copy = Copy.objects.filter(pk=copy_id)
     if selected_copy:
         selected_copy = get_draft_if_exists(selected_copy[0])
     else:
-        selected_copy = get_object_or_404(CanonicalCopy, pk=copy_id)
+        selected_copy = get_object_or_404(Copy, pk=copy_id)
     context = {"copy": selected_copy}
     return render(request, 'census/copy_modal.html', context)
 
 @login_required()
 def update_draft_copy(request, id):
-    canonical_copy = get_object_or_404(CanonicalCopy, pk=id)
+    canonical_copy = get_object_or_404(Copy, pk=id)
     selected_copy = get_draft_if_exists(canonical_copy)
     init_fields = ['Shelfmark', 'Local_Notes', 'prov_info', 'Height', 'Width', 'Marginalia', 'Binding', 'Binder']
     data = {f: getattr(selected_copy, f) for f in init_fields}
