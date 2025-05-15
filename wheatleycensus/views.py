@@ -518,36 +518,17 @@ def copy(request, id):
     }
     return render(request, 'census/copy.html', context)
 
-def draft_copy_data(request, copy_id):
-    template = loader.get_template('census/copy_modal.html')
-    selected_copy = Copy.objects.filter(pk=copy_id)
-    if selected_copy:
-        selected_copy = get_draft_if_exists(selected_copy[0])
-    else:
-        selected_copy = get_object_or_404(Copy, pk=copy_id)
-    context = {"copy": selected_copy}
-    return render(request, 'census/copy_modal.html', context)
+# Add this utility function for sorting issues
 
-@login_required()
-def update_draft_copy(request, id):
-    canonical_copy = get_object_or_404(Copy, pk=id)
-    selected_copy = get_draft_if_exists(canonical_copy)
-    init_fields = ['Shelfmark', 'Local_Notes', 'prov_info', 'Height', 'Width', 'Marginalia', 'Binding', 'Binder']
-    data = {f: getattr(selected_copy, f) for f in init_fields}
-    if request.method == 'POST':
-        copy_form = forms.LibrarianCopySubmissionForm(request.POST)
-        if copy_form.is_valid():
-            copy_form_data = copy_form.save(commit=False)
-            draft_copy = get_or_create_draft(canonical_copy)
-            for f in init_fields:
-                setattr(draft_copy, f, getattr(copy_form_data, f))
-            draft_copy.save()
-            return HttpResponseRedirect(reverse('librarian_validate2'))
-    else:
-        copy_form = forms.LibrarianCopySubmissionForm(initial=data)
-    context = {
-        'form': copy_form,
-        'copy': selected_copy,
-        'icon_path': get_icon_path(selected_copy.issue.edition.title.id)
-    }
-    return render(request, 'census/copy_submission.html', context)
+def issue_sort_key(issue):
+    """Sort key for issues: edition number (numeric if possible), start_date, end_date, stc_wing."""
+    try:
+        ed_num = int(issue.edition.edition_number) if issue.edition.edition_number.isdigit() else float('inf')
+    except Exception:
+        ed_num = float('inf')
+    return (
+        ed_num,
+        getattr(issue, 'start_date', 0),
+        getattr(issue, 'end_date', 0),
+        getattr(issue, 'stc_wing', '')
+    )
