@@ -197,18 +197,10 @@ def copy_list(request, id):
     """
     Show all copies for a given Issue (id).
     """
-    # Only "real" copies (U = unverified, V = verified, or no flag)
     canonical_query = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
-
-    # Look up the Issue (and 404 if not found)
     selected_issue = get_object_or_404(Issue, pk=id)
-
-    # Filter copies by that issue + canonical status
     qs = CanonicalCopy.objects.filter(canonical_query, issue=id)
-
-    # Order by WC number (numeric sort)
     all_copies = sorted(qs, key=copy_census_id_sort_key)
-
     context = {
         'all_copies': all_copies,
         'copy_count': len(all_copies),
@@ -216,31 +208,19 @@ def copy_list(request, id):
         'icon_path': get_icon_path(selected_issue.edition.title.id),
         'title': selected_issue.edition.title,
     }
-
     return render(request, 'census/copy_list.html', context)
 
 
 # copy_data: Renders modal with details for a single copy.
 def copy_data(request, copy_id):
-    """
-    View function to display copy details in a modal.
-    Handles both direct access and AJAX requests.
-    """
     copy = get_object_or_404(CanonicalCopy, pk=copy_id)
-    
-    # If it's an AJAX request, return just the modal content
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return render(request, 'census/copy_modal.html', {'copy': copy})
-    
-    # For direct access, return the full page
     return render(request, 'census/copy_detail.html', {'copy': copy})
 
 
 # copy_page: Standalone page for a copy, looked up by WC number.
 def copy_page(request, wc_number):
-    """
-    Stand‐alone page for a copy, looked up by WC number.
-    """
     copy = get_object_or_404(CanonicalCopy, wc_number=wc_number)
     return render(request, 'census/copy_page.html', {'copy': copy})
 
@@ -377,7 +357,7 @@ def year_issue_copy_count_csv_export(request):
     w = csv.writer(resp)
     w.writerow(['Year', 'Title', 'Number of Copies'])
     for row in qs:
-        iss = CanonicalCopy.objects.filter(pk=row['issue']).first()
+        iss = Issue.objects.filter(pk=row['issue']).first()
         if iss:
             w.writerow([iss.start_date, iss.edition.title.title, row['total']])
     return resp
@@ -496,98 +476,71 @@ def logout_user(request):
     return HttpResponse(tpl.render({}, request))
 
 def detail(request, id):
-    try:
-        selected_title = get_object_or_404(CanonicalCopy, pk=id)
-        if id == '5' or id == '6':
-            editions = list(selected_title.edition_set.all())
-            extra_ed = list(CanonicalCopy.objects.get(pk='39').edition_set.all())
-            extra_ed[0].Edition_number = '3'
-            editions.extend(extra_ed)
-        else:
-            editions = list(selected_title.edition_set.all())
-
-        issues = [issue for ed in editions for issue in ed.issue_set.all()]
-        issues.sort(key=issue_sort_key)
-        copy_count = CanonicalCopy.objects.filter(issue__id__in=[i.id for i in issues]).count()
-        
-        context = {
-            'icon_path': get_icon_path(id),
-            'editions': editions,
-            'issues': issues,
-            'title': selected_title,
-            'copy_count': copy_count,
-        }
-        return render(request, 'census/detail.html', context)
-    except Exception as e:
-        raise Http404(f"Title not found: {str(e)}")
+    selected_title = get_object_or_404(Title, pk=id)
+    if id == '5' or id == '6':
+        editions = list(selected_title.edition_set.all())
+        extra_ed = list(Title.objects.get(pk='39').edition_set.all())
+        extra_ed[0].Edition_number = '3'
+        editions.extend(extra_ed)
+    else:
+        editions = list(selected_title.edition_set.all())
+    issues = [issue for ed in editions for issue in ed.issue_set.all()]
+    issues.sort(key=issue_sort_key)
+    copy_count = CanonicalCopy.objects.filter(issue__id__in=[i.id for i in issues]).count()
+    context = {
+        'icon_path': get_icon_path(id),
+        'editions': editions,
+        'issues': issues,
+        'title': selected_title,
+        'copy_count': copy_count,
+    }
+    return render(request, 'census/detail.html', context)
 
 def copy(request, id):
-    try:
-        selected_issue = get_object_or_404(CanonicalCopy, pk=id)
-        all_copies = CanonicalCopy.objects.filter(issue__id=id).order_by('location__name', 'Shelfmark')
-        all_copies = sorted(all_copies, key=copy_sort_key)
-        
-        context = {
-            'all_copies': all_copies,
-            'selected_issue': selected_issue,
-            'icon_path': get_icon_path(selected_issue.edition.title.id),
-            'title': selected_issue.edition.title
-        }
-        return render(request, 'census/copy.html', context)
-    except Exception as e:
-        raise Http404(f"Issue not found: {str(e)}")
-
-def copy_data(request, copy_id):
-    try:
-        selected_copy = get_object_or_404(CanonicalCopy, pk=copy_id)
-        context = {"copy": selected_copy}
-        return render(request, 'census/copy_modal.html', context)
-    except Exception as e:
-        raise Http404(f"Copy not found: {str(e)}")
+    selected_issue = get_object_or_404(Issue, pk=id)
+    all_copies = CanonicalCopy.objects.filter(issue__id=id).order_by('location__name', 'Shelfmark')
+    all_copies = sorted(all_copies, key=copy_sort_key)
+    context = {
+        'all_copies': all_copies,
+        'selected_issue': selected_issue,
+        'icon_path': get_icon_path(selected_issue.edition.title.id),
+        'title': selected_issue.edition.title
+    }
+    return render(request, 'census/copy.html', context)
 
 def draft_copy_data(request, copy_id):
-    try:
-        template = loader.get_template('census/copy_modal.html')
-        selected_copy = CanonicalCopy.objects.filter(pk=copy_id)
-        if selected_copy:
-            selected_copy = get_draft_if_exists(selected_copy[0])
-        else:
-            selected_copy = get_object_or_404(CanonicalCopy, pk=copy_id)
-
-        context = {"copy": selected_copy}
-        return render(request, 'census/copy_modal.html', context)
-    except Exception as e:
-        raise Http404(f"Draft copy not found: {str(e)}")
+    template = loader.get_template('census/copy_modal.html')
+    selected_copy = CanonicalCopy.objects.filter(pk=copy_id)
+    if selected_copy:
+        selected_copy = get_draft_if_exists(selected_copy[0])
+    else:
+        selected_copy = get_object_or_404(CanonicalCopy, pk=copy_id)
+    context = {"copy": selected_copy}
+    return render(request, 'census/copy_modal.html', context)
 
 @login_required()
 def update_draft_copy(request, id):
-    try:
-        canonical_copy = get_object_or_404(CanonicalCopy, pk=id)
-        selected_copy = get_draft_if_exists(canonical_copy)
-        init_fields = ['Shelfmark', 'Local_Notes', 'prov_info', 
-                      'Height', 'Width', 'Marginalia', 'Binding', 'Binder']
-        data = {f: getattr(selected_copy, f) for f in init_fields}
-        
-        if request.method == 'POST':
-            copy_form = forms.LibrarianCopySubmissionForm(request.POST)
-            if copy_form.is_valid():
-                copy_form_data = copy_form.save(commit=False)
-                draft_copy = get_or_create_draft(canonical_copy)
-                for f in init_fields:
-                    setattr(draft_copy, f, getattr(copy_form_data, f))
-                draft_copy.save()
-                return HttpResponseRedirect(reverse('librarian_validate2'))
-        else:
-            copy_form = forms.LibrarianCopySubmissionForm(initial=data)
-            
-        context = {
-            'form': copy_form,
-            'copy': selected_copy,
-            'icon_path': get_icon_path(selected_copy.issue.edition.title.id)
-        }
-        return render(request, 'census/copy_submission.html', context)
-    except Exception as e:
-        raise Http404(f"Error updating draft copy: {str(e)}")
+    canonical_copy = get_object_or_404(CanonicalCopy, pk=id)
+    selected_copy = get_draft_if_exists(canonical_copy)
+    init_fields = ['Shelfmark', 'Local_Notes', 'prov_info', 'Height', 'Width', 'Marginalia', 'Binding', 'Binder']
+    data = {f: getattr(selected_copy, f) for f in init_fields}
+    if request.method == 'POST':
+        copy_form = forms.LibrarianCopySubmissionForm(request.POST)
+        if copy_form.is_valid():
+            copy_form_data = copy_form.save(commit=False)
+            draft_copy = get_or_create_draft(canonical_copy)
+            for f in init_fields:
+                setattr(draft_copy, f, getattr(copy_form_data, f))
+            draft_copy.save()
+            return HttpResponseRedirect(reverse('librarian_validate2'))
+    else:
+        copy_form = forms.LibrarianCopySubmissionForm(initial=data)
+    context = {
+        'form': copy_form,
+        'copy': selected_copy,
+        'icon_path': get_icon_path(selected_copy.issue.edition.title.id)
+    }
+    return render(request, 'census/copy_submission.html', context)
 
 def handler404(request, exception):
     return render(request, '404.html', status=404)
