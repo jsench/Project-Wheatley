@@ -248,9 +248,16 @@ def copy_list(request, id):
     all_copies = Copy.objects.select_related(
         'location', 'issue__edition__title'
     ).filter(canonical_query & Q(issue=id))
-    
-    all_copies = sorted(all_copies, key=copy_sort_key)
-    
+
+    def sort_key(c):
+        # Sort by issue.start_date, then location name, then shelfmark
+        date = getattr(c.issue, 'start_date', 0)
+        loc = getattr(c.location, 'name_of_library_collection', '') if c.location else ''
+        shelf = c.shelfmark or ''
+        return (date, loc.lower(), shelf.lower())
+
+    all_copies = sorted(all_copies, key=sort_key)
+
     return render(request, 'census/copy_list.html', {
         'all_copies': all_copies,
         'copy_count': len(all_copies),

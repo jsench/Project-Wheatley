@@ -29,7 +29,7 @@
             <th class="icon">&nbsp;</th>
         </tr>
         {% for copy in all_copies %}
-        <tr>
+        <tr class="{% cycle 'even' 'odd' %}">
             <td>
                 {% if copy.wc_number and copy.wc_number != '0' %}
                     <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
@@ -44,7 +44,7 @@
             </td>
             <td>
                 <a class="copy_data copy_data_{{copy.wc_number}}" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
-                    {{copy.location.name}}
+                    {{copy.location.name_of_library_collection}}
                 </a>
             </td>
             <td>
