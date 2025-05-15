@@ -318,13 +318,13 @@ def about(request):
 # CSV exports
 # ------------------------------------------------------------------------------
 def location_copy_count_csv_export(request):
-    qs = models.Copy.objects.values('location').annotate(total=Count('location'))
+    qs = Copy.objects.values('location').annotate(total=Count('location'))
     resp = HttpResponse(content_type='text/csv')
     resp['Content-Disposition'] = 'attachment; filename="census_location_copy_count.csv"'
     w = csv.writer(resp)
     w.writerow(['Location', 'Number of Copies'])
     for row in qs:
-        loc = models.Location.objects.filter(pk=row['location']).first()
+        loc = Location.objects.filter(pk=row['location']).first()
         w.writerow([loc.name_of_library_collection if loc else 'Unknown', row['total']])
     return resp
 

@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-sBNuHEEDpd9VZXWQI1AqOzWbet6kMCTjeV_G13UQiGySCJb5s4
 
 DEBUG = True  # Keep True for now to serve static files
 
-ALLOWED_HOSTS = ['127.0.0.1','www.wheatleycensus.org', 'wheatleycensus.org', 'wheatley-census-0r7u.onrender.com', 'senchyne.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1','www.wheatleycensus.org', 'wheatleycensus.org', 'senchyne.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
