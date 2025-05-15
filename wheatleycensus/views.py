@@ -94,7 +94,7 @@ def copy_census_id_sort_key(c):
 def copy_location_sort_key(c):
     """Sort key for copy locations."""
     if c.location is not None:
-        name = c.location.name
+        name = getattr(c.location, 'name_of_library_collection', '')
     else:
         name = ''
     return strip_article(name if name else '')
