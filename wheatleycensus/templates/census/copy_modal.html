@@ -18,7 +18,7 @@
 
         <div class="modal-body">
             <p align="left"><strong>WC#</strong>: {% if copy.wc_number and copy.wc_number != '0' %}{{ copy.wc_number }}{% endif %}</p>
-            <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name }}{% endif %}</p>
+            <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name_of_library_collection }}{% endif %}</p>
             <p align="left"><strong>Shelfmark</strong>: {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}{{ copy.shelfmark }}{% endif %}</p>
 
             {% if copy.issue.edition.title.notes %}

@@ -312,12 +312,12 @@ def issue_list(request, id):
         i.end_date,
         i.stc_wing
     ))
-    
+    # Sort editions for display (if used in play-title icons)
+    editions = sorted(editions, key=lambda ed: title_sort_key(ed.title))
     copy_count = Copy.objects.filter(
         canonical_query,
         issue__id__in=[i.id for i in issues]
     ).count()
-    
     return render(request, 'census/issue_list.html', {
         'icon_path': 'census/images/generic-title-icon.png',
         'editions': editions,
