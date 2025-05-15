@@ -1,4 +1,5 @@
-# constants.py
+# wheatleycensus/constants.py
+# Stores static lists and constants (e.g., US_STATES, WORLD_COUNTRIES) used throughout the app.
 
 US_STATES = [
     "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
@@ -23,7 +24,7 @@ WORLD_COUNTRIES = [
     "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
     "Cameroon", "Canada", "Central African Republic", "Chad", "Chile",
     "China", "Colombia", "Comoros", "Congo (Republic of the)", "Congo (DRC)",
-    "Costa Rica", "Côte d’Ivoire", "Croatia", "Cuba", "Cyprus",
+    "Costa Rica", "Côte d'Ivoire", "Croatia", "Cuba", "Cyprus",
     "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
     "East Timor (Timor-Leste)", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea",
     "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji",

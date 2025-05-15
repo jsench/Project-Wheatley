@@ -7,17 +7,30 @@ For more information on this file, see
 https://docs.djangoproject.com/en/4.2/topics/settings/
 """
 
+# wheatleycensus/settings.py
+# Main Django settings file: configures database, installed apps, middleware, static files, etc.
+#
+# Changes to this file affect the core configuration of your Django project, including security, database, app features, and static/media file handling.
+# Each section below is explained in detail for clarity.
+
 import os
 from pathlib import Path
 
+# --- Base Directory ---
+# BASE_DIR is the root directory of your Django project. Used for building paths.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --- Security Settings ---
+# SECRET_KEY is used for cryptographic signing. Keep it secret in production!
+# DEBUG should be False in production for security.
+# ALLOWED_HOSTS lists the domains/hosts this app can serve.
 SECRET_KEY = 'django-insecure-sBNuHEEDpd9VZXWQI1AqOzWbet6kMCTjeV_G13UQiGySCJb5s4i8TYOGbKEuf2xFi_o'
-
 DEBUG = True  # Keep True for now to serve static files
-
 ALLOWED_HOSTS = ['127.0.0.1','www.wheatleycensus.org', 'wheatleycensus.org', 'senchyne.pythonanywhere.com']
 
+# --- Installed Apps ---
+# List of Django and third-party apps enabled for this project.
+# Add or remove apps here to enable/disable features.
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -30,6 +43,9 @@ INSTALLED_APPS = [
     'wheatleycensus',
 ]
 
+# --- Middleware ---
+# Middleware is a stack of components that process requests/responses.
+# Add, remove, or reorder middleware to change request/response handling.
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -40,9 +56,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
+# --- URL Configuration ---
+# ROOT_URLCONF points to the main URL routing file for the project.
 ROOT_URLCONF = 'wheatleycensus.urls'
 
+# --- Templates ---
+# TEMPLATES configures the Django template engine.
+# You can add template directories or context processors here.
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -59,9 +79,13 @@ TEMPLATES = [
     },
 ]
 
-
+# --- WSGI Application ---
+# WSGI_APPLICATION points to the WSGI entry point for deployment.
 WSGI_APPLICATION = 'wheatleycensus.wsgi.application'
 
+# --- Database Configuration ---
+# DATABASES defines how Django connects to your database.
+# Change these settings to use a different database or credentials.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -73,8 +97,12 @@ DATABASES = {
     }
 }
 
+# --- Auto Field ---
+# DEFAULT_AUTO_FIELD sets the default type for primary keys.
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# --- Password Validation ---
+# AUTH_PASSWORD_VALIDATORS enforces password strength and security.
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -82,22 +110,30 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# --- Internationalization ---
+# LANGUAGE_CODE, TIME_ZONE, USE_I18N, USE_TZ control language and time settings.
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# --- Static & Media Files ---
+# STATIC_URL, STATICFILES_DIRS, STATIC_ROOT configure static file handling.
+# MEDIA_URL, MEDIA_ROOT configure user-uploaded media files.
 STATIC_URL = '/static/'
-
-
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+# --- Admin URL ---
+# ADMIN_URL sets the path for the Django admin site.
 ADMIN_URL = 'admin/'
 
+# --- Notifications ---
+# NOTIFICATIONS is a custom setting for admin notifications.
 NOTIFICATIONS = [('Akshith', 'amothkuri@wisc.edu')]
 
+# --- Miscellaneous ---
+# APPEND_SLASH controls whether Django appends a slash to URLs.
 APPEND_SLASH = True

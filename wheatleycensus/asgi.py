@@ -11,6 +11,9 @@ import os
 
 from django.core.asgi import get_asgi_application
 
+# wheatleycensus/asgi.py
+# Entry point for ASGI servers to run the Django app in production.
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wheatleycensus.settings')
 
 application = get_asgi_application()

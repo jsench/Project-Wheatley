@@ -7,6 +7,9 @@ For more information on this file, see
 https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 """
 
+# wheatleycensus/wsgi.py
+# Entry point for WSGI servers to run the Django app in production.
+
 import sys
 import os
 

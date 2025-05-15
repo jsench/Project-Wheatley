@@ -1,5 +1,6 @@
 # wheatleycensus/views.py
-
+# This file contains all the view functions for the Wheatley Census Django app.
+# Each section is grouped by functionality: helpers, homepage/search, copy listings, static pages, CSV exports, autocomplete endpoints, and authentication.
 
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
@@ -18,6 +19,7 @@ from django.urls import reverse
 # ------------------------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------------------------
+# Utility functions for string manipulation, sorting, and year range parsing.
 def strip_article(s):
     if isinstance(s, Title):
         s = s.title or ''
@@ -58,6 +60,7 @@ def copy_sort_key(c):
 # ------------------------------------------------------------------------------
 # Homepage & Search
 # ------------------------------------------------------------------------------
+# homepage: Renders the front page with a grid of titles.
 def homepage(request):
     tpl = loader.get_template('census/frontpage.html')
     titles = list(Title.objects.all())
@@ -76,6 +79,7 @@ def homepage(request):
     }, request))
 
 
+# search: Unified search endpoint for filtering copies by location, keyword, provenance, gender, or census ID.
 def search(request):
     """
     Unified search endpoint.  Supports GET params:
@@ -147,6 +151,7 @@ def search(request):
     })
 
 
+# search_results: (Legacy) Search endpoint for filtering by query params.
 def search_results(request):
     qs = Copy.objects.select_related('location', 'issue__edition').all()
 
@@ -184,6 +189,7 @@ false_query       = Q(verification='F')    # ← add this line
 # ------------------------------------------------------------------------------
 # Copy listings & detail modals
 # ------------------------------------------------------------------------------
+# copy_list: Shows all copies for a given Issue.
 def copy_list(request, id):
     """
     Show all copies for a given Issue (id).
@@ -209,11 +215,13 @@ def copy_list(request, id):
     })
 
 
+# copy_data: Renders modal with details for a single copy.
 def copy_data(request, copy_id):
     copy = get_object_or_404(Copy, pk=copy_id)
     return render(request, 'census/copy_modal.html', {'copy': copy})
 
 
+# copy_page: Standalone page for a copy, looked up by WC number.
 def copy_page(request, wc_number):
     """
     Stand‐alone page for a copy, looked up by WC number.
@@ -224,6 +232,7 @@ def copy_page(request, wc_number):
     })
 
 
+# cen_copy_modal: Alias for copy_data for backwards compatibility.
 def cen_copy_modal(request, census_id):
     """
     Alias for copy_data (for backwards compatibility on some links).
@@ -261,6 +270,7 @@ def cen_copy_modal(request, census_id):
 # ------------------------------------------------------------------------------
 # Issue list (per title)
 # ------------------------------------------------------------------------------
+# issue_list: Shows all issues for a given title, with edition and copy counts.
 def issue_list(request, id):
     title = get_object_or_404(Title, pk=id)
     editions = title.edition_set.all()
@@ -286,6 +296,7 @@ def issue_list(request, id):
 # ------------------------------------------------------------------------------
 # About / static pages
 # ------------------------------------------------------------------------------
+# about: Renders the about page and other static pages, pulling content from the StaticPageText model and replacing placeholders with dynamic values.
 def about(request, viewname='about'):
     base_q = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
 
@@ -332,6 +343,7 @@ def about(request, viewname='about'):
 # ------------------------------------------------------------------------------
 # CSV exports
 # ------------------------------------------------------------------------------
+# location_copy_count_csv_export: Exports a CSV of locations and their copy counts.
 def location_copy_count_csv_export(request):
     qs = Copy.objects.values('location').annotate(total=Count('location'))
     resp = HttpResponse(content_type='text/csv')
@@ -344,6 +356,7 @@ def location_copy_count_csv_export(request):
     return resp
 
 
+# year_issue_copy_count_csv_export: Exports a CSV of issues and their copy counts.
 def year_issue_copy_count_csv_export(request):
     qs = models.Copy.objects.values('issue').annotate(total=Count('issue'))
     resp = HttpResponse(content_type='text/csv')
@@ -357,6 +370,7 @@ def year_issue_copy_count_csv_export(request):
     return resp
 
 
+# export: Generic CSV export for groupby/aggregate queries.
 def export(request, groupby, column, aggregate):
     agg = Sum if aggregate == 'sum' else Count
     try:
@@ -376,6 +390,7 @@ def export(request, groupby, column, aggregate):
 # ------------------------------------------------------------------------------
 # Autocomplete endpoints
 # ------------------------------------------------------------------------------
+# autofill_location: Returns location suggestions for autocomplete.
 def autofill_location(request, query=None):
     query = query or ""
     # 1) DB matches
@@ -395,11 +410,13 @@ def autofill_location(request, query=None):
     return JsonResponse({'matches': suggestions[:50]})
 
 
+# autofill_provenance: Returns provenance name suggestions for autocomplete.
 def autofill_provenance(request, query=None):
     matches = models.ProvenanceName.objects.filter(name__icontains=query) if query else []
     return JsonResponse({'matches': [m.name for m in matches]})
 
 
+# autofill_collection: Returns static collection choices for autocomplete.
 def autofill_collection(request, query=None):
     choices = [
         {'label': 'With known early provenance (before 1700)', 'value': 'earlyprovenance'},
@@ -411,6 +428,7 @@ def autofill_collection(request, query=None):
     return JsonResponse({'matches': choices})
 
 
+# get_collection: Helper to filter queryset by collection type.
 def get_collection(qs, name):
     if name == 'earlyprovenance':
         return (
@@ -444,6 +462,7 @@ def get_collection(qs, name):
 # ------------------------------------------------------------------------------
 # Authentication
 # ------------------------------------------------------------------------------
+# login_user: Handles user login.
 def login_user(request):
     tpl = loader.get_template('census/login.html')
     if request.method == 'POST':
@@ -457,6 +476,7 @@ def login_user(request):
     return HttpResponse(tpl.render({'next': request.GET.get('next', '')}, request))
 
 
+# logout_user: Handles user logout.
 def logout_user(request):
     tpl = loader.get_template('census/logout.html')
     logout(request)

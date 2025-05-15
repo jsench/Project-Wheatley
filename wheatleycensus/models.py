@@ -1,8 +1,14 @@
 from django.db import models
 from django.conf import settings
 
+# wheatleycensus/models.py
+# This file defines all the database models for the Wheatley Census app.
+# Models represent the core data structures: locations, copies, issues, titles, provenance, and static page text.
+
 ### Main Site Operations ###
 
+# --- StaticPageText Model ---
+# Stores static page content (e.g., about page) editable via the admin.
 class StaticPageText(models.Model):
     content = models.TextField(null=True, blank=True, default=None)
     viewname = models.CharField(max_length=255, default='', null=True, blank=True)
@@ -16,6 +22,8 @@ class StaticPageText(models.Model):
 
 ### Core Data Tables ###
 
+# --- Location Model ---
+# Represents a library or collection location.
 class Location(models.Model):
     LOCATION_CHOICES = [
         # US States
@@ -87,6 +95,9 @@ class ProvenanceRecord(models.Model):
         return f"{self.provenance_name} for {self.copy}"
 
 
+# --- Title, Issue Models ---
+# Issue: Represents a specific issue of an edition.
+# Title: Represents a bibliographic title.
 class Title(models.Model):
     title = models.CharField(max_length=128, unique=True)
     notes = models.TextField(null=True, blank=True, default='')
@@ -118,6 +129,8 @@ class Issue(models.Model):
         return f"{self.edition} ({self.year})"
 
 
+# --- Copy Model ---
+# Represents a physical or digital copy of a work, with fields for verification, location, shelfmark, etc.
 class Copy(models.Model):
     wc_number           = models.CharField(max_length=50, unique=True)
     verification        = models.CharField(

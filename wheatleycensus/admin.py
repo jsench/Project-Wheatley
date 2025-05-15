@@ -1,3 +1,7 @@
+# wheatleycensus/admin.py
+# This file registers models with the Django admin interface and customizes their display.
+# Includes inline and ModelAdmin classes for Copy, Location, and other models.
+
 from django.contrib import admin
 from . import models
 
