@@ -77,18 +77,18 @@ def copy_sort_key(c):
 
 def copy_census_id_sort_key(c):
     """Sort key for census IDs, handling numeric and alphanumeric formats."""
-    census_id = c.census_id if c.census_id is not None else ''
-    census_id_a = 0
-    census_id_b = 0
+    wc_number = c.wc_number if hasattr(c, 'wc_number') and c.wc_number is not None else ''
+    wc_number_a = 0
+    wc_number_b = 0
     try:
-        if '.' in census_id:
-            census_id_a, census_id_b = census_id.split('.')
-            census_id_a, census_id_b = int(census_id_a), int(census_id_b)
+        if '.' in wc_number:
+            wc_number_a, wc_number_b = wc_number.split('.')
+            wc_number_a, wc_number_b = int(wc_number_a), int(wc_number_b)
         else:
-            census_id_a = int(census_id)
+            wc_number_a = int(wc_number)
     except ValueError:
         pass
-    return (census_id_a, census_id_b)
+    return (wc_number_a, wc_number_b)
 
 
 def copy_location_sort_key(c):
@@ -276,12 +276,11 @@ def copy_page(request, wc_number):
 
 
 # cen_copy_modal: Alias for copy_data for backwards compatibility.
-def cen_copy_modal(request, census_id):
-    """Display copy modal for a given census ID."""
-    selected_copy = get_object_or_404(Copy, census_id=census_id)
+def cen_copy_modal(request, wc_number):
+    """Display copy modal for a given wc_number."""
+    selected_copy = get_object_or_404(Copy, wc_number=wc_number)
     selected_issue = selected_copy.issue
     all_copies = [selected_copy]
-    
     return render(request, 'census/copy.html', {
         'all_copies': all_copies,
         'copy_count': 0,

@@ -17,7 +17,7 @@
         </div>
 
         <div class="modal-body">
-            <p align="left"><strong>WC#</strong>: {% if copy.census_id and copy.census_id != '0' %}{{ copy.census_id }}{% endif %}</p>
+            <p align="left"><strong>WC#</strong>: {% if copy.wc_number and copy.wc_number != '0' %}{{ copy.wc_number }}{% endif %}</p>
             <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name }}{% endif %}</p>
             <p align="left"><strong>Shelfmark</strong>: {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}{{ copy.shelfmark }}{% endif %}</p>
 
