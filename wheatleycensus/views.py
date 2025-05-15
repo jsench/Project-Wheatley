@@ -29,7 +29,9 @@ false_query = Q(verification='F')
 # ------------------------------------------------------------------------------
 # Utility function for icon path
 # ------------------------------------------------------------------------------
-def get_icon_path(title_id):
+def get_icon_path(title):
+    if title.image:
+        return title.image.url
     return 'census/images/generic-title-icon.png'
 
 
@@ -503,7 +505,7 @@ def detail(request, id):
     issues.sort(key=issue_sort_key)
     copy_count = Copy.objects.filter(issue__id__in=[i.id for i in issues]).count()
     context = {
-        'icon_path': get_icon_path(id),
+        'icon_path': get_icon_path(selected_title),
         'editions': editions,
         'issues': issues,
         'title': selected_title,
@@ -518,7 +520,7 @@ def copy(request, id):
     context = {
         'all_copies': all_copies,
         'selected_issue': selected_issue,
-        'icon_path': get_icon_path(selected_issue.edition.title.id),
+        'icon_path': get_icon_path(selected_issue.edition.title),
         'title': selected_issue.edition.title
     }
     return render(request, 'census/copy.html', context)
@@ -537,3 +539,18 @@ def issue_sort_key(issue):
         getattr(issue, 'end_date', 0),
         getattr(issue, 'stc_wing', '')
     )
+
+def all_copies_list(request):
+    """Display all copies across all issues, sorted by year, location, shelfmark."""
+    all_copies = Copy.objects.select_related('location', 'issue__edition__title').all()
+    def sort_key(c):
+        year = getattr(c.issue, 'start_date', 0)
+        loc = getattr(c.location, 'name_of_library_collection', '') if c.location else ''
+        shelf = c.shelfmark or ''
+        return (year, loc.lower(), shelf.lower())
+    all_copies = sorted(all_copies, key=sort_key)
+    return render(request, 'census/all_copies_list.html', {
+        'all_copies': all_copies,
+        'copy_count': len(all_copies),
+        'icon_path': 'census/images/generic-title-icon.png',
+    })

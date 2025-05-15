@@ -8,9 +8,9 @@
             <div class="play-title-icon-border">
                 <a href = "{% url 'copy_list' title.edition_set.first.issue_set.first.id %}">
                     {% if title.image %}
-                        <img class="play-title-icon" src="{{ title.image.url }}">
+                        <img class="play-title-icon" src="{{ title.image.url }}" alt="{{ title.title }}">
                     {% else %}
-                        <img class="play-title-icon-generic" src="{% static icon_path %}">
+                        <img class="play-title-icon-generic" src="{% static icon_path %}" alt="Generic icon">
                     {% endif %}
                 </a>
             </div>
