@@ -1,73 +1,7 @@
 {% extends 'census/base.html' %}
 {% load static %}
 {% block content %}
-
-  <p class="static-text">
-    The Wheatley Census attempts to locate and describe all extant copies of all editions of Phillis Wheatley's
-    <em>Poems on Various Subjects Religious and Moral</em> and related reprints of Wheatley's poems under different titles through 1909.
-    Phase 1 of the census focused on all extant copies of the six eighteenth-century editions of
-    <em>Poems on Various Subjects Religious and Moral</em>: ESTC T153734, ESTC W24491, ESTC N473250, ESTC W24492,
-    ESTC W24493, and ESTC W24494. Future phases will focus on later editions and existing data will be updated iteratively.
-  </p>
-
-  <p class="static-text highlight-text">
-    <strong class="highlight-number">The Census currently includes {{ copy_count }} copies.</strong>
-  </p>
-
-  <p class="static-text">
-    High-quality, color digital facsimiles are available for
-    <strong class="highlight-number">{{ facsimile_count }}</strong> copies,
-    or <strong class="highlight-number">{{ facsimile_percent }}</strong> of the total. Click on the camera icon
-    <span class="unicode-icon"><i class="fas fa-camera-retro"></i></span>
-    in the list of copies to access the digital facsimile. If you know of any we have missed,
-    please let us know.
-  </p>
-
-  <p class="static-text">
-    Each copy in the Wheatley Census has been given a unique identifier, the WC #, which can be used in
-    references and citations and which will not change. (For this reason, some numbers may appear out of
-    order in copy listings, since individual copies may have changed location or otherwise moved position
-    since numbers were first assigned.) Copies of the 1773 First Edition have WC #s beginning at 1000.
-    Copies of the 1786 Philadelphia edition have WC #s beginning at 2000, the 1787 London are 3000s,
-    1787 Philadelphia are 4000s, and so on.
-  </p>
-
-  <p class="static-text">
-    Please cite the Wheatley Census as follows:<br/>
-    Wheatley Census. Ed. Jonathan Senchyne and Brigitte Fielder. Created 2025. Accessed {{ today }}.
-    &lt;http://www.wheatleycensus.org&gt;.WC n.
-  </p>
-
-  <p class="static-text">
-    The static URL for any copy is
-    <a href="https://wheatleycensus.org/wc/n" target="_blank">https://wheatleycensus.org/wc/n</a>,
-    where <em>n</em> is the WC #. The URL is case sensitive:
-    <code>wc</code> must be in lowercase.
-  </p>
-
-  <p class="static-text">
-    Currently, {{ copy_count }} copies are attested only by the holdings details in library catalogues,
-    but as these details are often erroneous or nonspecific, such copies are listed as unverified
-    <span class="unverified-symbol">⃠</span> until they have been confirmed. The other copies, including
-    both those initially deriving from ESTC and those not, have been confirmed on site
-    <span class="verified-symbol">✓</span>. A list of all unverified copies can be found
-    <a href="{% url 'search' %}?field=unverified" class="download-here">here</a>.
-  </p>
-
-  <p class="static-text highlight-text">
-    <strong>
-      A list of all libraries currently in the database, along with the number of copies they hold,
-      can be downloaded <a href="{% url 'location_copy_count_csv_export' %}" class="download-here">here</a>.
-    </strong><br/>
-    Note that some universities have multiple collection-locations associated with them,
-    which will each appear separately in the list.
-  </p>
-
-  <p class="static-text">
-    Copies of <em>Poems on Various Subjects Religious and Moral</em> that are sold at auction are assumed
-    to have a location of "Private Collection" unless an institutional location is verified through
-    matching identifiers. Copies documented and sold through major auction houses are considered verified
-    even if they have not been personally verified by a WC member or volunteer.
-  </p>
-
-{% endblock %}
+  {% for c in content %}
+    <p class="static-text">{{ c|safe }}</p>
+  {% endfor %}
+{% endblock content %}

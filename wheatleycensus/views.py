@@ -9,7 +9,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator
 from .constants import US_STATES, WORLD_COUNTRIES
-from .models import Copy, Issue, Title, Location, ProvenanceName, models  # adjust if your models module defines others
+from .models import Copy, Issue, Title, Location, ProvenanceName, models, StaticPageText  # adjust if your models module defines others
 from datetime import datetime
 import csv
 
@@ -285,7 +285,7 @@ def issue_list(request, id):
 # ------------------------------------------------------------------------------
 # About / static pages
 # ------------------------------------------------------------------------------
-def about(request):
+def about(request, viewname='about'):
     base_q = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
 
     copy_count = Copy.objects.filter(base_q, fragment=False).count()
@@ -295,8 +295,17 @@ def about(request):
     facsimile_percent = f"{round(100 * facsimile_count / copy_count)}%" if copy_count else "0%"
 
     unverified_count = Copy.objects.filter(verification='U').count()
-
     today = datetime.now().strftime("%d %B %Y")
+
+    # Fetch about page content from StaticPageText model
+    content = [
+        s.content.replace('{copy_count}', str(copy_count))
+                 .replace('{facsimile_count}', str(facsimile_count))
+                 .replace('{facsimile_percent}', str(facsimile_percent))
+                 .replace('{unverified_count}', str(unverified_count))
+                 .replace('{today}', today)
+        for s in StaticPageText.objects.filter(viewname='about')
+    ]
 
     # Determine which static page to render
     if request.path.endswith('advisoryboard/'):
@@ -307,6 +316,7 @@ def about(request):
         return render(request, 'census/contact.html', {})
     else:
         return render(request, 'census/about.html', {
+            'content': content,
             'copy_count': copy_count,
             'facsimile_count': facsimile_count,
             'facsimile_percent': facsimile_percent,
