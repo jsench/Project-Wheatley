@@ -116,14 +116,17 @@ def homepage(request):
     """Display the homepage with a grid of titles."""
     gridwidth = 5
     titlelist = list(Title.objects.all())
-    # Sort by earliest edition year (descending), then alphabetically
+    # Sort by earliest issue year (descending), then alphabetically
     def sort_key(title):
-        # Get the earliest year for this title (as int), or a large number if missing
-        try:
-            years = [int(ed.year) for ed in title.edition_set.all() if ed.year and str(ed.year).isdigit()]
-            min_year = min(years) if years else 9999
-        except Exception:
-            min_year = 9999
+        years = []
+        for ed in title.edition_set.all():
+            for issue in ed.issue_set.all():
+                try:
+                    y = int(issue.year)
+                    years.append(y)
+                except Exception:
+                    continue
+        min_year = min(years) if years else 9999
         return (-min_year, title.title.lower())
     titlelist = sorted(titlelist, key=sort_key)
     titlerows = [titlelist[i: i + gridwidth]
