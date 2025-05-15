@@ -352,6 +352,7 @@ def about(request, viewname='about'):
         'facsimile_percent': '{}%'.format(facsimile_copy_percent),  # alias for template compatibility
         'estc_copy_count': str(Copy.objects.filter(from_estc=True).count()),
         'non_estc_copy_count': str(Copy.objects.filter(from_estc=False).count()),
+        'search_url': reverse('search'),  # for template compatibility
     }
     
     content = [s.content.format(**pre_render_context)
