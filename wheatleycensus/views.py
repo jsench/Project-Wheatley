@@ -347,8 +347,9 @@ def about(request, viewname='about'):
         'unverified_copy_count': str(Copy.objects.filter(unverified_query).count()),
         'current_date': '{d:%d %B %Y}'.format(d=datetime.now()),
         'fragment_copy_count': str(fragment_copy_count),
-        'facsimile_count': str(facsimile_copy_count),  # alias for template compatibility
+        'facsimile_count': str(facsimile_copy_count),
         'facsimile_copy_percent': '{}%'.format(facsimile_copy_percent),
+        'facsimile_percent': '{}%'.format(facsimile_copy_percent),  # alias for template compatibility
         'estc_copy_count': str(Copy.objects.filter(from_estc=True).count()),
         'non_estc_copy_count': str(Copy.objects.filter(from_estc=False).count()),
     }
