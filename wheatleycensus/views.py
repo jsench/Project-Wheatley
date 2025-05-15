@@ -582,6 +582,7 @@ def all_copies_list(request):
         shelf = c.shelfmark or ''
         return (year, loc.lower(), shelf.lower())
     all_copies = sorted(all_copies, key=sort_key)
+    all_copies = list(reversed(all_copies))
     return render(request, 'census/all_copies_list.html', {
         'all_copies': all_copies,
         'copy_count': len(all_copies),
