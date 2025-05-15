@@ -201,7 +201,7 @@ def copy_list(request, id):
     canonical_query = Q(verification='U') | Q(verification='V') | Q(verification__isnull=True)
 
     # Look up the Issue (and 404 if not found)
-    selected_issue = get_object_or_404(models.Issue, pk=id)
+    selected_issue = get_object_or_404(Issue, pk=id)
 
     # Filter copies by that issue + canonical status
     qs = models.CanonicalCopy.objects.filter(canonical_query, issue=id)
