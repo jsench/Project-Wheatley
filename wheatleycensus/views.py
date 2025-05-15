@@ -12,6 +12,7 @@ from .constants import US_STATES, WORLD_COUNTRIES
 from .models import Copy, Issue, Title, Location, ProvenanceName, models, StaticPageText  # adjust if your models module defines others
 from datetime import datetime
 import csv
+from django.urls import reverse
 
 
 # ------------------------------------------------------------------------------
@@ -297,13 +298,17 @@ def about(request, viewname='about'):
     unverified_count = Copy.objects.filter(verification='U').count()
     today = datetime.now().strftime("%d %B %Y")
 
-    # Fetch about page content from StaticPageText model
+    search_url = reverse('search') + '?field=unverified'
+    csv_url = reverse('location_copy_count_csv_export')
+
     content = [
         s.content.replace('{copy_count}', str(copy_count))
                  .replace('{facsimile_count}', str(facsimile_count))
                  .replace('{facsimile_percent}', str(facsimile_percent))
                  .replace('{unverified_count}', str(unverified_count))
                  .replace('{today}', today)
+                 .replace('{search_url}', search_url)
+                 .replace('{csv_url}', csv_url)
         for s in StaticPageText.objects.filter(viewname='about')
     ]
 
