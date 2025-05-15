@@ -220,24 +220,8 @@ def copy_list(request, id):
 
 # copy_data: Renders modal with details for a single copy.
 def copy_data(request, copy_id):
-    try:
-        # Use CanonicalCopy instead of Copy
-        copy = get_object_or_404(models.CanonicalCopy, pk=copy_id)
-        
-        # Add more context data
-        context = {
-            'copy': copy,
-            'issue': copy.issue,
-            'edition': copy.issue.edition,
-            'title': copy.issue.edition.title,
-            'location': copy.location,
-            'provenance_records': copy.provenance_records.all(),
-            'icon_path': get_icon_path(copy.issue.edition.title.id)
-        }
-        
-        return render(request, 'census/copy_modal.html', context)
-    except Exception as e:
-        raise Http404(f"Copy not found: {str(e)}")
+    copy = get_object_or_404(models.CanonicalCopy, pk=copy_id)
+    return render(request, 'census/copy_modal.html', {'copy': copy})
 
 
 # copy_page: Standalone page for a copy, looked up by WC number.
@@ -245,20 +229,8 @@ def copy_page(request, wc_number):
     """
     Stand‐alone page for a copy, looked up by WC number.
     """
-    try:
-        copy = get_object_or_404(models.CanonicalCopy, wc_number=wc_number)
-        context = {
-            'copy': copy,
-            'issue': copy.issue,
-            'edition': copy.issue.edition,
-            'title': copy.issue.edition.title,
-            'location': copy.location,
-            'provenance_records': copy.provenance_records.all(),
-            'icon_path': get_icon_path(copy.issue.edition.title.id)
-        }
-        return render(request, 'census/copy_page.html', context)
-    except Exception as e:
-        raise Http404(f"Copy not found: {str(e)}")
+    copy = get_object_or_404(models.CanonicalCopy, wc_number=wc_number)
+    return render(request, 'census/copy_page.html', {'copy': copy})
 
 
 # cen_copy_modal: Alias for copy_data for backwards compatibility.
