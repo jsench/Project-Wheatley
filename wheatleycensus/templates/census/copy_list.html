@@ -7,74 +7,89 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <h2>{{ title }}</h2>
-  <p>Found {{ copy_count }} copy{{ copy_count|pluralize }}</p>
 
-  <div class="row">
-    <div class="col-12">
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>WC#</th>
-              <th>Location</th>
-              <th>Shelfmark</th>
-              <th>Digital Facsimile</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for copy in copies %}
-            <tr>
-              <td>{{ copy.wc_number }}</td>
-              <td>{{ copy.location.name_of_library_collection }}</td>
-              <td>{{ copy.shelfmark }}</td>
-              <td>
-                {% if copy.digital_facsimile_url %}
-                <a href="{{ copy.digital_facsimile_url }}" target="_blank">
-                  <i class="fas fa-camera-retro"></i>
-                </a>
+<div class = "wrapper">
+    <div>
+        <script type="text/javascript" src="{% static 'census/js/bootstrap-modal.js' %}"></script>
+        <script type="text/javascript" src="{% static 'census/js/copy_detail_edit_modal.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'census/css/modal.css' %}" />
+        <div id="copyModal" class="modal fade" role="dialog"></div>
+    </div>
+
+    {% include "census/play-title-header.html" with selected_issue=selected_issue icon_path=icon_path title=title copy_count=copy_count %}
+
+    <table class="play-detail-set">
+        {% if all_copies %}
+        <tr>
+            <th class="terse"> WC&nbsp;# </th>
+            <th class="detailed"> Location </th>
+            <th class="even"> Shelfmark </th>
+            <th class="icon">&nbsp;</th>
+            <th class="icon">&nbsp;</th>
+            <th class="icon">&nbsp;</th>
+        </tr>
+        {% for copy in all_copies %}
+        <tr>
+            <td>
+                {% if copy.census_id and copy.census_id != '0' %}
+                    <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                        {{ copy.census_id }}
+                    </a>
+                {% else %}
+                    &nbsp;
                 {% endif %}
-              </td>
-              <td>
-                <button type="button" class="btn btn-info btn-sm" 
-                        data-toggle="modal" 
-                        data-target="#copyModal"
-                        data-copy-id="{{ copy.id }}">
-                  View Details
-                </button>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+                {% if user.is_staff %}
+                    <span class="note">[<a href="{% url 'admin:wheatleycensus_copy_change' copy.id %}">Edit&nbsp;copy</a>]</span>
+                {% endif %}
+            </td>
+            <td>
+                <a class="copy_data copy_data_{{copy.census_id}}" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                    {{copy.location.name}}
+                </a>
+            </td>
+            <td>
+                {% if not copy.shelfmark or copy.shelfmark == "[Shelfmark not available]" or copy.shelfmark is None %}
+                    &nbsp;
+                {% else %}
+                    <a class="copy_data" href="#" data-form="{% url 'copy_data' copy.id %}" title="Details">
+                        {{ copy.shelfmark }}
+                    </a>
+                {% endif %}
+            </td>
+            <td>
+                {% if copy.from_estc and copy.verification == "U" %}
+                      <span title="The existence of this copy has not been verified; location derived from ESTC." class="unverified-symbol">&#x20E0;</span>
+                {% elif copy.verification == "U" %}
+                      <span title="The existence of this copy has not been verified; location entered by an administrator." class="unverified-symbol">&#x20E0;</span>
+                {% elif copy.verification == "V" %}
+                      <span title="This existence of this copy at the location has been verified." class="verified-symbol">&#x2713;</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if copy.fragment %}
+                    <span class="unicode-icon" title="This copy is a fragment">
+                        <i class="fas fa-industry"></i>
+                    </span>
+                {% endif %}
+            </td>
+            <td>
+                {% if copy.digital_facsimile_url %}
+                    <span class="unicode-icon" title="Link to digital facsimile of this copy">
+                        <a href="{{ copy.digital_facsimile_url }}" target="_blank">
+                        <i class="fas fa-camera-retro"></i>
+                        </a>
+                    </span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <p class="sansserif" align="center">No copies are available.</p>
+        {% endif %}
+    </table>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="copyModal" tabindex="-1" role="dialog" aria-labelledby="copyModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="copyModalLabel">Loading...</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="text-center">
-          <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{% endblock %}
+{% endblock content %}
 
 {% block extra_js %}
 <script>

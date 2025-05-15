@@ -18,6 +18,13 @@ from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.db.models import ObjectDoesNotExist
 
+# ------------------------------------------------------------------------------
+# Query Constants
+# ------------------------------------------------------------------------------
+canonical_query = Q(verification='U') | Q(verification='V')
+unverified_query = Q(verification='U')
+verified_query = Q(verification='V')
+false_query = Q(verification='F')
 
 # ------------------------------------------------------------------------------
 # Utility function for icon path

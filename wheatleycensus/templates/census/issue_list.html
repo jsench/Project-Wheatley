@@ -23,7 +23,7 @@
         {{ title.title }}
         {% if user.is_staff %}
           <span class="note">
-            [<a href="{% url 'admin:wheatleycensus_title_change' title.id %}">Edit title</a>]
+            [<a href="{% url 'admin:wheatleycensus_title_change' title.id %}">Edit&nbsp;title</a>]
           </span>
         {% endif %}
       </td>
@@ -47,8 +47,8 @@
     <tr>
       <th class="even">Edition</th>
       <th class="even">Year</th>
-      <th class="detailed">Bibliographic Data</th>
-      <th class="terse">STC / Wing</th>
+      <th class="even">STC / Wing</th>
+      <th class="even">ESTC</th>
     </tr>
     {% for issue in issues %}
     <tr>
@@ -56,14 +56,14 @@
       <td>
         <a href="{% url 'copy_list' issue.id %}">
           {% if issue.edition.edition_number.isdigit %}
-            {{ issue.edition.edition_number|add:"0" }}
+            {{ issue.edition.edition_number }}
           {% else %}
-            {{ issue.edition.edition_number|capfirst }}
+            {{ issue.edition.edition_number.capitalize }}
           {% endif %}
         </a>
         {% if user.is_staff %}
           <span class="note">
-            [<a href="{% url 'admin:wheatleycensus_edition_change' issue.edition.id %}">Edit edition</a>]
+            [<a href="{% url 'admin:wheatleycensus_edition_change' issue.edition.id %}">Edit&nbsp;edition</a>]
           </span>
         {% endif %}
       </td>
@@ -75,18 +75,20 @@
       </td>
 
       <td>
-        {{ issue.bibliographic_data }}
-      </td>
-
-      <td>
         <a href="{% url 'copy_list' issue.id %}">
           {{ issue.stc_wing }}
         </a>
         {% if user.is_staff %}
           <span class="note">
-            [<a href="{% url 'admin:wheatleycensus_issue_change' issue.id %}">Edit issue</a>]
+            [<a href="{% url 'admin:wheatleycensus_issue_change' issue.id %}">Edit&nbsp;issue</a>]
           </span>
         {% endif %}
+      </td>
+
+      <td>
+        <a href="{% url 'copy_list' issue.id %}">
+          {{ issue.estc }}
+        </a>
       </td>
     </tr>
     {% endfor %}
