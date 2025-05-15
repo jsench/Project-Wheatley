@@ -91,27 +91,4 @@
 
 {% endblock content %}
 
-{% block extra_js %}
-<script>
-$(document).ready(function() {
-  $('#copyModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget);
-    var copyId = button.data('copy-id');
-    var modal = $(this);
-    
-    modal.find('.modal-body').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
-    
-    $.ajax({
-      url: '/copy/' + copyId + '/data/',
-      method: 'GET',
-      success: function(response) {
-        modal.find('.modal-body').html(response);
-      },
-      error: function() {
-        modal.find('.modal-body').html('<div class="alert alert-danger">Error loading copy details. Please try again.</div>');
-      }
-    });
-  });
-});
-</script>
-{% endblock %}
+
