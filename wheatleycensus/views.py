@@ -161,7 +161,6 @@ def search(request, field=None, value=None, order=None):
         display_field = 'Keyword Search'
         query = (Q(marginalia__icontains=value) |
                  Q(binding__icontains=value) |
-                 Q(local_notes__icontains=value) |
                  Q(prov_info__icontains=value) |
                  Q(bibliography__icontains=value) |
                  Q(provenance_search_names__name__icontains=value))
