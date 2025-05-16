@@ -359,6 +359,10 @@ def about(request, viewname='about'):
     from django.urls import reverse
     from . import models  # ensure models is imported if not already
 
+    # Use advisoryboard template if viewname is 'advisoryboard'
+    if viewname == 'advisoryboard':
+        return render(request, 'census/advisoryboard.html')
+
     template = loader.get_template('census/about.html')
     copy_count = models.Copy.objects.filter(canonical_query & Q(fragment=False)).count()
     fragment_copy_count = models.Copy.objects.filter(fragment=True).count()
