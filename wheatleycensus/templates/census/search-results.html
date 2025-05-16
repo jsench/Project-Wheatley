@@ -7,7 +7,7 @@
         <tr>
             <td rowspan="3" class="play-title-header-icon">
                 <div class="play-title-icon-border">
-                    <img class="play-title-icon-generic" src="{% /static/census/images/images.png %}" alt="Generic icon">
+                    <img class="play-title-icon-generic" src="{% static 'census/images/generic-title-icon.png' %}" alt="Generic icon">
                 </div>
             </td>
             <td class="play-title-header">
@@ -75,7 +75,9 @@
         {% endfor %}
         </tbody>
         {% else %}
-        <p class="sansserif" align="center">No copies found.</p>
+        <tr>
+            <td colspan="6" class="sansserif" align="center">No copies found.</td>
+        </tr>
         {% endif %}
     </table>
 </div>
