@@ -18,6 +18,10 @@
             <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name_of_library_collection }}{% endif %}</p>
             <p align="left"><strong>Shelfmark</strong>: {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}{{ copy.shelfmark }}{% endif %}</p>
 
+            {% if copy.catalogue_url %}
+            <p align="left"><strong>Catalogue URL</strong>: <a href="{{ copy.catalogue_url }}" target="_blank">{{ copy.catalogue_url }}</a></p>
+            {% endif %}
+
             {% if copy.issue.edition.title.notes %}
             <p align="left"><strong>Notes about this title</strong>: {{ copy.issue.edition.title.notes }}</p>
             {% endif %}
