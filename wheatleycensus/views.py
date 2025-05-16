@@ -203,6 +203,8 @@ def search(request, field=None, value=None, order=None):
             result_list = Copy.objects.none()
     except Exception:
         result_list = Copy.objects.none()
+        display_field = field or "Unknown"
+        display_value = value or "None"
 
     # Remove duplicates
     result_list = result_list.distinct()
