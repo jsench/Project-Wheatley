@@ -23,7 +23,7 @@ urlpatterns = [
     path('copy/<int:census_id>/',   views.cen_copy_modal,  name='cen_copy_modal'),
     path('wc/<int:wc_number>/',     views.copy_page,       name='copy_page'),
     path('about/',                  views.about,           name='about'),
-    path('about/advisoryboard/',    views.about,           name='advisoryboard'),
+    path('about/advisoryboard/',    views.about,           {'viewname': 'advisoryboard'}, name='advisoryboard'),
     path('about/references/',       views.about,           name='references'),
     path('about/contact/',          views.about,           name='contact'),
 
