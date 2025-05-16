@@ -50,16 +50,18 @@
             <p align="left"><strong>Marginalia</strong>: {{ copy.marginalia }}</p>
             {% endif %}
 
-            {% if copy.provenance_search_names.all %}
+            {% if copy.provenance_records.all %}
             <p align="left"><strong>Provenance</strong>:
-                {% for owner in copy.provenance_search_names.all|dictsort:"name" %}
-                <a href="https://viaf.org/viaf/{{ owner.viaf }}" target="_blank" title="VIAF: {{ owner.name }}">{{ owner.name }}</a>
-                {% if owner.bio %}
-                    <a href="{{ owner.bio }}" target="_blank" title="Author bio">
-                        <span style="font-size: 14px; vertical-align: middle; margin-left: 2px;">🔗</span>
-                    </a>
-                {% endif %}
-                {% if not forloop.last %}; {% endif %}
+                {% for record in copy.provenance_records.all %}
+                    {% with owner=record.provenance_name %}
+                        <a href="https://viaf.org/viaf/{{ owner.viaf }}" target="_blank" title="VIAF: {{ owner.name }}">{{ owner.name }}</a>
+                        {% if owner.bio %}
+                            <a href="{{ owner.bio }}" target="_blank" title="Author bio">
+                                <span style="font-size: 14px; vertical-align: middle; margin-left: 2px;">🔗</span>
+                            </a>
+                        {% endif %}
+                        {% if not forloop.last %}; {% endif %}
+                    {% endwith %}
                 {% endfor %}
             </p>
             {% endif %}
