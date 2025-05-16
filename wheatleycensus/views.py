@@ -294,7 +294,10 @@ def copy_data(request, copy_id):
 
 # copy_page: Standalone page for a copy, looked up by WC number.
 def copy_page(request, wc_number):
-    copy = get_object_or_404(Copy, wc_number=wc_number)
+    try:
+        copy = Copy.objects.get(wc_number=wc_number)
+    except Copy.DoesNotExist:
+        return render(request, '404.html', status=404)
     return render(request, 'census/copy_page.html', {'copy': copy})
 
 
