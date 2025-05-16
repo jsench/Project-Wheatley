@@ -53,8 +53,13 @@
             {% if copy.provenance_search_names.all %}
             <p align="left"><strong>Provenance</strong>:
                 {% for owner in copy.provenance_search_names.all|dictsort:"name" %}
-                <a href="https://viaf.org/viaf/{{ owner.viaf }}" target="_blank" title="{{ owner.bio }}">
-                    {{owner.name}}</a>{% if not forloop.last %};{% endif %}
+                <a href="https://viaf.org/viaf/{{ owner.viaf }}" target="_blank" title="VIAF: {{ owner.name }}">{{ owner.name }}</a>
+                {% if owner.bio %}
+                    <a href="{{ owner.bio }}" target="_blank" title="Author bio">
+                        <span style="font-size: 14px; vertical-align: middle; margin-left: 2px;">🔗</span>
+                    </a>
+                {% endif %}
+                {% if not forloop.last %}; {% endif %}
                 {% endfor %}
             </p>
             {% endif %}
