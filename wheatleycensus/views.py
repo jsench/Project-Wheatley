@@ -155,50 +155,53 @@ def search(request, field=None, value=None, order=None):
     display_field = field
     display_value = value
     
-    # Handle different search types
-    if field == 'keyword' or field is None and value:
-        field = 'keyword'
-        display_field = 'Keyword Search'
-        query = (Q(marginalia__icontains=value) |
-                 Q(binding__icontains=value) |
-                 Q(prov_info__icontains=value) |
-                 Q(bibliography__icontains=value) |
-                 Q(provenance_search_names__name__icontains=value))
-        result_list = copy_list.filter(query)
-    elif field == 'stc' and value:
-        display_field = 'STC / Wing'
-        result_list = copy_list.filter(issue__stc_wing__icontains=value)
-    elif field == 'census_id' and value:
-        display_field = 'MC'
-        result_list = copy_list.filter(wc_number=value)
-    elif field == 'year' and value:
-        display_field = 'Year'
-        year_range = convert_year_range(value)
-        if year_range:
-            start, end = year_range
-            result_list = copy_list.filter(issue__start_date__lte=end, issue__end_date__gte=start)
+    try:
+        # Handle different search types
+        if field == 'keyword' or field is None and value:
+            field = 'keyword'
+            display_field = 'Keyword Search'
+            query = (Q(marginalia__icontains=value) |
+                     Q(binding__icontains=value) |
+                     Q(prov_info__icontains=value) |
+                     Q(bibliography__icontains=value) |
+                     Q(provenance_search_names__name__icontains=value))
+            result_list = copy_list.filter(query)
+        elif field == 'stc' and value:
+            display_field = 'STC / Wing'
+            result_list = copy_list.filter(issue__stc_wing__icontains=value)
+        elif field == 'census_id' and value:
+            display_field = 'MC'
+            result_list = copy_list.filter(wc_number=value)
+        elif field == 'year' and value:
+            display_field = 'Year'
+            year_range = convert_year_range(value)
+            if year_range:
+                start, end = year_range
+                result_list = copy_list.filter(issue__start_date__lte=end, issue__end_date__gte=start)
+            else:
+                result_list = copy_list.filter(issue__year__icontains=value)
+        elif field == 'location' and value:
+            display_field = 'Location'
+            result_list = copy_list.filter(location__name_of_library_collection__icontains=value)
+        elif field == 'provenance_name' and value:
+            display_field = 'Provenance Name'
+            result_list = copy_list.filter(provenance_search_names__name__icontains=value)
+        elif field == 'unverified':
+            display_field = 'Unverified'
+            display_value = 'All'
+            result_list = copy_list.filter(unverified_query)
+            if order is None:
+                order = 'location'
+        elif field == 'ghosts':
+            display_field = 'Ghosts'
+            display_value = 'All'
+            result_list = Copy.objects.filter(false_query)
+        elif field == 'collection':
+            result_list, display_field = get_collection(copy_list, value)
+            display_value = 'All'
         else:
-            result_list = copy_list.filter(issue__year__icontains=value)
-    elif field == 'location' and value:
-        display_field = 'Location'
-        result_list = copy_list.filter(location__name__icontains=value)
-    elif field == 'provenance_name' and value:
-        display_field = 'Provenance Name'
-        result_list = copy_list.filter(provenance_search_names__name__icontains=value)
-    elif field == 'unverified':
-        display_field = 'Unverified'
-        display_value = 'All'
-        result_list = copy_list.filter(unverified_query)
-        if order is None:
-            order = 'location'
-    elif field == 'ghosts':
-        display_field = 'Ghosts'
-        display_value = 'All'
-        result_list = Copy.objects.filter(false_query)
-    elif field == 'collection':
-        result_list, display_field = get_collection(copy_list, value)
-        display_value = 'All'
-    else:
+            result_list = Copy.objects.none()
+    except Exception:
         result_list = Copy.objects.none()
 
     # Remove duplicates
