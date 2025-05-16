@@ -264,9 +264,13 @@ def copy_list(request, id):
     ).filter(canonical_query & Q(issue=id))
 
     def sort_key(c):
+        try:
+            wc_num = int(c.wc_number)
+        except (ValueError, TypeError):
+            wc_num = float('inf')
         loc = getattr(c.location, 'name_of_library_collection', '') if c.location else ''
         shelf = c.shelfmark or ''
-        return (loc.lower(), shelf.lower())
+        return (wc_num, loc.lower(), shelf.lower())
 
     all_copies = sorted(all_copies, key=sort_key)
 
