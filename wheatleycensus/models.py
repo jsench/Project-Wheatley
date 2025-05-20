@@ -2,13 +2,14 @@ from django.db import models
 from django.conf import settings
 
 # wheatleycensus/models.py
-# This file defines all the database models for the Wheatley Census app.
-# Models represent the core data structures: locations, copies, issues, titles, provenance, and static page text.
+# Defines all database models for the Wheatley Census app.
+# Models represent core data structures: locations, copies, issues, titles, provenance, and static page text.
 
-### Main Site Operations ###
+# =====================
+# Main Site Operations
+# =====================
 
-# --- StaticPageText Model ---
-# Stores static page content (e.g., about page) editable via the admin.
+# StaticPageText: Stores static page content (e.g., about page) editable via the admin.
 class StaticPageText(models.Model):
     content = models.TextField(null=True, blank=True, default=None)
     viewname = models.CharField(max_length=255, default='', null=True, blank=True)
@@ -19,11 +20,11 @@ class StaticPageText(models.Model):
     class Meta:
         verbose_name_plural = "Static Pages"
 
+# =====================
+# Core Data Tables
+# =====================
 
-### Core Data Tables ###
-
-# --- Location Model ---
-# Represents a library or collection location.
+# Location: Represents a library or collection location.
 class Location(models.Model):
     LOCATION_CHOICES = [
         # US States
@@ -51,7 +52,7 @@ class Location(models.Model):
     def __str__(self):
         return self.name_of_library_collection or "Unknown Location"
 
-
+# ProvenanceName: Represents a provenance name with biographical and temporal metadata.
 class ProvenanceName(models.Model):
     EIGHTEENTH = '18'
     NINETEENTH = '19'
@@ -86,7 +87,7 @@ class ProvenanceName(models.Model):
         verbose_name = "Provenance Name"
         verbose_name_plural = "Provenance Names"
 
-
+# ProvenanceRecord: Links a copy to a provenance name.
 class ProvenanceRecord(models.Model):
     copy           = models.ForeignKey('Copy', on_delete=models.CASCADE, related_name='provenance_records')
     provenance_name = models.ForeignKey('ProvenanceName', on_delete=models.CASCADE)
@@ -94,9 +95,6 @@ class ProvenanceRecord(models.Model):
     def __str__(self):
         return f"{self.provenance_name} for {self.copy}"
 
-
-# --- Title, Issue Models ---
-# Issue: Represents a specific issue of an edition.
 # Title: Represents a bibliographic title.
 class Title(models.Model):
     title = models.CharField(max_length=128, unique=True)
@@ -106,7 +104,7 @@ class Title(models.Model):
     def __str__(self):
         return self.title
 
-
+# Edition: Represents an edition of a title.
 class Edition(models.Model):
     title           = models.ForeignKey(Title, on_delete=models.CASCADE)
     edition_number  = models.CharField(max_length=20, null=True, blank=True)
@@ -116,28 +114,26 @@ class Edition(models.Model):
     def __str__(self):
         return f"{self.title} {self.edition_number or ''}"
 
-
+# Issue: Represents a specific issue of an edition.
 class Issue(models.Model):
     edition            = models.ForeignKey(Edition, on_delete=models.CASCADE)
     year               = models.CharField(max_length=20, default='')
     start_date         = models.IntegerField(default=0)
     end_date           = models.IntegerField(default=0)
     notes              = models.TextField(null=True, blank=True)
-    bibliographic_data = models.TextField(null=True, blank=True)   # ← new
+    bibliographic_data = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.edition} ({self.year})"
 
-
-# --- Copy Model ---
-# Represents a physical or digital copy of a work, with fields for verification, location, shelfmark, etc.
+# Copy: Represents a physical or digital copy of a work.
 class Copy(models.Model):
     wc_number           = models.CharField(max_length=50, unique=True)
     verification        = models.CharField(
                              max_length=1,
                              choices=[('U','Unverified'),('V','Verified'),('F','False')],
                              null=True, blank=True)
-    signed_by_author    = models.BooleanField(default=False)        # ← new
+    signed_by_author    = models.BooleanField(default=False)
     issue               = models.ForeignKey(Issue, on_delete=models.CASCADE, null=True, blank=True)
     location            = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
     shelfmark           = models.CharField(max_length=500, null=True, blank=True)

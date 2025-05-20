@@ -9,24 +9,24 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 
 # wheatleycensus/settings.py
 # Main Django settings file: configures database, installed apps, middleware, static files, etc.
-#
-# Changes to this file affect the core configuration of your Django project, including security, database, app features, and static/media file handling.
-# Each section below is explained in detail for clarity.
+# Secrets and credentials are loaded from environment variables for security.
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if present
+load_dotenv()
 
 # --- Base Directory ---
 # BASE_DIR is the root directory of your Django project. Used for building paths.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Security Settings ---
-# SECRET_KEY is used for cryptographic signing. Keep it secret in production!
-# DEBUG should be False in production for security.
-# ALLOWED_HOSTS lists the domains/hosts this app can serve.
-SECRET_KEY = 'django-insecure-sBNuHEEDpd9VZXWQI1AqOzWbet6kMCTjeV_G13UQiGySCJb5s4i8TYOGbKEuf2xFi_o'
-DEBUG = True  # Keep True for now to serve static files
-ALLOWED_HOSTS = ['127.0.0.1','www.wheatleycensus.org', 'wheatleycensus.org', 'senchyne.pythonanywhere.com']
+# SECRET_KEY and DEBUG loaded from environment variables
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'unsafe-default-key')
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(',')
 
 # --- Installed Apps ---
 # List of Django and third-party apps enabled for this project.
@@ -84,16 +84,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'wheatleycensus.wsgi.application'
 
 # --- Database Configuration ---
-# DATABASES defines how Django connects to your database.
-# Change these settings to use a different database or credentials.
+# All credentials loaded from environment variables for security
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',           # as shown in your connection string
-        'USER': 'postgres.zbsgawoqmuhjbwqqlozx',  # or whatever Supabase gave you
-        'PASSWORD': 'projectwheatley@25',
-        'HOST': 'aws-0-us-east-1.pooler.supabase.com',
-        'PORT': '6543'
+        'NAME': os.getenv('DB_NAME', ''),
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', ''),
     }
 }
 

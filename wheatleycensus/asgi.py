@@ -1,19 +1,13 @@
-"""
-ASGI config for marlowecensus project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
-"""
-
-import os
-
-from django.core.asgi import get_asgi_application
 
 # wheatleycensus/asgi.py
 # Entry point for ASGI servers to run the Django app in production.
+# Sets up the ASGI application callable for deployment.
 
+import os
+from django.core.asgi import get_asgi_application
+
+# Set the default settings module for the 'wheatleycensus' project
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wheatleycensus.settings')
 
+# ASGI application callable
 application = get_asgi_application()
