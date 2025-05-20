@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY and DEBUG loaded from environment variables
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'unsafe-default-key')
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1', 'www.wheatleycensus.org','wheatleycensus.org').split(',')
 
 # --- Installed Apps ---
 # List of Django and third-party apps enabled for this project.
