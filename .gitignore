@@ -1,8 +1,7 @@
 # Created by https://www.gitignore.io
 
-# db.sqlite3
-# security.py
-# .env
+
+security.py
 wheatleycensus/wheatleycensus/security.py
 wheatleycensus/wheatleycensus/local_settings.py
 

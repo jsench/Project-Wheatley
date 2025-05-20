@@ -23,10 +23,9 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Security Settings ---
-# SECRET_KEY and DEBUG loaded from environment variables
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'unsafe-default-key')
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,www.wheatleycensus.org,wheatleycensus.org').split(',')
+SECRET_KEY = 'sBNuHEEDpd9VZXWQI1AqOzWbet6kMCTjeV_G13UQiGySCJb5s4i8TYOGbKEuf2xFi_o'
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1', 'www.wheatleycensus.org', 'wheatleycensus.org', 'senchyne.pythonanywhere.com']
 
 # --- Installed Apps ---
 # List of Django and third-party apps enabled for this project.
@@ -84,15 +83,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'wheatleycensus.wsgi.application'
 
 # --- Database Configuration ---
-# All credentials loaded from environment variables for security
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', ''),
-        'USER': os.getenv('DB_USER', ''),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', ''),
-        'PORT': os.getenv('DB_PORT', ''),
+        'NAME': 'postgres',
+        'USER': 'postgres.cdombdokqaztauvilcnc',
+        'PASSWORD': 'Projectwheatley@2025',
+        'HOST': 'aws-0-us-east-2.pooler.supabase.com',
+        'PORT': '6543',
     }
 }
 
