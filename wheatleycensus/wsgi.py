@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 import sys
 import os
 
-project_home = '/home/senchyne/Wheatley_Census'  # folder with manage.py
+project_home = '/home/senchyne/Project-Wheatley'  # folder with manage.py
 if project_home not in sys.path:
     sys.path.append(project_home)
 
