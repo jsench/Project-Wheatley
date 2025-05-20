@@ -51,9 +51,14 @@ If you wish to use SQLite for local development, you can update `settings.py` ac
    ```sh
    pip install -r requirements.txt
    ```
-4. **Configure your database:**
-   - Update `wheatleycensus/settings.py` with your Supabase/PostgreSQL credentials.
-   - Or, use SQLite for local testing.
+4. **Configure your settings:**
+   - Open `wheatleycensus/settings.py`.
+   - **Update the following before running the project:**
+     - `SECRET_KEY`: Set your own Django secret key.
+     - `DEBUG`: Set to `False` for production, `True` for development.
+     - `ALLOWED_HOSTS`: Add your domain(s) or IP(s).
+     - `DATABASES`: Set your database name, user, password, host, and port.
+   - **Do NOT use .env or environment variables. All secrets must be set directly in `settings.py`.**
 5. **Apply migrations:**
    ```sh
    python manage.py migrate
@@ -70,7 +75,7 @@ If you wish to use SQLite for local development, you can update `settings.py` ac
    - Main site: [http://localhost:8000/](http://localhost:8000/)
    - Admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
-> **Note:** The `venv-sqlite/` folder is for local development only and should not be included in the repository. Each user should create their own virtual environment.
+> **Note:** All sensitive settings are now in `settings.py`. Do not commit real secrets to public repositories.
 
 ## Project Structure
 
@@ -127,45 +132,39 @@ This project is for academic and research use. Please contact the maintainer for
 
 ### Setup Steps
 
-1. **Environment Variables**
-
-   - Copy `.env.example` to `.env`
-   - Fill in the required values:
-     - `SECRET_KEY`: Generate a new Django secret key
-     - `DATABASE_URL`: Your Supabase PostgreSQL connection string
-     - `SUPABASE_URL` and `SUPABASE_KEY`: From your Supabase project settings
-     - `ALLOWED_HOSTS`: Your PythonAnywhere domain
-     - Email settings if needed
-
-2. **PythonAnywhere Setup**
+1. **PythonAnywhere Setup**
 
    - Clone the repository
    - Create a virtual environment
    - Install requirements: `pip install -r requirements.txt`
    - Configure the web app to use your virtual environment
-   - Set up environment variables in PythonAnywhere's web app configuration
+   - Update `settings.py` with your configuration:
+     - Set `SECRET_KEY`
+     - Set `DEBUG = False` for production
+     - Update `ALLOWED_HOSTS` with your domain
+     - Configure `DATABASES` with your Supabase credentials
 
-3. **Database Migration**
+2. **Database Migration**
 
    - Run migrations: `python manage.py migrate`
    - Create superuser: `python manage.py createsuperuser`
 
-4. **Static Files**
+3. **Static Files**
    - Collect static files: `python manage.py collectstatic`
    - Configure static files in PythonAnywhere
 
 ### Important Notes
 
-- Never commit `.env` or `security.py` to version control
 - Keep your Supabase credentials secure
 - Update `ALLOWED_HOSTS` when deploying to a new domain
-- Make sure DEBUG is set to False in production
+- Make sure `DEBUG = False` in production
+- Never commit real credentials to version control
 
 ### Troubleshooting
 
 - Check PythonAnywhere error logs
 - Verify database connection
-- Ensure all environment variables are set correctly
+- Ensure all settings in `settings.py` are correctly configured
 - Check static files configuration
 
 ---

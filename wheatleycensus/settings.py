@@ -13,11 +13,6 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-
-# Load environment variables from .env file if present
-load_dotenv()
-
 # --- Base Directory ---
 # BASE_DIR is the root directory of your Django project. Used for building paths.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -91,6 +86,11 @@ DATABASES = {
         'PASSWORD': 'Projectwheatley@2025',
         'HOST': 'aws-0-us-east-2.pooler.supabase.com',
         'PORT': '6543',
+        'CONN_MAX_AGE': 60,  # Keep connections alive for 60 seconds
+        'OPTIONS': {
+            'connect_timeout': 10,  # 10 seconds timeout for initial connection
+            'sslmode': 'require',  # Require SSL for database connection
+        }
     }
 }
 
@@ -122,6 +122,20 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# Production static files configuration
+if not DEBUG:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    # Security settings for production
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # --- Admin URL ---
 # ADMIN_URL sets the path for the Django admin site.
