@@ -85,12 +85,12 @@ DATABASES = {
         'USER': 'postgres.cdombdokqaztauvilcnc',
         'PASSWORD': 'Projectwheatley@2025',
         'HOST': 'aws-0-us-east-2.pooler.supabase.com',
-        'PORT': '6543',
-        'CONN_MAX_AGE': 60,  # Keep connections alive for 60 seconds
-        'OPTIONS': {
-            'connect_timeout': 10,  # 10 seconds timeout for initial connection
-            'sslmode': 'require',  # Require SSL for database connection
-        }
+        # 'PORT': '6543',
+        # 'CONN_MAX_AGE': 60,  # Keep connections alive for 60 seconds
+        # 'OPTIONS': {
+        #     'connect_timeout': 10,  # 10 seconds timeout for initial connection
+        #     'sslmode': 'require',  # Require SSL for database connection
+        # }
     }
 }
 
@@ -124,18 +124,18 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Production static files configuration
-if not DEBUG:
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-    # Security settings for production
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+# if not DEBUG:
+#     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+#     # Security settings for production
+#     SECURE_SSL_REDIRECT = True
+#     SESSION_COOKIE_SECURE = True
+#     CSRF_COOKIE_SECURE = True
+#     SECURE_BROWSER_XSS_FILTER = True
+#     SECURE_CONTENT_TYPE_NOSNIFF = True
+#     X_FRAME_OPTIONS = 'DENY'
+#     SECURE_HSTS_SECONDS = 31536000  # 1 year
+#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+#     SECURE_HSTS_PRELOAD = True
 
 # --- Admin URL ---
 # ADMIN_URL sets the path for the Django admin site.

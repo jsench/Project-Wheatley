@@ -15,6 +15,32 @@
 
         <div class="modal-body">
             <p align="left"><strong>WC#</strong>: {% if copy.wc_number and copy.wc_number != '0' %}{{ copy.wc_number }}{% endif %}</p>
+            
+            <!-- Verification Status -->
+            {% if copy.verification %}
+            <p align="left"><strong>Verification Status</strong>: 
+                {% if copy.verification == 'V' %}Verified
+                {% elif copy.verification == 'U' %}Unverified
+                {% elif copy.verification == 'F' %}False
+                {% endif %}
+            </p>
+            {% endif %}
+
+            <!-- Signed by Author -->
+            {% if copy.signed_by_author %}
+            <p align="left"><strong>Signed by Author</strong>: Yes</p>
+            {% endif %}
+
+            <!-- Fragment Status -->
+            {% if copy.fragment %}
+            <p align="left"><strong>Fragment</strong>: Yes</p>
+            {% endif %}
+
+            <!-- ESTC Source -->
+            {% if copy.from_estc %}
+            <p align="left"><strong>Source</strong>: ESTC</p>
+            {% endif %}
+
             <p align="left"><strong>Location</strong>: {% if copy.location %}{{ copy.location.name_of_library_collection }}{% endif %}</p>
             <p align="left"><strong>Shelfmark</strong>: {% if copy.shelfmark and copy.shelfmark != "[Shelfmark not available]" %}{{ copy.shelfmark }}{% endif %}</p>
 
@@ -80,6 +106,27 @@
 
             {% if copy.bibliography %}
             <p align="left"><strong>For scholarship on this copy, see</strong>: {{ copy.bibliography }}</p>
+            {% endif %}
+
+            <!-- Verification Information -->
+            {% if copy.verified_by %}
+            <p align="left"><strong>Verified by</strong>: {{ copy.verified_by }}</p>
+            {% endif %}
+
+            {% if copy.examined_by %}
+            <p align="left"><strong>Examined by</strong>: {{ copy.examined_by }}</p>
+            {% endif %}
+
+            {% if copy.collated_by %}
+            <p align="left"><strong>Collated by</strong>: {{ copy.collated_by }}</p>
+            {% endif %}
+
+            {% if copy.backend_notes %}
+            <p align="left"><strong>Backend Notes</strong>: {{ copy.backend_notes }}</p>
+            {% endif %}
+
+            {% if copy.created_by %}
+            <p align="left"><strong>Created by</strong>: {{ copy.created_by }}</p>
             {% endif %}
         </div>
     </div>
