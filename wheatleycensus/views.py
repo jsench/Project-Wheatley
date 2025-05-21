@@ -22,7 +22,7 @@ from django.db.models import ObjectDoesNotExist
 # Query Constants
 # ------------------------------------------------------------------------------
 canonical_query = Q(verification='U') | Q(verification='V')
-unverified_query = Q(verification='U')
+unverified_query = Q(verification='U') | Q(verification__isnull=True) | Q(verification='')
 verified_query = Q(verification='V')
 false_query = Q(verification='F')
 
