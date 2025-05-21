@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator
 from .constants import US_STATES, WORLD_COUNTRIES
-from .models import Copy, Issue, Title, Location, ProvenanceName, StaticPageText  # CanonicalCopy removed
+from .models import Copy, Issue, Title, Location, ProvenanceName, StaticPageText  
 from datetime import datetime
 import csv
 from django.urls import reverse
@@ -22,7 +22,7 @@ from django.db.models import ObjectDoesNotExist
 # Query Constants
 # ------------------------------------------------------------------------------
 canonical_query = Q(verification='U') | Q(verification='V')
-unverified_query = Q(verification='U') | Q(verification__isnull=True) | Q(verification='')
+unverified_query = Q(verification='U')  
 verified_query = Q(verification='V')
 false_query = Q(verification='F')
 
@@ -146,12 +146,16 @@ def search(request, field=None, value=None, order=None):
     value = value or request.GET.get('value')
     order = order or request.GET.get('order')
     
-    # Base queryset with select_related to optimize database queries
-    copy_list = Copy.objects.select_related(
-        'location', 
-        'issue__edition__title'
-    ).filter(canonical_query)
-    
+    # Use all copies for search, not just canonical, for unverified
+    if field == 'unverified':
+        copy_list = Copy.objects.select_related(
+            'location', 'issue__edition__title'
+        ).all()
+    else:
+        copy_list = Copy.objects.select_related(
+            'location', 'issue__edition__title'
+        ).filter(canonical_query)
+
     display_field = field
     display_value = value
     
@@ -388,7 +392,7 @@ def about(request, viewname='about'):
         'facsimile_percent': '{}%'.format(facsimile_copy_percent),  # alias for {facsimile_percent}
         'estc_copy_count': str(models.Copy.objects.filter(from_estc=True).count()),
         'non_estc_copy_count': str(models.Copy.objects.filter(from_estc=False).count()),
-        'search_url': reverse('search'),
+        'search_url': reverse('search') + '?field=unverified',  
         'csv_url': reverse('location_copy_count_csv_export'),
         'homepage_url': reverse('homepage'),
         'about_url': reverse('about'),
